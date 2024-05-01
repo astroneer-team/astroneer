@@ -9,24 +9,29 @@ import {
 import { AstroneerErrorCode } from './enums/astroneer-error-code';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { AstroneerError } from './errors';
-import { NotFoundError } from './errors/http/not-found-error';
-import { createFile } from './helper/create-file';
-import { dirExists } from './helper/dir-exists';
+import { createFile } from './helpers/create-file';
+import { dirExists } from './helpers/dir-exists';
 import { scan } from './scanner';
+import { AstroneerRequest } from './astroneer-request';
+import { AstroneerResponse } from './astroneer-response';
 
 export type Route = {
   method: HttpServerMethods;
-  handler: RouteHandler;
+  handler?: RouteHandler;
   middlewares?: RouteMiddleware[];
   params?: {
     [key: string]: string;
   };
 };
 
-export type RouteHandler = (req: any, res: any) => void | Promise<void>;
+export type RouteHandler = (
+  req: AstroneerRequest,
+  res: AstroneerResponse,
+) => void | Promise<void>;
+
 export type RouteMiddleware = (
-  req: any,
-  res: any,
+  req: AstroneerRequest,
+  res: AstroneerResponse,
   next: () => void,
 ) => void | Promise<void>;
 
@@ -35,7 +40,7 @@ export type AstroneerRouterOptions = {
   routesDir: string;
 };
 
-export type RouterModule = {
+export type RouteModule = {
   [Method in HttpServerMethods]?: RouteHandler;
 } & {
   middlewares?: RouteMiddleware[];
@@ -45,7 +50,7 @@ export type PreloadedRoute = {
   filePath: string;
   page: string;
   regex: string;
-  method: string;
+  method: HttpServerMethods;
   params?: {
     [key: string]: string;
   };
@@ -56,6 +61,10 @@ export type RoutesManifest = {
   dynamicRoutes?: PreloadedRoute[];
   staticRoutes?: PreloadedRoute[];
 };
+
+async function importRouteModule(filePath: string): Promise<RouteModule> {
+  return await import(filePath);
+}
 
 export class AstroneerRouter {
   private options: AstroneerRouterOptions;
@@ -93,22 +102,20 @@ export class AstroneerRouter {
     await Promise.all(
       routeFiles.map(async (fileName) => {
         const routePath = path.resolve(fileName);
-        const routeModule: RouterModule = await import(routePath);
+        const routeModule: RouteModule = await import(routePath);
         const methodsFn = Object.keys(routeModule).filter((key) =>
           Object.values(HttpServerMethods).includes(key as HttpServerMethods),
-        );
+        ) as HttpServerMethods[];
 
         await Promise.all(
           methodsFn.map(async (method) => {
-            if (!this.options.devmode) {
-              const code = await compileTsFile(fileName);
+            const code = await compileTsFile(fileName);
 
-              createFile({
-                filePath: this.getOutputFilePath(fileName),
-                content: code,
-                overwrite: true,
-              });
-            }
+            createFile({
+              filePath: this.getOutputFilePath(fileName),
+              content: code,
+              overwrite: true,
+            });
 
             this.routes.push(this.preloadRoute(fileName, method));
           }),
@@ -133,7 +140,7 @@ export class AstroneerRouter {
     });
   }
 
-  preloadRoute(filePath: string, method: string): PreloadedRoute {
+  preloadRoute(filePath: string, method: HttpServerMethods): PreloadedRoute {
     const relativePath = path.relative(
       path.resolve(process.cwd(), SOURCE_FOLDER, this.options.routesDir),
       filePath,
@@ -168,34 +175,36 @@ export class AstroneerRouter {
     };
   }
 
-  async match(method: string, pathname: string): Promise<Route | null> {
+  async getRoutesManifest(): Promise<RoutesManifest> {
     const routesFile = path.resolve(
       ASTRONEER_DIST_FOLDER,
       ROUTES_MANIFEST_FILE,
     );
 
-    const routes: RoutesManifest = await import(routesFile);
+    return await import(routesFile);
+  }
 
-    const routesList = routes.staticRoutes?.concat(routes.dynamicRoutes || []);
+  async match(method: string, pathname: string): Promise<Route | null> {
+    const manifest = await this.getRoutesManifest();
+    const routesList = manifest.staticRoutes?.concat(
+      manifest.dynamicRoutes || [],
+    );
 
-    if (!routesList) {
-      return null;
-    }
+    if (!routesList) return null;
 
     const route = routesList.find(
       (route) =>
         route.method === method && new RegExp(route.regex).test(pathname),
     );
 
-    if (!route) {
-      throw new NotFoundError(`Route not found for ${method} ${pathname}`);
-    }
+    if (!route) return null;
 
     const params = pathname.match(new RegExp(route.regex))?.slice(1);
+    const handler = await this.getHandler(route);
 
     return {
       method: route.method as HttpServerMethods,
-      handler: (await import(route.filePath))[route.method],
+      handler,
       middlewares: (await import(route.filePath)).middlewares,
       params: route.params
         ? Object.fromEntries(
@@ -206,6 +215,11 @@ export class AstroneerRouter {
           )
         : {},
     };
+  }
+
+  async getHandler(route: PreloadedRoute): Promise<RouteHandler | undefined> {
+    const module = await importRouteModule(route.filePath);
+    return module[route.method];
   }
 
   getOutputFilePath(filePath: string): string {
