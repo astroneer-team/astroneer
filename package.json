@@ -1,5 +1,5 @@
 {
-  "name": "astroneer",
+  "name": "astroneer-project",
   "version": "0.0.0",
   "description": "A modern, lightweight, and scalable Node.js framework for building server-side applications.",
   "main": "index.js",
