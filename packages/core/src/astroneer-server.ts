@@ -1,6 +1,9 @@
 import { IncomingMessage, Server, ServerResponse } from 'http';
+import path from 'path';
+import { rimraf } from 'rimraf';
 import { UrlWithParsedQuery } from 'url';
 import { AstroneerRouter } from './astroneer-router';
+import { ASTRONEER_DIST_FOLDER } from './constants';
 
 export type AstroneerServerOptions = {
   devmode: boolean;
@@ -48,6 +51,7 @@ export class AstroneerServer {
 
   async prepare() {
     try {
+      await rimraf(path.resolve(process.cwd(), ASTRONEER_DIST_FOLDER));
       await Promise.all(this.modules.map((m) => m.load(this)));
       await this.router.scan();
     } catch (err) {

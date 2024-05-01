@@ -1,13 +1,19 @@
-import fs from 'fs';
+import * as swc from '@swc/core';
 import path from 'path';
-import { dirExists } from './helper/dir-exists';
+import { ASTRONEER_DIST_FOLDER } from './constants';
 
-export function createAstroneerFolderIfNotExists() {
-  const astroneerFolder = path.resolve(process.cwd(), '.astroneer');
+export async function compileTsFile(fileName: string) {
+  const { code } = await swc.transformFile(fileName, {
+    jsc: {
+      parser: {
+        syntax: 'typescript',
+      },
+      target: 'esnext',
+    },
+    module: {
+      type: 'commonjs',
+    },
+  });
 
-  if (!dirExists(astroneerFolder)) {
-    fs.mkdirSync(astroneerFolder);
-  }
-
-  return astroneerFolder;
+  return code;
 }

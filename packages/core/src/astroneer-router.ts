@@ -1,7 +1,11 @@
-import * as swc from '@swc/core';
 import path from 'path';
 import { blue, green } from 'picocolors';
-import { ASTRONEER_DIST_FOLDER, ROUTES_MANIFEST_FILE } from './constants';
+import { compileTsFile } from './compiler';
+import {
+  ASTRONEER_DIST_FOLDER,
+  ROUTES_MANIFEST_FILE,
+  SOURCE_FOLDER,
+} from './constants';
 import { AstroneerErrorCode } from './enums/astroneer-error-code';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { AstroneerError } from './errors';
@@ -63,7 +67,7 @@ export class AstroneerRouter {
     const fileMatches: string[] = [];
     const routesDir = path.resolve(
       process.cwd(),
-      'example',
+      SOURCE_FOLDER,
       this.options.routesDir,
     );
 
@@ -97,17 +101,7 @@ export class AstroneerRouter {
         await Promise.all(
           methodsFn.map(async (method) => {
             if (!this.options.devmode) {
-              const { code } = await swc.transformFile(fileName, {
-                jsc: {
-                  parser: {
-                    syntax: 'typescript',
-                  },
-                  target: 'esnext',
-                },
-                module: {
-                  type: 'commonjs',
-                },
-              });
+              const code = await compileTsFile(fileName);
 
               createFile({
                 filePath: path.resolve(
@@ -117,7 +111,7 @@ export class AstroneerRouter {
                   path.relative(
                     path.resolve(
                       process.cwd(),
-                      'example',
+                      SOURCE_FOLDER,
                       this.options.routesDir,
                     ),
                     fileName.replace(/\.ts$/, '.js'),
@@ -153,7 +147,7 @@ export class AstroneerRouter {
 
   preloadRoute(filePath: string, method: string): PreloadedRoute {
     const relativePath = path.relative(
-      path.resolve(process.cwd(), 'example', this.options.routesDir),
+      path.resolve(process.cwd(), SOURCE_FOLDER, this.options.routesDir),
       filePath,
     );
 
