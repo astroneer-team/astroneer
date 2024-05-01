@@ -3,4 +3,5 @@ node_modules
 dist
 example
 .astroneer
-src
+/src
+

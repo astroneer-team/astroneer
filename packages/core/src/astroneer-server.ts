@@ -65,8 +65,31 @@ export class AstroneerServer {
     res: ServerResponse,
     parsedUrl: UrlWithParsedQuery,
   ) {
-    const route = await this.router.match(req.method!, parsedUrl.pathname!);
+    let body;
 
-    console.log(route);
+    req.on('data', (chunk) => {
+      body = Buffer.from(chunk).toString();
+    });
+
+    req.on('end', async () => {
+      const route = await this.router.match(
+        req.method as any,
+        parsedUrl.pathname!,
+      );
+
+      if (!route) {
+        res.statusCode = 404;
+        res.end('Not Found');
+        return;
+      }
+
+      await new Promise<void>((resolve) => {
+        route.middlewares?.forEach(async (middleware) => {
+          await middleware(req, res, resolve);
+        });
+      });
+
+      await route.handler(req, res);
+    });
   }
 }

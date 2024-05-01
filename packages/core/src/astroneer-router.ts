@@ -9,6 +9,7 @@ import {
 import { AstroneerErrorCode } from './enums/astroneer-error-code';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { AstroneerError } from './errors';
+import { NotFoundError } from './errors/http/not-found-error';
 import { createFile } from './helper/create-file';
 import { dirExists } from './helper/dir-exists';
 import { scan } from './scanner';
@@ -58,6 +59,7 @@ export type RoutesManifest = {
 
 export class AstroneerRouter {
   private options: AstroneerRouterOptions;
+  private routes: PreloadedRoute[] = [];
 
   constructor(options: AstroneerRouterOptions) {
     this.options = options;
@@ -88,8 +90,6 @@ export class AstroneerRouter {
   }
 
   async preloadAllRoutes(routeFiles: string[]): Promise<void> {
-    const routes: PreloadedRoute[] = [];
-
     await Promise.all(
       routeFiles.map(async (fileName) => {
         const routePath = path.resolve(fileName);
@@ -104,31 +104,19 @@ export class AstroneerRouter {
               const code = await compileTsFile(fileName);
 
               createFile({
-                filePath: path.resolve(
-                  ASTRONEER_DIST_FOLDER,
-                  'server',
-                  'routes',
-                  path.relative(
-                    path.resolve(
-                      process.cwd(),
-                      SOURCE_FOLDER,
-                      this.options.routesDir,
-                    ),
-                    fileName.replace(/\.ts$/, '.js'),
-                  ),
-                ),
+                filePath: this.getOutputFilePath(fileName),
                 content: code,
                 overwrite: true,
               });
             }
 
-            routes.push(this.preloadRoute(fileName, method));
+            this.routes.push(this.preloadRoute(fileName, method));
           }),
         );
       }),
     );
 
-    routes.sort((a, b) => a.page.localeCompare(b.page));
+    this.routes.sort((a, b) => a.page.localeCompare(b.page));
 
     const routesFile = path.resolve(
       ASTRONEER_DIST_FOLDER,
@@ -138,8 +126,8 @@ export class AstroneerRouter {
     createFile<RoutesManifest>({
       filePath: routesFile,
       content: {
-        dynamicRoutes: routes.filter((route) => route.page.includes(':')),
-        staticRoutes: routes.filter((route) => !route.page.includes(':')),
+        dynamicRoutes: this.routes.filter((route) => route.page.includes(':')),
+        staticRoutes: this.routes.filter((route) => !route.page.includes(':')),
       },
       overwrite: true,
     });
@@ -194,26 +182,41 @@ export class AstroneerRouter {
       return null;
     }
 
-    for (const route of routesList) {
-      if (route.method === method && new RegExp(route.regex).test(pathname)) {
-        const params = pathname.match(new RegExp(route.regex))?.slice(1);
+    const route = routesList.find(
+      (route) =>
+        route.method === method && new RegExp(route.regex).test(pathname),
+    );
 
-        return {
-          method: route.method as HttpServerMethods,
-          handler: (await import(route.filePath))[route.method],
-          middlewares: (await import(route.filePath)).middlewares,
-          params: route.params
-            ? Object.fromEntries(
-                Object.entries(route.params).map((entry, index) => [
-                  entry[1],
-                  params?.[index] ?? '',
-                ]),
-              )
-            : {},
-        };
-      }
+    if (!route) {
+      throw new NotFoundError(`Route not found for ${method} ${pathname}`);
     }
 
-    return null;
+    const params = pathname.match(new RegExp(route.regex))?.slice(1);
+
+    return {
+      method: route.method as HttpServerMethods,
+      handler: (await import(route.filePath))[route.method],
+      middlewares: (await import(route.filePath)).middlewares,
+      params: route.params
+        ? Object.fromEntries(
+            Object.entries(route.params).map((entry, index) => [
+              entry[1],
+              params?.[index] ?? '',
+            ]),
+          )
+        : {},
+    };
+  }
+
+  getOutputFilePath(filePath: string): string {
+    return path.resolve(
+      ASTRONEER_DIST_FOLDER,
+      'server',
+      'routes',
+      path.relative(
+        path.resolve(process.cwd(), SOURCE_FOLDER, this.options.routesDir),
+        filePath.replace(/\.ts$/, '.js'),
+      ),
+    );
   }
 }
