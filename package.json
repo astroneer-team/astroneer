@@ -1,0 +1,32 @@
+{
+  "name": "astroneer",
+  "version": "0.0.0",
+  "description": "A modern, lightweight, and scalable Node.js framework for building server-side applications.",
+  "main": "index.js",
+  "author": {
+    "name": "Lucas Larangeira",
+    "email": "lukearch@proton.me",
+    "url": "https://lucaslarangeira.com"
+  },
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukearch/astroneer.git"
+  },
+  "packageManager": "npm@10.5.0",
+  "workspaces": [
+    "packages/*",
+    "templates/*"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^9.1.1",
+    "@types/node": "^20.12.7",
+    "eslint": "^8.57.0",
+    "globals": "^15.1.0",
+    "lerna": "^6.4.1",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.8.0"
+  }
+}
