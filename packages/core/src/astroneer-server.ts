@@ -1,10 +1,12 @@
-import { createServer, Server } from 'http';
-import { parse } from 'url';
-import { AstroneerError } from './errors/astroneer-error';
+import { IncomingMessage, Server, ServerResponse } from 'http';
+import { UrlWithParsedQuery } from 'url';
+import { AstroneerRouter } from './astroneer-router';
 
 export type AstroneerServerOptions = {
+  devmode: boolean;
   hostname: string;
   port: number;
+  router: AstroneerRouter;
 };
 
 export type AstroneerModule = {
@@ -21,6 +23,10 @@ export class AstroneerServer {
     this.modules = [];
   }
 
+  get router() {
+    return this.options.router;
+  }
+
   get hostname() {
     return this.options.hostname;
   }
@@ -29,29 +35,34 @@ export class AstroneerServer {
     return this.options.port;
   }
 
-  async prepare() {
-    await Promise.all(this.modules.map((m) => m.load(this)));
+  useModule(module: AstroneerModule) {
+    if (
+      this.modules.every(
+        (m) => Object.getPrototypeOf(m) === Object.getPrototypeOf(module),
+      )
+    )
+      return;
 
-    this.server = createServer(async (req, res) => {
-      try {
-        const parsedUrl = parse(req.url || '', true);
-        const { pathname, query } = parsedUrl;
-      } catch (err) {
-        console.error('Error occurred while handling request:', req.url, err);
-        res.statusCode = 500;
-        res.end();
-      }
-    }).once('error', (err) => {
-      console.error(err);
-      process.exit(1);
-    });
+    this.modules.push(module);
   }
 
-  async start() {
-    if (!this.server) throw new AstroneerError('Server not prepared');
+  async prepare() {
+    try {
+      await Promise.all(this.modules.map((m) => m.load(this)));
+      await this.router.scan();
+    } catch (err) {
+      console.error(err);
+      process.exit(1);
+    }
+  }
 
-    this.server.listen(this.port, this.hostname, () => {
-      console.log(`Server running at http://${this.hostname}:${this.port}/`);
-    });
+  async handle(
+    req: IncomingMessage,
+    res: ServerResponse,
+    parsedUrl: UrlWithParsedQuery,
+  ) {
+    const route = await this.router.match(req.method!, parsedUrl.pathname!);
+
+    console.log(route);
   }
 }

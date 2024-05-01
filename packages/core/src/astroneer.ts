@@ -1,13 +1,26 @@
+import { AstroneerRouter } from './astroneer-router';
 import { AstroneerServer } from './astroneer-server';
 
-const astroneer = ({
-  dev,
+export function astroneer({
+  devmode,
   hostname,
   port,
 }: {
-  dev: boolean;
+  devmode: boolean;
   hostname: string;
   port: number;
-}) => {};
+}) {
+  const router = new AstroneerRouter({
+    devmode,
+    routesDir: 'routes',
+  });
 
-export { astroneer };
+  const app = new AstroneerServer({
+    devmode,
+    hostname,
+    port,
+    router,
+  });
+
+  return app;
+}
