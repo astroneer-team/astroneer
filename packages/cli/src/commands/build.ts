@@ -1,10 +1,10 @@
+import { colorRouteMethod } from '@astroneer/common';
 import { AstroneerRouter, scan, SOURCE_FOLDER } from '@astroneer/core';
 import CliTable3 from 'cli-table3';
 import { Command } from 'commander';
 import path from 'path';
 import picocolors from 'picocolors';
 import { compile } from '../compiler';
-import { colorRouteMethod } from '@astroneer/common';
 import { printVersion } from '../helpers/print-version';
 
 export async function build() {
@@ -22,7 +22,7 @@ export async function build() {
       );
 
       console.log(
-        `   ${picocolors.green('✔')}  ${picocolors.gray(outfile)} ${picocolors.blue(
+        `${picocolors.green('✔')}  ${picocolors.gray(outfile)} ${picocolors.blue(
           `(${new Date().getTime() - timestamp}ms)`,
         )}`,
       );
@@ -34,7 +34,7 @@ export async function build() {
   router.reset();
   const manifest = await router.preloadAllRoutes(routes);
 
-  console.log(picocolors.green('\n✨ Routes'));
+  console.log(picocolors.green('\nRoutes'));
 
   const table = new CliTable3({
     head: [
@@ -60,10 +60,7 @@ export async function build() {
 
   console.log(table.toString());
   console.log(
-    '\n   ' +
-      picocolors.green('✔') +
-      '  ' +
-      picocolors.gray('Astroneer.js app built successfully!'),
+    `\n${picocolors.green('✔')}  ${picocolors.gray('Astroneer.js app built successfully!')}`,
   );
 }
 
