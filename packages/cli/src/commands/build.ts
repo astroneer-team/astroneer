@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import path from 'path';
 import picocolors from 'picocolors';
 import { compile } from '../compiler';
-import { colorRouteMethod } from '@astroneer/core';
+import { colorRouteMethod } from '@astroneer/common';
 import { printVersion } from '../helpers/print-version';
 
 export async function build() {

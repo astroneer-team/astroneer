@@ -1,5 +1,5 @@
 {
-  "name": "@astroneer/core",
+  "name": "@astroneer/common",
   "version": "1.0.0-alpha.0",
   "license": "MIT",
   "publishConfig": {
@@ -17,7 +17,7 @@
     "picocolors": "^1.0.0"
   },
   "repository": {
-    "directory": "packages/core",
+    "directory": "packages/common",
     "type": "git"
   }
 }
