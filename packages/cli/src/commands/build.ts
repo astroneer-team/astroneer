@@ -1,15 +1,15 @@
-import { AstroneerRouter, scan, SOURCE_FOLDER } from '@astroneer/core';
+import { ProtonRouter, scan, SOURCE_FOLDER } from '@protonjs/core';
 import CliTable3 from 'cli-table3';
 import { Command } from 'commander';
 import path from 'path';
 import picocolors from 'picocolors';
 import { compile } from '../compiler';
-import { colorRouteMethod } from '@astroneer/core';
+import { colorRouteMethod } from '@protonjs/core';
 import { printVersion } from '../helpers/print-version';
 
 export async function build() {
   await printVersion();
-  const router = new AstroneerRouter();
+  const router = new ProtonRouter();
   const routes: string[] = [];
 
   await scan({
@@ -63,12 +63,12 @@ export async function build() {
     '\n   ' +
       picocolors.green('✔') +
       '  ' +
-      picocolors.gray('Astroneer app built successfully!'),
+      picocolors.gray('Proton.js app built successfully!'),
   );
 }
 
 const buildCmd = new Command('build')
-  .description('Build Astroneer app for production')
+  .description('Build Proton.js app for production')
   .action(build.bind(null));
 
 export default buildCmd;

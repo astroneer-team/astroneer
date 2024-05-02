@@ -14,10 +14,9 @@ export function logRequest(
     const url = picocolors.cyan(req.url ?? '');
     const status = res.statusCode;
     const statusColor = status >= 400 ? 'red' : 'green';
-    const symbol = status >= 400 ? '✖' : '✔';
 
     console.log(
-      `   ${picocolors[statusColor](symbol)} ${picocolors.gray(new Date().toISOString())} ${method} ${url} ${picocolors[statusColor](status)} ${timestamp}`,
+      `${picocolors.gray(new Date().toISOString())} ${picocolors[statusColor](status)} ${url} ${method} ${timestamp}`,
     );
   });
 }

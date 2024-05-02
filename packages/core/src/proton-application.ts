@@ -1,33 +1,14 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
-import { AstroneerRequest } from './request';
-import { AstroneerResponse } from './response';
-import { AstroneerRouter, Route, RouteMiddleware } from './router';
-
-export type AstroneerServerOptions = {
-  /**
-   * Whether the server is running in development mode.
-   */
-  devmode: boolean;
-  /**
-   * The hostname of the server.
-   */
-  hostname: string;
-  /**
-   * The port of the server.
-   */
-  port: number;
-  /**
-   * The router for the server.
-   */
-  router: AstroneerRouter;
-};
+import { ProtonRequest } from './request';
+import { ProtonResponse } from './response';
+import { ProtonRouter, Route, RouteMiddleware } from './router';
 
 /**
- * The Astroneer application that processes incoming requests.
+ * The Proton.js application that processes incoming requests.
  */
-export class Astroneer {
-  private router: AstroneerRouter = new AstroneerRouter();
+export class ProtonApplication {
+  private router: ProtonRouter = new ProtonRouter();
 
   async handle(
     req: IncomingMessage,
@@ -41,11 +22,15 @@ export class Astroneer {
       return;
     }
 
-    const { astroneerRequest, astroneerResponse } =
-      this.prepareRequestAndResponse(req, res, route, parsedUrl);
+    const { request, response } = this.prepareRequestAndResponse(
+      req,
+      res,
+      route,
+      parsedUrl,
+    );
 
-    await this.runMiddlewares(route, astroneerRequest, astroneerResponse);
-    await this.runHandler(route, astroneerRequest, astroneerResponse);
+    await this.runMiddlewares(route, request, response);
+    await this.runHandler(route, request, response);
   }
 
   private async matchRoute(
@@ -69,22 +54,22 @@ export class Astroneer {
     const query = Object.fromEntries(
       new URLSearchParams(parsedUrl.search ?? '').entries(),
     );
-    const astroneerRequest = new AstroneerRequest(req, route.params, query);
-    const astroneerResponse = new AstroneerResponse(res);
+    const request = new ProtonRequest(req, route.params, query);
+    const response = new ProtonResponse(res);
 
-    return { astroneerRequest, astroneerResponse };
+    return { request, response };
   }
 
   private async runMiddlewares(
     route: Route,
-    astroneerRequest: AstroneerRequest,
-    astroneerResponse: AstroneerResponse,
+    ProtonRequest: ProtonRequest,
+    ProtonResponse: ProtonResponse,
   ) {
     if (route.middlewares?.length) {
       try {
         await Promise.all(
           route.middlewares.map((middleware) =>
-            this.runMiddleware(middleware, astroneerRequest, astroneerResponse),
+            this.runMiddleware(middleware, ProtonRequest, ProtonResponse),
           ),
         );
       } catch (error) {
@@ -96,12 +81,12 @@ export class Astroneer {
 
   private runMiddleware(
     middleware: RouteMiddleware,
-    astroneerRequest: AstroneerRequest,
-    astroneerResponse: AstroneerResponse,
+    ProtonRequest: ProtonRequest,
+    ProtonResponse: ProtonResponse,
   ) {
     return new Promise<void>((resolve, reject) => {
       try {
-        middleware(astroneerRequest, astroneerResponse, resolve);
+        middleware(ProtonRequest, ProtonResponse, resolve);
       } catch (error) {
         reject(error);
       }
@@ -110,11 +95,11 @@ export class Astroneer {
 
   private async runHandler(
     route: Route,
-    astroneerRequest: AstroneerRequest,
-    astroneerResponse: AstroneerResponse,
+    ProtonRequest: ProtonRequest,
+    ProtonResponse: ProtonResponse,
   ) {
     try {
-      await route.handler?.(astroneerRequest, astroneerResponse);
+      await route.handler?.(ProtonRequest, ProtonResponse);
     } catch (error) {
       console.error('Error running handler', error);
       throw error;
