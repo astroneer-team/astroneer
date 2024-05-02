@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
 import { AstroneerRequest } from './astroneer-request';
 import { AstroneerResponse } from './astroneer-response';
-import { AstroneerRouter } from './astroneer-router';
+import { AstroneerRouter, Route, RouteMiddleware } from './astroneer-router';
 
 export type AstroneerServerOptions = {
   /**
@@ -39,7 +39,7 @@ export class Astroneer {
   /**
    *  The router for the server.
    */
-  get router() {
+  private get router() {
     return this.options.router;
   }
 
@@ -57,52 +57,96 @@ export class Astroneer {
     return this.options.port;
   }
 
-  /**
-   * Process an incoming request.
-   * @param req The incoming request.
-   * @param res The server response.
-   * @param parsedUrl The parsed URL of the request.
-   * @returns A promise that resolves when the request is handled.
-   */
   async handle(
     req: IncomingMessage,
     res: ServerResponse,
     parsedUrl: UrlWithParsedQuery,
   ) {
-    // Match the route for the request.
-    const route = await this.router.match(
-      req.method as any,
-      parsedUrl.pathname!,
-    );
+    const route = await this.matchRoute(req, parsedUrl);
 
-    // If no route is found, return a 404 response.
     if (!route?.handler) {
-      res.statusCode = 404;
-      res.end('Not Found');
+      this.sendNotFound(res);
       return;
     }
 
+    const { astroneerRequest, astroneerResponse } =
+      this.prepareRequestAndResponse(req, res, route, parsedUrl);
+
+    await this.runMiddlewares(route, astroneerRequest, astroneerResponse);
+    await this.runHandler(route, astroneerRequest, astroneerResponse);
+  }
+
+  private async matchRoute(
+    req: IncomingMessage,
+    parsedUrl: UrlWithParsedQuery,
+  ) {
+    return await this.router.match(req.method as any, parsedUrl.pathname!);
+  }
+
+  private sendNotFound(res: ServerResponse) {
+    res.statusCode = 404;
+    res.end('Not Found');
+  }
+
+  private prepareRequestAndResponse(
+    req: IncomingMessage,
+    res: ServerResponse,
+    route: Route,
+    parsedUrl: UrlWithParsedQuery,
+  ) {
     const query = Object.fromEntries(
       new URLSearchParams(parsedUrl.search ?? '').entries(),
     );
-
     const astroneerRequest = new AstroneerRequest(req, route.params, query);
     const astroneerResponse = new AstroneerResponse(res);
 
-    // Run the route's middlewares before the handler.
-    if (route.middlewares?.length) {
-      await Promise.all([
-        route.middlewares.map(
-          (middleware) =>
-            new Promise<void>((resolve) => {
-              middleware(astroneerRequest, astroneerResponse, resolve);
-            }),
-        ),
-      ]);
-    }
+    return { astroneerRequest, astroneerResponse };
+  }
 
-    // Run the route's handler.
-    await route.handler?.(astroneerRequest, astroneerResponse);
+  private async runMiddlewares(
+    route: Route,
+    astroneerRequest: AstroneerRequest,
+    astroneerResponse: AstroneerResponse,
+  ) {
+    if (route.middlewares?.length) {
+      try {
+        await Promise.all(
+          route.middlewares.map((middleware) =>
+            this.runMiddleware(middleware, astroneerRequest, astroneerResponse),
+          ),
+        );
+      } catch (error) {
+        console.error('Error running middlewares', error);
+        throw error;
+      }
+    }
+  }
+
+  private runMiddleware(
+    middleware: RouteMiddleware,
+    astroneerRequest: AstroneerRequest,
+    astroneerResponse: AstroneerResponse,
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      try {
+        middleware(astroneerRequest, astroneerResponse, resolve);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  private async runHandler(
+    route: Route,
+    astroneerRequest: AstroneerRequest,
+    astroneerResponse: AstroneerResponse,
+  ) {
+    try {
+      await route.handler?.(astroneerRequest, astroneerResponse);
+    } catch (error) {
+      console.error('Error running handler', error);
+      throw error;
+    }
   }
 }
 
@@ -118,12 +162,7 @@ export function astroneer({
   hostname: string;
   port: number;
 }) {
-  const app = new Astroneer({
-    devmode,
-    hostname,
-    port,
-    router: new AstroneerRouter(),
-  });
-
+  const router = new AstroneerRouter();
+  const app = new Astroneer({ devmode, hostname, port, router });
   return app;
 }

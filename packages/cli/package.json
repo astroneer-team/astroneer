@@ -22,6 +22,7 @@
     "esbuild": "^0.20.2",
     "picocolors": "^1.0.0",
     "prompts": "^2.4.2",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2"
   }
 }

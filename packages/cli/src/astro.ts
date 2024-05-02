@@ -2,6 +2,8 @@
 
 import { Command } from 'commander';
 import buildCmd from './commands/build';
+import startCmd from './commands/start';
+import devCmd from './commands/dev';
 
 async function astro() {
   const pkg = await import('../package.json');
@@ -10,6 +12,8 @@ async function astro() {
     .description(pkg.description)
     .version(pkg.version)
     .addCommand(buildCmd)
+    .addCommand(startCmd)
+    .addCommand(devCmd)
     .parse(process.argv);
 }
 
