@@ -1,7 +1,7 @@
 import { statSync } from 'fs';
 import path from 'path';
-import { AstroneerRequest } from './astroneer-request';
-import { AstroneerResponse } from './astroneer-response';
+import { AstroneerRequest } from './request';
+import { AstroneerResponse } from './response';
 import { ASTRONEER_DIST_FOLDER, ROUTES_MANIFEST_FILE } from './constants';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { createFile } from './helpers/create-file';
@@ -177,7 +177,7 @@ export class AstroneerRouter {
 
   async getRoutesManifest(): Promise<RoutesManifest> {
     const safeRoutesFile = path.normalize(
-      path.join(ASTRONEER_DIST_FOLDER, ROUTES_MANIFEST_FILE),
+      path.join(process.cwd(), ASTRONEER_DIST_FOLDER, ROUTES_MANIFEST_FILE),
     );
 
     return await import(safeRoutesFile);

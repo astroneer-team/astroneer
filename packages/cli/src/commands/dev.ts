@@ -41,21 +41,24 @@ const devCmd = new Command('dev')
         options.devmode,
       );
 
-      watch(path.resolve(process.cwd(), SOURCE_FOLDER, '**/*.ts')).on(
-        'all',
-        async () => {
-          console.clear();
-          server.close();
-          await build();
-          delete require.cache[require.resolve(serverModulePath)];
-          const newServerModule = await import(serverModulePath);
-          server = await newServerModule.default(
-            Number(options.port),
-            options.hostname,
-            options.devmode,
-          );
-        },
-      );
+      watch(path.resolve(process.cwd(), SOURCE_FOLDER, '**/*.ts'), {
+        ignoreInitial: true,
+        ignored: [
+          path.resolve(process.cwd(), ASTRONEER_DIST_FOLDER),
+          path.resolve(process.cwd(), 'node_modules'),
+        ],
+      }).on('all', async (e) => {
+        console.clear();
+        server.close();
+        await build();
+        delete require.cache[require.resolve(serverModulePath)];
+        const newServerModule = await import(serverModulePath);
+        server = await newServerModule.default(
+          Number(options.port),
+          options.hostname,
+          options.devmode,
+        );
+      });
     },
   );
 

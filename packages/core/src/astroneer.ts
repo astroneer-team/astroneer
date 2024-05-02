@@ -1,8 +1,8 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
-import { AstroneerRequest } from './astroneer-request';
-import { AstroneerResponse } from './astroneer-response';
-import { AstroneerRouter, Route, RouteMiddleware } from './astroneer-router';
+import { AstroneerRequest } from './request';
+import { AstroneerResponse } from './response';
+import { AstroneerRouter, Route, RouteMiddleware } from './router';
 
 export type AstroneerServerOptions = {
   /**
