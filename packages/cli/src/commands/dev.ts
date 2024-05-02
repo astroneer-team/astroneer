@@ -19,46 +19,42 @@ const devCmd = new Command('dev')
     'Hostname to run the server on',
     'localhost',
   )
-  .option('-d, --devmode', 'Enable development mode', true)
-  .action(
-    async (options: { port: string; hostname: string; devmode: boolean }) => {
-      console.clear();
-      await build();
-      const serverModule = await import(SERVER_MODULE_PATH);
+  .action(async (options: { port: string; hostname: string }) => {
+    let server: Server;
 
-      if (!isAsyncFunction(serverModule.default)) {
+    const start = async () => {
+      process.env.NODE_ENV = 'development';
+      console.clear();
+      server?.close();
+      await build();
+      delete require.cache[require.resolve(SERVER_MODULE_PATH)];
+      const newServerModule = await import(SERVER_MODULE_PATH);
+
+      if (!isAsyncFunction(newServerModule.default)) {
         console.error(
           picocolors.red(
-            'Server module must export default an async function that returns a `http.Server` instance',
+            '   ✖  Server module must export default an async function that returns a `http.Server` instance',
           ),
         );
+        return;
       }
 
-      let server: Server = await serverModule.default(
+      server = await newServerModule.default(
         Number(options.port),
         options.hostname,
-        options.devmode,
+        true,
       );
+    };
 
-      watch(path.join(SOURCE_FOLDER, '**/*.ts'), {
-        ignoreInitial: true,
-        ignored: [
-          path.resolve(process.cwd(), ASTRONEER_DIST_FOLDER),
-          path.resolve(process.cwd(), 'node_modules'),
-        ],
-      }).on('all', async (e) => {
-        console.clear();
-        server.close();
-        await build();
-        delete require.cache[require.resolve(SERVER_MODULE_PATH)];
-        const newServerModule = await import(SERVER_MODULE_PATH);
-        server = await newServerModule.default(
-          Number(options.port),
-          options.hostname,
-          options.devmode,
-        );
-      });
-    },
-  );
+    watch(path.join(SOURCE_FOLDER, '**/*.ts'), {
+      ignoreInitial: true,
+      ignored: [
+        path.resolve(process.cwd(), ASTRONEER_DIST_FOLDER),
+        path.resolve(process.cwd(), 'node_modules'),
+      ],
+    }).on('all', () => start());
+
+    await start();
+  });
 
 export default devCmd;
