@@ -8,7 +8,7 @@ import startCmd from './commands/start';
 async function astro() {
   const pkg = await import('../package.json');
 
-  new Command('astro')
+  new Command('astroneer')
     .description(pkg.description)
     .version(pkg.version)
     .addCommand(buildCmd)
