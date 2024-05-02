@@ -172,10 +172,7 @@ const newCmd = new Command('new')
     mkdirSync(rootDir, { recursive: true });
     await copyDir(answers.template.path, rootDir);
 
-    const pkg = await fs.readFileSync(
-      path.resolve(rootDir, 'package.json'),
-      'utf-8',
-    );
+    const pkg = await import('../../package.json');
   });
 
 export default newCmd;

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 import { Command } from 'commander';
 import buildCmd from './commands/build';
 import devCmd from './commands/dev';
