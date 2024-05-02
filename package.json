@@ -36,8 +36,6 @@
     "typescript-eslint": "^7.8.0"
   },
   "scripts": {
-    "format": "prettier --write .",
-    "example": "lerna run build && ts-node src/server.ts",
-    "build": "astro build"
+    "format": "prettier --write ."
   }
 }
