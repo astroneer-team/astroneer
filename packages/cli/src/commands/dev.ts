@@ -1,4 +1,8 @@
-import { ASTRONEER_DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
+import {
+  ASTRONEER_DIST_FOLDER,
+  SERVER_MODULE_PATH,
+  SOURCE_FOLDER,
+} from '@astroneer/core';
 import { watch } from 'chokidar';
 import { Command } from 'commander';
 import { Server } from 'http';
@@ -20,12 +24,7 @@ const devCmd = new Command('dev')
     async (options: { port: string; hostname: string; devmode: boolean }) => {
       console.clear();
       await build();
-      let serverModulePath = path.resolve(
-        process.cwd(),
-        ASTRONEER_DIST_FOLDER,
-        'server.js',
-      );
-      const serverModule = await import(serverModulePath);
+      const serverModule = await import(SERVER_MODULE_PATH);
 
       if (!isAsyncFunction(serverModule.default)) {
         console.error(
@@ -41,7 +40,7 @@ const devCmd = new Command('dev')
         options.devmode,
       );
 
-      watch(path.resolve(process.cwd(), SOURCE_FOLDER, '**/*.ts'), {
+      watch(path.join(SOURCE_FOLDER, '**/*.ts'), {
         ignoreInitial: true,
         ignored: [
           path.resolve(process.cwd(), ASTRONEER_DIST_FOLDER),
@@ -51,8 +50,8 @@ const devCmd = new Command('dev')
         console.clear();
         server.close();
         await build();
-        delete require.cache[require.resolve(serverModulePath)];
-        const newServerModule = await import(serverModulePath);
+        delete require.cache[require.resolve(SERVER_MODULE_PATH)];
+        const newServerModule = await import(SERVER_MODULE_PATH);
         server = await newServerModule.default(
           Number(options.port),
           options.hostname,

@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import path from 'path';
 import picocolors from 'picocolors';
 import { compile } from '../compiler';
-import { colorRouteMethod } from '../helpers/color-route-method';
+import { colorRouteMethod } from '@astroneer/core';
 import { printVersion } from '../helpers/print-version';
 
 export async function build() {
@@ -13,7 +13,7 @@ export async function build() {
   const routes: string[] = [];
 
   await scan({
-    rootDir: path.resolve(process.cwd(), SOURCE_FOLDER),
+    rootDir: SOURCE_FOLDER,
     include: [/\/routes\/.*\.(js|ts)?$/, /\/server\.(js|ts)?$/],
     async onFile(file) {
       const timestamp = new Date().getTime();

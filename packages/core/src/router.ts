@@ -1,10 +1,10 @@
 import { statSync } from 'fs';
 import path from 'path';
-import { AstroneerRequest } from './request';
-import { AstroneerResponse } from './response';
-import { ASTRONEER_DIST_FOLDER, ROUTES_MANIFEST_FILE } from './constants';
+import { ROUTES_MANIFEST_FILE } from './constants';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { createFile } from './helpers/create-file';
+import { AstroneerRequest } from './request';
+import { AstroneerResponse } from './response';
 
 export type Route = {
   method: string;
@@ -120,13 +120,8 @@ export class AstroneerRouter {
   }
 
   saveRoutesManifest(manifest: RoutesManifest): void {
-    const routesFile = path.resolve(
-      ASTRONEER_DIST_FOLDER,
-      ROUTES_MANIFEST_FILE,
-    );
-
     createFile<RoutesManifest>({
-      filePath: routesFile,
+      filePath: ROUTES_MANIFEST_FILE,
       content: manifest,
       overwrite: true,
     });
@@ -176,9 +171,7 @@ export class AstroneerRouter {
   }
 
   async getRoutesManifest(): Promise<RoutesManifest> {
-    const safeRoutesFile = path.normalize(
-      path.join(process.cwd(), ASTRONEER_DIST_FOLDER, ROUTES_MANIFEST_FILE),
-    );
+    const safeRoutesFile = path.normalize(ROUTES_MANIFEST_FILE);
 
     return await import(safeRoutesFile);
   }
