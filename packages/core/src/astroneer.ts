@@ -27,35 +27,7 @@ export type AstroneerServerOptions = {
  * The Astroneer application that processes incoming requests.
  */
 export class Astroneer {
-  /**
-   * The options for the server.
-   */
-  private options: AstroneerServerOptions;
-
-  constructor(options: AstroneerServerOptions) {
-    this.options = options;
-  }
-
-  /**
-   *  The router for the server.
-   */
-  private get router() {
-    return this.options.router;
-  }
-
-  /**
-   * The hostname of the server.
-   */
-  get hostname() {
-    return this.options.hostname;
-  }
-
-  /**
-   * The port of the server.
-   */
-  get port() {
-    return this.options.port;
-  }
+  private router: AstroneerRouter = new AstroneerRouter();
 
   async handle(
     req: IncomingMessage,
@@ -148,21 +120,4 @@ export class Astroneer {
       throw error;
     }
   }
-}
-
-/**
- * Returns an Astroneer app.
- */
-export function astroneer({
-  devmode,
-  hostname,
-  port,
-}: {
-  devmode: boolean;
-  hostname: string;
-  port: number;
-}) {
-  const router = new AstroneerRouter();
-  const app = new Astroneer({ devmode, hostname, port, router });
-  return app;
 }

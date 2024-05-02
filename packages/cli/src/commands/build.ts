@@ -62,7 +62,7 @@ export async function build() {
     '\n   ' +
       picocolors.green('✔') +
       '  ' +
-      picocolors.gray('Astroneer app built successfully!\n'),
+      picocolors.gray('Astroneer app built successfully!'),
   );
 }
 
