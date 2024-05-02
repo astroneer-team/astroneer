@@ -1,8 +1,8 @@
 import {
-  PROTON_DIST_FOLDER,
+  DIST_FOLDER,
   SERVER_MODULE_PATH,
   SOURCE_FOLDER,
-} from '@protonjs/core';
+} from '@astroneer/core';
 import { watch } from 'chokidar';
 import { Command } from 'commander';
 import { Server } from 'http';
@@ -12,7 +12,7 @@ import { isAsyncFunction } from 'util/types';
 import { build } from './build';
 
 const devCmd = new Command('dev')
-  .description('Start Proton.js app in development mode with hot reloading')
+  .description('Start Astroneer.js app in development mode with hot reloading')
   .option('-p, --port <port>', 'Port to run the server on', '3000')
   .option(
     '-h, --hostname <hostname>',
@@ -49,7 +49,7 @@ const devCmd = new Command('dev')
     watch(path.join(SOURCE_FOLDER, '**/*.ts'), {
       ignoreInitial: true,
       ignored: [
-        path.resolve(process.cwd(), PROTON_DIST_FOLDER),
+        path.resolve(process.cwd(), DIST_FOLDER),
         path.resolve(process.cwd(), 'node_modules'),
       ],
     }).on('all', () => start());

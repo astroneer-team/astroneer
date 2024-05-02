@@ -1,5 +1,5 @@
 {
-  "name": "@protonjs/source",
+  "name": "@astroneer/source",
   "version": "0.0.0",
   "description": "A modern, lightweight, and scalable Node.js framework for building server-side applications.",
   "main": "index.js",
@@ -12,7 +12,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/lukearch/proton.git"
+    "url": "https://github.com/lukearch/astroneer.git"
   },
   "packageManager": "npm@10.5.0",
   "workspaces": [

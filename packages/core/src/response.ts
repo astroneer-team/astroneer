@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 
-export class ProtonResponse {
+export class Response {
   /**
    * The primitive response instance.
    */

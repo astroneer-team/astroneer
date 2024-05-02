@@ -1,4 +1,4 @@
-import { SERVER_MODULE_PATH } from '@protonjs/core';
+import { SERVER_MODULE_PATH } from '@astroneer/core';
 import { Command } from 'commander';
 import path from 'path';
 import picocolors from 'picocolors';
@@ -6,7 +6,7 @@ import { isAsyncFunction } from 'util/types';
 import { build } from './build';
 
 const startCmd = new Command('start')
-  .description('Start Proton.js app')
+  .description('Start Astroneer.js app')
   .option('-p, --port <port>', 'Port to run the server on', '3000')
   .option(
     '-h, --hostname <hostname>',

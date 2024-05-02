@@ -1,4 +1,4 @@
-export * from './proton-application';
+export * from './astroneer';
 export * from './constants';
 export * from './errors';
 export * from './helpers';

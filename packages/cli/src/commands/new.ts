@@ -15,7 +15,7 @@ import { extract, list } from 'tar';
 import { promisify } from 'util';
 import { showSpinner } from '../helpers/show-spinner';
 const OWNER = 'lukearch';
-const REPO = 'proton';
+const REPO = 'astroneer';
 const REF = 'master';
 const TARGET_DIR_NAME = 'templates';
 const TAR_FILE_NAME = 'templates.tar.gz';
@@ -117,10 +117,10 @@ export async function copyDir(srcDir: string, destDir: string) {
 }
 
 const newCmd = new Command('new')
-  .description('Create a new Proton.js project')
+  .description('Create a new Astroneer.js project')
   .argument('<name>', 'Name of the project')
   .action(async (name) => {
-    const spinner = showSpinner('Downloading Proton.js templates...');
+    const spinner = showSpinner('Downloading Astroneer.js templates...');
     const templates = await downloadTemplates().finally(() => spinner.stop());
 
     const answers = await prompts(

@@ -1,13 +1,13 @@
 {
-  "name": "@protonjs/cli",
-  "description": "A CLI for Protonjs",
+  "name": "@astroneer/cli",
+  "description": "A CLI for Astroneer.js",
   "version": "1.0.0-alpha.0",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "bin": {
-    "proton": "dist/cli.js"
+    "astroneer": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc"
@@ -16,7 +16,7 @@
     "dist"
   ],
   "dependencies": {
-    "@protonjs/core": "^1.0.0-alpha.0",
+    "@astroneer/core": "^1.0.0-alpha.0",
     "@octokit/rest": "^20.1.0",
     "chokidar": "^3.6.0",
     "cli-table3": "^0.6.4",

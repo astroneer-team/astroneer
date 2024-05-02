@@ -1,14 +1,14 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
-import { ProtonRequest } from './request';
-import { ProtonResponse } from './response';
-import { ProtonRouter, Route, RouteMiddleware } from './router';
+import { Request } from './request';
+import { Response } from './response';
+import { AstroneerRouter, Route, RouteMiddleware } from './router';
 
 /**
- * The Proton.js application that processes incoming requests.
+ * The Astroneer.js application that processes incoming requests.
  */
-export class ProtonApplication {
-  private router: ProtonRouter = new ProtonRouter();
+export class Astroneer {
+  private router: AstroneerRouter = new AstroneerRouter();
 
   async handle(
     req: IncomingMessage,
@@ -54,22 +54,22 @@ export class ProtonApplication {
     const query = Object.fromEntries(
       new URLSearchParams(parsedUrl.search ?? '').entries(),
     );
-    const request = new ProtonRequest(req, route.params, query);
-    const response = new ProtonResponse(res);
+    const request = new Request(req, route.params, query);
+    const response = new Response(res);
 
     return { request, response };
   }
 
   private async runMiddlewares(
     route: Route,
-    ProtonRequest: ProtonRequest,
-    ProtonResponse: ProtonResponse,
+    Request: Request,
+    Response: Response,
   ) {
     if (route.middlewares?.length) {
       try {
         await Promise.all(
           route.middlewares.map((middleware) =>
-            this.runMiddleware(middleware, ProtonRequest, ProtonResponse),
+            this.runMiddleware(middleware, Request, Response),
           ),
         );
       } catch (error) {
@@ -81,12 +81,12 @@ export class ProtonApplication {
 
   private runMiddleware(
     middleware: RouteMiddleware,
-    ProtonRequest: ProtonRequest,
-    ProtonResponse: ProtonResponse,
+    Request: Request,
+    Response: Response,
   ) {
     return new Promise<void>((resolve, reject) => {
       try {
-        middleware(ProtonRequest, ProtonResponse, resolve);
+        middleware(Request, Response, resolve);
       } catch (error) {
         reject(error);
       }
@@ -95,11 +95,11 @@ export class ProtonApplication {
 
   private async runHandler(
     route: Route,
-    ProtonRequest: ProtonRequest,
-    ProtonResponse: ProtonResponse,
+    Request: Request,
+    Response: Response,
   ) {
     try {
-      await route.handler?.(ProtonRequest, ProtonResponse);
+      await route.handler?.(Request, Response);
     } catch (error) {
       console.error('Error running handler', error);
       throw error;

@@ -1,6 +1,6 @@
 import { IncomingMessage } from 'http';
 
-export class ProtonRequest {
+export class Request {
   /**
    * The primitive request instance.
    */

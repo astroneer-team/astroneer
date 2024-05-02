@@ -3,8 +3,8 @@ import path from 'path';
 import { ROUTES_MANIFEST_FILE } from './constants';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { createFile } from './helpers/create-file';
-import { ProtonRequest } from './request';
-import { ProtonResponse } from './response';
+import { Request } from './request';
+import { Response } from './response';
 
 export type Route = {
   method: string;
@@ -16,17 +16,17 @@ export type Route = {
 };
 
 export type RouteHandler = (
-  req: ProtonRequest,
-  res: ProtonResponse,
+  req: Request,
+  res: Response,
 ) => void | Promise<void>;
 
 export type RouteMiddleware = (
-  req: ProtonRequest,
-  res: ProtonResponse,
+  req: Request,
+  res: Response,
   next: () => void,
 ) => void | Promise<void>;
 
-export type ProtonRouterOptions = {
+export type AstroneerRouterOptions = {
   devmode: boolean;
   routesDir: string;
 };
@@ -58,16 +58,16 @@ async function importRouteModule(filePath: string): Promise<RouteModule> {
   return await import(filePath);
 }
 
-export class ProtonRouter {
-  private static staticInstanceRef: ProtonRouter;
+export class AstroneerRouter {
+  private static staticInstanceRef: AstroneerRouter;
   private routes: PreloadedRoute[] = [];
 
   constructor() {
-    if (ProtonRouter.staticInstanceRef) {
-      return ProtonRouter.staticInstanceRef;
+    if (AstroneerRouter.staticInstanceRef) {
+      return AstroneerRouter.staticInstanceRef;
     }
 
-    ProtonRouter.staticInstanceRef = this;
+    AstroneerRouter.staticInstanceRef = this;
   }
 
   async preloadAllRoutes(routeFiles: string[]): Promise<RoutesManifest> {

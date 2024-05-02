@@ -1,5 +1,5 @@
 {
-  "name": "@protonjs/core",
+  "name": "@astroneer/core",
   "version": "1.0.0-alpha.0",
   "license": "MIT",
   "publishConfig": {
