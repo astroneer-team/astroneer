@@ -1,11 +1,8 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import path from 'path';
-import { rimraf } from 'rimraf';
 import { UrlWithParsedQuery } from 'url';
 import { AstroneerRequest } from './astroneer-request';
 import { AstroneerResponse } from './astroneer-response';
 import { AstroneerRouter } from './astroneer-router';
-import { ASTRONEER_DIST_FOLDER } from './constants';
 
 export type AstroneerServerOptions = {
   /**
@@ -61,22 +58,6 @@ export class Astroneer {
   }
 
   /**
-   * Prepare the server by scanning the routes directory.
-   * This method should be called before starting the server.
-   */
-  async prepare() {
-    try {
-      // Clear the dist folder and scan the routes directory.
-      await rimraf(path.resolve(process.cwd(), ASTRONEER_DIST_FOLDER));
-      // Scan the routes directory.
-      await this.router.scan();
-    } catch (err) {
-      console.error(err);
-      process.exit(1);
-    }
-  }
-
-  /**
    * Process an incoming request.
    * @param req The incoming request.
    * @param res The server response.
@@ -101,7 +82,11 @@ export class Astroneer {
       return;
     }
 
-    const astroneerRequest = new AstroneerRequest(req);
+    const query = Object.fromEntries(
+      new URLSearchParams(parsedUrl.search ?? '').entries(),
+    );
+
+    const astroneerRequest = new AstroneerRequest(req, route.params, query);
     const astroneerResponse = new AstroneerResponse(res);
 
     // Run the route's middlewares before the handler.
@@ -133,16 +118,11 @@ export function astroneer({
   hostname: string;
   port: number;
 }) {
-  const router = new AstroneerRouter({
-    devmode,
-    routesDir: 'routes',
-  });
-
   const app = new Astroneer({
     devmode,
     hostname,
     port,
-    router,
+    router: new AstroneerRouter(),
   });
 
   return app;

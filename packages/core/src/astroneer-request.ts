@@ -6,7 +6,17 @@ export class AstroneerRequest {
    */
   private primitiveRequestInstance: IncomingMessage;
 
-  constructor(req: IncomingMessage) {
+  constructor(
+    req: IncomingMessage,
+    /**
+     * The parameters of the request.
+     */
+    readonly params: { [key: string]: string } = {},
+    /**
+     * The query of the request.
+     */
+    readonly query: { [key: string]: string } = {},
+  ) {
     this.primitiveRequestInstance = req;
   }
 

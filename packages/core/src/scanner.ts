@@ -18,7 +18,7 @@ export type ScanOptions = {
    * A callback that is called when a file is found.
    * @param path The path of the file that was found.
    */
-  onFile: (path: string) => void;
+  onFile: (path: string) => void | Promise<void>;
 };
 
 /**
@@ -52,7 +52,7 @@ export async function scan(options: ScanOptions) {
       } else {
         // Call the callback for included files.
         if (include?.some((re) => re.test(filePath))) {
-          onFile(filePath);
+          await onFile(filePath);
         }
       }
     }
