@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import cp from 'child_process';
 import { Command } from 'commander';
 import fs, {
   cpSync,
@@ -9,7 +10,9 @@ import fs, {
   rmSync,
 } from 'fs';
 import path, { resolve } from 'path';
+import picocolors from 'picocolors';
 import prompts from 'prompts';
+import simpleGit from 'simple-git';
 import { pipeline, Readable } from 'stream';
 import { extract, list } from 'tar';
 import { promisify } from 'util';
@@ -172,7 +175,46 @@ const newCmd = new Command('new')
     mkdirSync(rootDir, { recursive: true });
     await copyDir(answers.template.path, rootDir);
 
-    const pkg = await import('../../package.json');
+    if (answers.git) {
+      const git = simpleGit(rootDir);
+      await git.init();
+      await git.add('.');
+      await git.commit('Initial commit');
+    }
+
+    if (answers.install) {
+      const spinner = showSpinner('Installing dependencies...');
+      const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm';
+
+      await new Promise<void>((resolve, reject) => {
+        const child = cp.spawn(cmd, ['install'], {
+          cwd: rootDir,
+          stdio: 'inherit',
+        });
+
+        child.on('error', reject);
+        child.on('exit', (code) => {
+          if (code === 0) {
+            resolve();
+          } else {
+            reject(
+              new Error(`Failed to install dependencies with code ${code}`),
+            );
+          }
+        });
+      }).finally(() => spinner.stop());
+    }
+
+    console.log(picocolors.green(`Project ${name} created successfully!`));
+    console.log(picocolors.gray('Get started with the following commands:'));
+    console.log(picocolors.gray(`cd ${name}`));
+    console.log(
+      picocolors.gray(
+        `${answers.packageManager === 'npm' ? 'npm run' : 'yarn'} dev`,
+      ),
+    );
+    console.log();
+    console.log(picocolors.green('Good luck, astronaut! 🚀'));
   });
 
 export default newCmd;
