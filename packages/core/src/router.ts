@@ -59,16 +59,7 @@ async function importRouteModule(filePath: string): Promise<RouteModule> {
 }
 
 export class AstroneerRouter {
-  private static staticInstanceRef: AstroneerRouter;
   private routes: PreloadedRoute[] = [];
-
-  constructor() {
-    if (AstroneerRouter.staticInstanceRef) {
-      return AstroneerRouter.staticInstanceRef;
-    }
-
-    AstroneerRouter.staticInstanceRef = this;
-  }
 
   async preloadAllRoutes(routeFiles: string[]): Promise<RoutesManifest> {
     const safeRouteFiles = this.normalizeFileNames(routeFiles);

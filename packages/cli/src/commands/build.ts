@@ -1,9 +1,15 @@
 import { colorRouteMethod } from '@astroneer/common';
-import { AstroneerRouter, scan, SOURCE_FOLDER } from '@astroneer/core';
+import {
+  AstroneerRouter,
+  DIST_FOLDER,
+  scan,
+  SOURCE_FOLDER,
+} from '@astroneer/core';
 import CliTable3 from 'cli-table3';
 import { Command } from 'commander';
 import path from 'path';
 import picocolors from 'picocolors';
+import { rimraf } from 'rimraf';
 import { compile } from '../compiler';
 import { printVersion } from '../helpers/print-version';
 
@@ -12,6 +18,7 @@ export async function build() {
   const router = new AstroneerRouter();
   const routes: string[] = [];
 
+  await rimraf(DIST_FOLDER);
   await scan({
     rootDir: SOURCE_FOLDER,
     include: [/\/routes\/.*\.(js|ts)?$/, /\/server\.(js|ts)?$/],
