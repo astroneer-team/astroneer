@@ -27,7 +27,8 @@
     "prompts": "^2.4.2",
     "rimraf": "^5.0.5",
     "simple-git": "^3.24.0",
-    "tar": "^7.0.1"
+    "tar": "^7.0.1",
+    "tslib": "^2.6.2"
   },
   "repository": {
     "directory": "packages/cli",
