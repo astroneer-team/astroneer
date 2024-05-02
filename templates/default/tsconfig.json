@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "removeComments": true,
+    "useUnknownInCatchVariables": false,
+    "types": ["node"]
+  }
+}
