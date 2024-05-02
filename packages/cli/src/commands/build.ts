@@ -31,6 +31,7 @@ export async function build() {
     },
   });
 
+  router.reset();
   const manifest = await router.preloadAllRoutes(routes);
 
   console.log(picocolors.green('\n✨ Routes'));

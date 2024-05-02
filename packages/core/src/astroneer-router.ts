@@ -90,6 +90,7 @@ export class AstroneerRouter {
     await Promise.all(
       fileNames.map(async (fileName) => {
         const routePath = path.resolve(fileName);
+        delete require.cache[require.resolve(routePath)];
         const routeModule: RouteModule = await importRouteModule(routePath);
 
         const methodsFn = this.extractMethods(routeModule);
@@ -245,5 +246,9 @@ export class AstroneerRouter {
     method: HttpServerMethods,
   ): Promise<RouteHandler> {
     return (await import(route.filePath))[method];
+  }
+
+  reset(): void {
+    this.routes = [];
   }
 }

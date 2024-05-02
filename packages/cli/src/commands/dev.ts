@@ -1,4 +1,5 @@
-import { ASTRONEER_DIST_FOLDER } from '@astroneer/core';
+import { ASTRONEER_DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
+import { watch } from 'chokidar';
 import { Command } from 'commander';
 import { Server } from 'http';
 import path from 'path';
@@ -17,10 +18,14 @@ const devCmd = new Command('dev')
   .option('-d, --devmode', 'Enable development mode', true)
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
+      console.clear();
       await build();
-      const serverModule = await import(
-        path.resolve(process.cwd(), ASTRONEER_DIST_FOLDER, 'server.js')
+      let serverModulePath = path.resolve(
+        process.cwd(),
+        ASTRONEER_DIST_FOLDER,
+        'server.js',
       );
+      const serverModule = await import(serverModulePath);
 
       if (!isAsyncFunction(serverModule.default)) {
         console.error(
@@ -30,24 +35,27 @@ const devCmd = new Command('dev')
         );
       }
 
-      const server: Server = await serverModule.default(
+      let server: Server = await serverModule.default(
         Number(options.port),
         options.hostname,
         options.devmode,
       );
 
-      server.once('error', (err) => {
-        console.error(err);
-        process.exit(1);
-      });
-
-      server.listen(Number(options.port), options.hostname, () => {
-        console.log(
-          picocolors.green(
-            `   ✔  Server listening on http://${options.hostname}:${options.port}\n`,
-          ),
-        );
-      });
+      watch(path.resolve(process.cwd(), SOURCE_FOLDER, '**/*.ts')).on(
+        'all',
+        async () => {
+          console.clear();
+          server.close();
+          await build();
+          delete require.cache[require.resolve(serverModulePath)];
+          const newServerModule = await import(serverModulePath);
+          server = await newServerModule.default(
+            Number(options.port),
+            options.hostname,
+            options.devmode,
+          );
+        },
+      );
     },
   );
 
