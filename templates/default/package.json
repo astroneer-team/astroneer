@@ -1,6 +1,6 @@
 {
   "name": "default",
-  "version": "1.0.2-alpha.0",
+  "version": "1.0.3-alpha.0",
   "private": true,
   "scripts": {
     "dev": "astroneer dev",
@@ -9,9 +9,9 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@astroneer/cli": "^1.0.2-alpha.0",
+    "@astroneer/cli": "^1.0.3-alpha.0",
     "@astroneer/common": "^1.0.1-alpha.0",
-    "@astroneer/core": "^1.0.1-alpha.0"
+    "@astroneer/core": "^1.0.3-alpha.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.8",
