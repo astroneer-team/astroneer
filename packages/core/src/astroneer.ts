@@ -93,11 +93,7 @@ export class Astroneer {
     });
   }
 
-  private async runHandler(
-    route: Route,
-    Request: Request,
-    Response: Response,
-  ) {
+  private async runHandler(route: Route, Request: Request, Response: Response) {
     try {
       await route.handler?.(Request, Response);
     } catch (error) {
