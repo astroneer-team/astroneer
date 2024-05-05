@@ -189,7 +189,6 @@ const newCmd = new Command('new')
       await new Promise<void>((resolve, reject) => {
         const child = cp.spawn(cmd, ['install'], {
           cwd: rootDir,
-          stdio: 'inherit',
         });
 
         child.on('error', reject);
@@ -206,14 +205,6 @@ const newCmd = new Command('new')
     }
 
     console.log(picocolors.green(`Project ${name} created successfully!`));
-    console.log(picocolors.gray('Get started with the following commands:'));
-    console.log(picocolors.gray(`cd ${name}`));
-    console.log(
-      picocolors.gray(
-        `${answers.packageManager === 'npm' ? 'npm run' : 'yarn'} dev`,
-      ),
-    );
-    console.log();
     console.log(picocolors.green('Good luck, astronaut! 🚀'));
   });
 
