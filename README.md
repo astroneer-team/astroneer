@@ -22,7 +22,8 @@
 
   ```ts
   // routes/hello.ts
-  // ...
+
+  ...
 
   export const middlewares = [
     (req: Request, res: Response, next: Function) => {
