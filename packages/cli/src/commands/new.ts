@@ -8,6 +8,7 @@ import fs, {
   mkdirSync,
   readdirSync,
   rmSync,
+  statSync,
 } from 'fs';
 import path, { resolve } from 'path';
 import picocolors from 'picocolors';
@@ -17,8 +18,9 @@ import { pipeline, Readable } from 'stream';
 import { extract, list } from 'tar';
 import { promisify } from 'util';
 import { showSpinner } from '../helpers/show-spinner';
-const OWNER = 'lukearch';
-const REPO = 'astroneer';
+
+const OWNER = 'astroneer-team';
+const REPO = 'astroneer-templates';
 const REF = 'master';
 const TARGET_DIR_NAME = 'templates';
 const TAR_FILE_NAME = 'templates.tar.gz';
@@ -59,11 +61,6 @@ async function extractTarball(
   await extract({
     file: tarPath,
     cwd: rootDir,
-    filter(path, entry) {
-      const newPath = path.split('/').slice(1).join('/');
-      const newEntry = { ...entry, path: newPath };
-      return newEntry.path.split('/')?.[0] === TARGET_DIR_NAME;
-    },
   });
 
   return tmp;
@@ -74,7 +71,7 @@ async function copyTemplates(tmp: string, targetDir: string): Promise<void> {
     rmSync(targetDir, { recursive: true });
   }
 
-  cpSync(resolve(tmp, TARGET_DIR_NAME), targetDir, {
+  cpSync(resolve(tmp), targetDir, {
     recursive: true,
   });
 }
@@ -92,9 +89,15 @@ async function downloadTemplates() {
     rmSync(tarPath);
     rmSync(tmp, { recursive: true });
 
-    return readdirSync(targetDir).map((dir) => ({
-      name: dir,
-      path: resolve(targetDir, dir),
+    const templates = readdirSync(targetDir).filter((dir) => {
+      if (statSync(resolve(targetDir, dir)).isDirectory()) {
+        return true;
+      }
+    });
+
+    return templates.map((template) => ({
+      name: template,
+      path: resolve(targetDir, template),
     }));
   } catch (err) {
     console.error(err);
@@ -187,7 +190,7 @@ const newCmd = new Command('new')
       const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm';
 
       await new Promise<void>((resolve, reject) => {
-        const child = cp.spawn(cmd, ['install'], {
+        const child = cp.exec(`${cmd} install`, {
           cwd: rootDir,
         });
 
@@ -204,8 +207,15 @@ const newCmd = new Command('new')
       }).finally(() => spinner.stop());
     }
 
-    console.log(picocolors.green(`Project ${name} created successfully!`));
-    console.log(picocolors.green('Good luck, astronaut! 🚀'));
+    console.log(
+      picocolors.green(`\nYour Astroneer.js project is already set up!`),
+    );
+    console.log(
+      picocolors.green(`\nTo get started, run the following commands:\n`),
+    );
+    console.log(picocolors.cyan(`  cd ${name}`));
+    console.log(picocolors.cyan(`  astroneer dev\n`));
+    console.log(picocolors.green('Good luck, Astroneer! 🚀'));
   });
 
 export default newCmd;
