@@ -14,7 +14,7 @@
 
 ## Description
 
-**Astroneer is a framework for server-side application development in [Node.js]**. Its goal is to facilitate the creation of server-side applications by providing a simple and easy-to-understand project structure.
+**Astroneer is a framework for building [Node.js] server-side applications**. Its goal is to facilitate the creation of server-side applications by providing a simple and easy-to-understand project structure.
 
 ## Features
 
