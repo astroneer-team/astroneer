@@ -21,7 +21,7 @@ export async function build() {
   await rimraf(DIST_FOLDER);
   await scan({
     rootDir: SOURCE_FOLDER,
-    include: [/\/routes\/.*\.(js|ts)?$/, /\/server\.(js|ts)?$/],
+    include: [/\.ts?$/i],
     async onFile(file) {
       const timestamp = new Date().getTime();
       const outfile = await compile(file).then((outfile) =>
