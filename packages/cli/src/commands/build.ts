@@ -1,11 +1,5 @@
-import { colorRouteMethod } from '@astroneer/common';
-import {
-  AstroneerRouter,
-  DIST_FOLDER,
-  scan,
-  SOURCE_FOLDER,
-} from '@astroneer/core';
-import CliTable3 from 'cli-table3';
+import { Logger } from '@astroneer/common';
+import { DIST_FOLDER, scan, SOURCE_FOLDER } from '@astroneer/core';
 import { Command } from 'commander';
 import path from 'path';
 import picocolors from 'picocolors';
@@ -14,61 +8,33 @@ import { compile } from '../compiler';
 import { printVersion } from '../helpers/print-version';
 
 export async function build() {
-  await printVersion();
-  const router = new AstroneerRouter();
-  const routes: string[] = [];
+  const logger = new Logger('Builder');
 
+  await printVersion();
   await rimraf(DIST_FOLDER);
+
+  const tsFiles: string[] = [];
+
   await scan({
     rootDir: SOURCE_FOLDER,
     include: [/\.ts?$/i],
-    async onFile(file) {
-      const timestamp = new Date().getTime();
-      const outfile = await compile(file).then((outfile) =>
-        path.relative(process.cwd(), outfile),
-      );
-
-      console.log(
-        `${picocolors.green('✔')}  ${picocolors.gray(outfile)} ${picocolors.blue(
-          `(${new Date().getTime() - timestamp}ms)`,
-        )}`,
-      );
-
-      routes.push(path.resolve(process.cwd(), outfile));
+    onFile(file) {
+      tsFiles.push(file);
     },
   });
 
-  router.reset();
-  const manifest = await router.preloadAllRoutes(routes);
+  const promises = tsFiles.map(async (file) => {
+    const start = Date.now();
+    const outFile = await compile(file).then((res) =>
+      path.relative(process.cwd(), res),
+    );
 
-  console.log(picocolors.green('\nRoutes'));
-
-  const table = new CliTable3({
-    head: [
-      picocolors.white('Path'),
-      picocolors.white('Method'),
-      picocolors.white('Raw Size'),
-    ],
-    chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
+    logger.log(
+      `${picocolors.green('✔')} ${picocolors.gray(outFile)} ${picocolors.green(`(${Date.now() - start}ms)`)}`,
+    );
   });
 
-  manifest.staticRoutes
-    ?.concat(manifest.dynamicRoutes || [])
-    .forEach((route) => {
-      const methods = route.methods.map((m) => colorRouteMethod(m)).join(' ');
-      const rawSize = (route.rawSize / 1024).toFixed(2) + 'kb';
-
-      table.push([
-        picocolors.cyan(route.page),
-        picocolors.gray(methods),
-        picocolors.magenta(rawSize),
-      ]);
-    });
-
-  console.log(table.toString());
-  console.log(
-    `\n${picocolors.green('✔')}  ${picocolors.gray('Astroneer.js app built successfully!')}`,
-  );
+  await Promise.all(promises);
 }
 
 const buildCmd = new Command('build')

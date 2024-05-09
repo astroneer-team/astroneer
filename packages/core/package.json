@@ -16,5 +16,8 @@
   "repository": {
     "directory": "packages/core",
     "type": "git"
+  },
+  "dependencies": {
+    "@astroneer/common": "^1.0.3"
   }
 }

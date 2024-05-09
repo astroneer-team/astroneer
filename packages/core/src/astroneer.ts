@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
+import { HttpError } from './errors';
 import { Request } from './request';
 import { Response } from './response';
 import { AstroneerRouter, Route, RouteMiddleware } from './router';
@@ -8,7 +9,13 @@ import { AstroneerRouter, Route, RouteMiddleware } from './router';
  * The Astroneer.js application that processes incoming requests.
  */
 export class Astroneer {
-  private router: AstroneerRouter = new AstroneerRouter();
+  private constructor(private router: AstroneerRouter) {}
+
+  static async prepare() {
+    const router = new AstroneerRouter();
+    await router.preloadRoutes();
+    return new Astroneer(router);
+  }
 
   async handle(
     req: IncomingMessage,
@@ -29,15 +36,21 @@ export class Astroneer {
       parsedUrl,
     );
 
-    await this.runMiddlewares(route, request, response);
-    await this.runHandler(route, request, response);
+    try {
+      await this.runMiddlewares(route, request, response);
+      await this.runHandler(route, request, response);
+    } catch (err) {
+      if (err instanceof HttpError) {
+        response.status(err.statusCode).json(err.toJSON());
+      }
+    }
   }
 
   private async matchRoute(
     req: IncomingMessage,
     parsedUrl: UrlWithParsedQuery,
   ) {
-    return await this.router.match(req.method as any, parsedUrl.pathname!);
+    return this.router.match(req.method as any, parsedUrl.pathname!);
   }
 
   private sendNotFound(res: ServerResponse) {
@@ -60,21 +73,16 @@ export class Astroneer {
     return { request, response };
   }
 
-  private async runMiddlewares(
-    route: Route,
-    Request: Request,
-    Response: Response,
-  ) {
+  private async runMiddlewares(route: Route, req: Request, res: Response) {
     if (route.middlewares?.length) {
       try {
         await Promise.all(
           route.middlewares.map((middleware) =>
-            this.runMiddleware(middleware, Request, Response),
+            this.runMiddleware(middleware, req, res),
           ),
         );
-      } catch (error) {
-        console.error('Error running middlewares', error);
-        throw error;
+      } catch (err) {
+        throw err;
       }
     }
   }
@@ -87,8 +95,8 @@ export class Astroneer {
     return new Promise<void>((resolve, reject) => {
       try {
         middleware(Request, Response, resolve);
-      } catch (error) {
-        reject(error);
+      } catch (err) {
+        reject(err);
       }
     });
   }
@@ -96,9 +104,9 @@ export class Astroneer {
   private async runHandler(route: Route, Request: Request, Response: Response) {
     try {
       await route.handler?.(Request, Response);
-    } catch (error) {
-      console.error('Error running handler', error);
-      throw error;
+    } catch (err) {
+      console.error('Error running handler', err);
+      throw err;
     }
   }
 }
