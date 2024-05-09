@@ -37,5 +37,5 @@ Astroneer is developed and maintained by [Lucas Larangeira].
 
 [Lucas Larangeira]: https://lucaslarangeira.com
 [website]: https://astroneer.dev
-[server.ts]: templates/default/src/server.ts
+[server.ts]: https://github.com/astroneer-team/astroneer-templates/blob/master/default/src/server.ts
 [Node.js]: https://nodejs.org/en/
