@@ -45,7 +45,7 @@ export class Logger {
 
   private logMessage(level: LogLevel, message: string) {
     console.log(
-      picocolors[LevelColors[level]](level.toUpperCase()),
+      picocolors.gray(level.toUpperCase()),
       picocolors[LevelColors[level]](message),
     );
   }
