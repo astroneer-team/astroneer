@@ -115,7 +115,7 @@ async function importRouteModule(filePath: string): Promise<RouteModule> {
 }
 
 export class AstroneerRouter {
-  private readonly logger = new Logger('Router');
+  private readonly logger = new Logger();
   /**
    * An array of preloaded routes.
    */

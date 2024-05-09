@@ -8,7 +8,7 @@ import { compile } from '../compiler';
 import { printVersion } from '../helpers/print-version';
 
 export async function build() {
-  const logger = new Logger('Builder');
+  const logger = new Logger();
 
   await printVersion();
   await rimraf(DIST_FOLDER);

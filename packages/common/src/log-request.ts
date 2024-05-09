@@ -7,7 +7,7 @@ export function logRequest(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ) {
-  const logger = new Logger('LoggerMiddleware');
+  const logger = new Logger();
   const start = Date.now();
 
   req.on('end', () => {

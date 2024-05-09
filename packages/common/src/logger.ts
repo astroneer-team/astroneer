@@ -10,50 +10,42 @@ export enum LevelColors {
 
 export class Logger {
   private static staticInstanceRef = new Logger();
-  private context?: string;
 
-  constructor(context?: string) {
-    this.context = context;
+  log(message: string) {
+    this.logMessage('info', message);
   }
 
-  log(message: string, context?: string) {
-    this.logMessage('info', message, context || this.context);
+  error(message: string) {
+    this.logMessage('error', message);
   }
 
-  error(message: string, context?: string) {
-    this.logMessage('error', message, context || this.context);
+  warn(message: string) {
+    this.logMessage('warn', message);
   }
 
-  warn(message: string, context?: string) {
-    this.logMessage('warn', message, context || this.context);
+  debug(message: string) {
+    this.logMessage('debug', message);
   }
 
-  debug(message: string, context?: string) {
-    this.logMessage('debug', message, context || this.context);
+  static log(message: string) {
+    Logger.staticInstanceRef.log(message);
   }
 
-  static log(message: string, context?: string) {
-    Logger.staticInstanceRef.log(message, context);
+  static error(message: string) {
+    Logger.staticInstanceRef.error(message);
   }
 
-  static error(message: string, context?: string) {
-    Logger.staticInstanceRef.error(message, context);
+  static warn(message: string) {
+    Logger.staticInstanceRef.warn(message);
   }
 
-  static warn(message: string, context?: string) {
-    Logger.staticInstanceRef.warn(message, context);
+  static debug(message: string) {
+    Logger.staticInstanceRef.debug(message);
   }
 
-  static debug(message: string, context?: string) {
-    Logger.staticInstanceRef.debug(message, context);
-  }
-
-  private logMessage(level: LogLevel, message: string, context?: string) {
-    const contextString = context ? `[${context}]` : '';
-
+  private logMessage(level: LogLevel, message: string) {
     console.log(
       picocolors[LevelColors[level]](level.toUpperCase()),
-      picocolors.yellow(contextString),
       picocolors[LevelColors[level]](message),
     );
   }
