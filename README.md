@@ -9,7 +9,7 @@
 <p align="center">
   <img alt="NPM Version" src="https://img.shields.io/npm/v/%40astroneer%2Fcore?style=for-the-badge&logo=npm&label=%20&color=%23000000">
   <img alt="NPM License" src="https://img.shields.io/npm/l/%40astroneer%2Fcore?style=for-the-badge&labelColor=%23000000&color=%233DA639">
-  <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/%40astroneer%2Fcore?style=for-the-badge&labelColor=%23000000&color=%23F6511D">
+  <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/%40astroneer%2Fcore?style=for-the-badge&labelColor=000000&color=C5F74F">
 </p>
 
 ## Description
