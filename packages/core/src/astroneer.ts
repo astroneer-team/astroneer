@@ -9,7 +9,13 @@ import { AstroneerRouter, Route, RouteMiddleware } from './router';
  * The Astroneer.js application that processes incoming requests.
  */
 export class Astroneer {
-  private router: AstroneerRouter = new AstroneerRouter();
+  private constructor(private router: AstroneerRouter) {}
+
+  static async prepare() {
+    const router = new AstroneerRouter();
+    await router.preloadRoutes();
+    return new Astroneer(router);
+  }
 
   async handle(
     req: IncomingMessage,
@@ -44,7 +50,7 @@ export class Astroneer {
     req: IncomingMessage,
     parsedUrl: UrlWithParsedQuery,
   ) {
-    return await this.router.match(req.method as any, parsedUrl.pathname!);
+    return this.router.match(req.method as any, parsedUrl.pathname!);
   }
 
   private sendNotFound(res: ServerResponse) {

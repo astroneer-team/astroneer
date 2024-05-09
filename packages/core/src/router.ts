@@ -1,10 +1,10 @@
-import { statSync } from 'fs';
+import { Logger, normalizeFileNames } from '@astroneer/common';
 import path from 'path';
-import { ROUTES_MANIFEST_FILE } from './constants';
+import { ROUTES_FOLDER } from './constants';
 import { HttpServerMethods } from './enums/http-server-methods';
-import { createFile } from './helpers/create-file';
 import { Request } from './request';
 import { Response } from './response';
+import { scan } from './scanner';
 
 export type Route = {
   method: string;
@@ -41,18 +41,15 @@ export type PreloadedRoute = {
   filePath: string;
   page: string;
   regex: string;
-  methods: HttpServerMethods[];
+  method: HttpServerMethods;
   params?: {
     [key: string]: string;
   };
   namedRegex: string;
-  rawSize: number;
 };
 
 export type PreloadedRouteWithHandlers = PreloadedRoute & {
-  handlers: {
-    [key in HttpServerMethods]?: RouteHandler;
-  };
+  handler: RouteHandler;
   middlewares: RouteMiddleware[];
 };
 
@@ -66,69 +63,55 @@ async function importRouteModule(filePath: string): Promise<RouteModule> {
 }
 
 export class AstroneerRouter {
-  private routes: PreloadedRoute[] = [];
+  private readonly logger = new Logger('Router');
+  private routes: PreloadedRouteWithHandlers[] = [];
 
-  async preloadAllRoutes(routeFiles: string[]): Promise<RoutesManifest> {
-    const safeRouteFiles = this.normalizeFileNames(routeFiles);
-    await this.loadRoutes(safeRouteFiles);
+  async preloadRoutes(): Promise<void> {
+    const routeFiles: string[] = [];
 
-    this.routes.sort((a, b) => a.page.localeCompare(b.page));
+    await scan({
+      rootDir: ROUTES_FOLDER,
+      include: [/\.(ts|js)$/],
+      onFile(file) {
+        routeFiles.push(file);
+      },
+    });
 
-    const manifest = this.createRoutesManifest();
-    this.saveRoutesManifest(manifest);
+    await this.loadRoutes(normalizeFileNames(routeFiles));
 
-    return manifest;
+    this.routes.forEach((route) => {
+      this.logger.log(`Mapped ${route.method.toUpperCase()} ${route.page}`);
+    });
   }
 
-  normalizeFileNames(fileNames: string[]): string[] {
-    return fileNames.map((fileName) => path.normalize(fileName));
-  }
-
-  async loadRoutes(fileNames: string[]): Promise<void> {
-    await Promise.all(
-      fileNames.map(async (fileName) => {
-        const routePath = path.resolve(fileName);
-        delete require.cache[require.resolve(routePath)];
-        const routeModule: RouteModule = await importRouteModule(routePath);
-
-        const methodsFn = this.extractMethods(routeModule);
-
-        methodsFn.forEach((method) => {
-          const route = this.preloadRoute(routePath, method);
-
-          if (route) {
-            this.routes.push(route);
-          }
+  private async loadRoutes(fileNames: string[]): Promise<void> {
+    const promises = fileNames.map(async (fileName) => {
+      const routePath = path.resolve(fileName);
+      const routeModule: RouteModule = await importRouteModule(routePath);
+      const methodsFn = this.extractMethods(routeModule);
+      methodsFn.forEach((method) => {
+        const route = this.preloadRoute(routePath, method);
+        this.routes.push({
+          ...route,
+          handler: routeModule[method]!,
+          middlewares: routeModule.middlewares || [],
         });
-      }),
-    );
+      });
+    });
+
+    await Promise.all(promises);
   }
 
-  extractMethods(routeModule: RouteModule): HttpServerMethods[] {
+  private extractMethods(routeModule: RouteModule): HttpServerMethods[] {
     return Object.keys(routeModule).filter((key) =>
       Object.values(HttpServerMethods).includes(key as HttpServerMethods),
     ) as HttpServerMethods[];
   }
 
-  createRoutesManifest(): RoutesManifest {
-    return {
-      dynamicRoutes: this.routes.filter((route) => route.page.includes(':')),
-      staticRoutes: this.routes.filter((route) => !route.page.includes(':')),
-    };
-  }
-
-  saveRoutesManifest(manifest: RoutesManifest): void {
-    createFile<RoutesManifest>({
-      filePath: ROUTES_MANIFEST_FILE,
-      content: manifest,
-      overwrite: true,
-    });
-  }
-
-  preloadRoute(
+  private preloadRoute(
     filePath: string,
     method: HttpServerMethods,
-  ): PreloadedRoute | void {
+  ): PreloadedRoute {
     const safeFilePath = path.normalize(filePath);
     const relativePath = safeFilePath.split(/routes[\\/]/)[1];
 
@@ -151,75 +134,53 @@ export class AstroneerRouter {
       `^${namedRegex.replace(/\//g, '\\/').replace(/:\w+/g, '([^\\/]+)')}$`,
     );
 
-    const route = this.routes.find((route) => route.page === page);
-
-    if (!route) {
-      return {
-        filePath: safeFilePath,
-        page,
-        regex: regex.source,
-        namedRegex,
-        methods: [method],
-        ...(Object.keys(params).length > 0 && { params }),
-        rawSize: statSync(safeFilePath).size,
-      };
-    }
-
-    route.methods.push(method);
-  }
-
-  async getRoutesManifest(): Promise<RoutesManifest> {
-    const safeRoutesFile = path.normalize(ROUTES_MANIFEST_FILE);
-    return await import(safeRoutesFile);
+    return {
+      filePath: safeFilePath,
+      method,
+      namedRegex,
+      page,
+      regex: regex.source,
+      ...(Object.keys(params).length > 0 && { params }),
+    };
   }
 
   async match(method: string, pathname: string): Promise<Route | null> {
     const safePathname = path.normalize(pathname).replaceAll(/\\/g, '/');
-    const manifest = await this.getRoutesManifest();
-    const routesList = this.concatRoutes(manifest);
-
-    if (!routesList) return null;
-    console.log(routesList);
-    const route = this.findMatchingRoute(routesList, method, safePathname);
+    const route = this.findMatchingRoute(this.routes, method, safePathname);
 
     if (!route) return null;
 
     const params = this.extractParams(route, safePathname);
-    const handler = await this.getHandler(route, method as HttpServerMethods);
-
-    return this.createRoute(method, handler, route, params);
+    return this.createRoute(method, route, params);
   }
 
-  concatRoutes(manifest: RoutesManifest): PreloadedRoute[] | undefined {
-    return manifest.staticRoutes?.concat(manifest.dynamicRoutes || []);
-  }
-
-  findMatchingRoute(
-    routesList: PreloadedRoute[],
+  private findMatchingRoute(
+    routesList: PreloadedRouteWithHandlers[],
     method: string,
     pathname: string,
-  ): PreloadedRoute | undefined {
+  ): PreloadedRouteWithHandlers | undefined {
     return routesList.find(
       (route) =>
-        route.methods.includes(method as HttpServerMethods) &&
-        new RegExp(route.regex).test(pathname),
+        route.method === method && new RegExp(route.regex).test(pathname),
     );
   }
 
-  extractParams(route: PreloadedRoute, pathname: string): string[] | undefined {
+  private extractParams(
+    route: PreloadedRoute,
+    pathname: string,
+  ): string[] | undefined {
     return pathname.match(new RegExp(route.regex))?.slice(1);
   }
 
-  async createRoute(
+  private async createRoute(
     method: string,
-    handler: RouteHandler,
-    route: PreloadedRoute,
+    route: PreloadedRouteWithHandlers,
     params: string[] | undefined,
   ): Promise<Route> {
     return {
       method,
-      handler,
-      middlewares: (await import(route.filePath)).middlewares,
+      handler: route.handler,
+      middlewares: route.middlewares,
       params: route.params
         ? Object.fromEntries(
             Object.entries(route.params).map((entry, index) => [
@@ -229,16 +190,5 @@ export class AstroneerRouter {
           )
         : {},
     };
-  }
-
-  async getHandler(
-    route: PreloadedRoute,
-    method: HttpServerMethods,
-  ): Promise<RouteHandler> {
-    return (await import(route.filePath))[method];
-  }
-
-  reset(): void {
-    this.routes = [];
   }
 }

@@ -8,6 +8,8 @@ export function colorRouteMethod(method: string): string {
       return picocolors.yellow(method);
     case 'PUT':
       return picocolors.blue(method);
+    case 'PATCH':
+      return picocolors.magenta(method);
     case 'DELETE':
       return picocolors.red(method);
     default:
