@@ -4,4 +4,4 @@ dist
 example
 .astroneer
 /src
-
+lerna-debug.log
