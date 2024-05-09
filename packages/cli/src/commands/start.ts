@@ -1,9 +1,8 @@
-import { SERVER_MODULE_PATH } from '@astroneer/core';
+import { Logger } from '@astroneer/common';
+import { DIST_FOLDER } from '@astroneer/core';
 import { Command } from 'commander';
-import path from 'path';
-import picocolors from 'picocolors';
-import { isAsyncFunction } from 'util/types';
-import { build } from './build';
+import { existsSync } from 'fs';
+import { startServer } from '../helpers/start-server';
 
 const startCmd = new Command('start')
   .description('Start Astroneer.js app')
@@ -17,21 +16,14 @@ const startCmd = new Command('start')
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
       process.env.NODE_ENV = options.devmode ? 'development' : 'production';
-      console.clear();
-      await build();
-      let serverModulePath = path.resolve(SERVER_MODULE_PATH);
-      const serverModule = await import(serverModulePath);
-
-      if (!isAsyncFunction(serverModule.default)) {
-        console.error(
-          picocolors.red(
-            '   ✖  Server module must export default an async function that returns a `http.Server` instance',
-          ),
+      if (!existsSync(DIST_FOLDER)) {
+        Logger.error(
+          'Could not find the .astroneer folder in the current directory. Do you forget to run `astroneer build`?',
         );
-        return;
+        process.exit(1);
       }
-
-      await serverModule.default(Number(options.port), options.hostname);
+      console.clear();
+      startServer(Number(options.port), options.hostname);
     },
   );
 

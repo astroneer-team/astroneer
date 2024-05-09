@@ -32,7 +32,7 @@ export async function startServer(port: number, hostname: string) {
   });
 
   server.listen(port, hostname, () => {
-    logger.log(`> Listening on $http://${hostname}:${port}`);
+    logger.log(`> Listening on http://${hostname}:${port}`);
   });
 
   return server;

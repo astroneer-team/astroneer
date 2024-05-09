@@ -23,8 +23,6 @@ export type ScanOptions = {
 
 /**
  * Scans a directory and calls a callback for each file that matches the include and exclude patterns.
- * @param options The options for the scan.
- * @returns A promise that resolves when the scan is complete.
  */
 export async function scan(options: ScanOptions) {
   const { rootDir, exclude, include, onFile } = options;
