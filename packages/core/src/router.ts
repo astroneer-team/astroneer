@@ -168,7 +168,7 @@ export class AstroneerRouter {
   }
 
   async match(method: string, pathname: string): Promise<Route | null> {
-    const safePathname = path.normalize(pathname);
+    const safePathname = path.normalize(pathname).replaceAll(/\\/g, '/');
     const manifest = await this.getRoutesManifest();
     const routesList = this.concatRoutes(manifest);
 

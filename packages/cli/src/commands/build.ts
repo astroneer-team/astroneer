@@ -37,12 +37,8 @@ export async function build() {
       routes.push(path.resolve(process.cwd(), outfile));
     },
   });
-
-  router.reset();
   const manifest = await router.preloadAllRoutes(routes);
-
   console.log(picocolors.green('\nRoutes'));
-
   const table = new CliTable3({
     head: [
       picocolors.white('Path'),
