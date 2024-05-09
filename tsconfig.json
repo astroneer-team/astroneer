@@ -12,7 +12,7 @@
     "noUnusedLocals": false,
     "importHelpers": true,
     "allowJs": false,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "resolveJsonModule": true
   }
 }

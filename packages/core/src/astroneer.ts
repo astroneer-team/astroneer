@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
+import { HttpServerMethods } from './enums/http-server-methods';
 import { HttpError } from './errors';
 import { Request } from './request';
 import { Response } from './response';
@@ -73,7 +74,10 @@ export class Astroneer {
     req: IncomingMessage,
     parsedUrl: UrlWithParsedQuery,
   ) {
-    return this.router.match(req.method as any, parsedUrl.pathname!);
+    return this.router.match(
+      req.method as HttpServerMethods,
+      parsedUrl.pathname!,
+    );
   }
 
   private sendNotFound(res: ServerResponse) {
