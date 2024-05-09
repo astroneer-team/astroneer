@@ -7,27 +7,60 @@ import { Response } from './response';
 import { scan } from './scanner';
 
 export type Route = {
+  /**
+   * The HTTP method for the route.
+   */
   method: string;
+  /**
+   * The handler function for the route.
+   */
   handler?: RouteHandler;
+  /**
+   * An array of middlewares to run before the handler.
+   */
   middlewares?: RouteMiddleware[];
+  /**
+   * An object containing the route's parameters.
+   */
   params?: {
     [key: string]: string;
   };
 };
 
 export type RouteHandler = (
+  /**
+   * The incoming request object.
+   */
   req: Request,
+  /**
+   * The outgoing response object.
+   */
   res: Response,
 ) => void | Promise<void>;
 
 export type RouteMiddleware = (
+  /**
+   * The incoming request object.
+   */
   req: Request,
+  /**
+   * The outgoing response object.
+   */
   res: Response,
+  /**
+   * The next middleware in the chain.
+   */
   next: () => void,
 ) => void | Promise<void>;
 
 export type AstroneerRouterOptions = {
+  /**
+   * A boolean flag indicating whether the application is running in development mode.
+   */
   devmode: boolean;
+  /**
+   * The directory where the routes are located.
+   */
   routesDir: string;
 };
 
@@ -38,24 +71,43 @@ export type RouteModule = {
 };
 
 export type PreloadedRoute = {
+  /**
+   * The path to the route file.
+   */
   filePath: string;
+  /**
+   * The HTTP method for the route.
+   */
   page: string;
+  /**
+   * The regular expression for the route.
+   */
   regex: string;
+  /**
+   * The named regular expression for the route.
+   */
   method: HttpServerMethods;
+  /**
+   * An object containing the route's parameters.
+   */
   params?: {
     [key: string]: string;
   };
+  /**
+   * The named regular expression for the route.
+   */
   namedRegex: string;
 };
 
 export type PreloadedRouteWithHandlers = PreloadedRoute & {
+  /**
+   * The handler function for the route.
+   */
   handler: RouteHandler;
+  /**
+   * An array of middlewares to run before the handler.
+   */
   middlewares: RouteMiddleware[];
-};
-
-export type RoutesManifest = {
-  dynamicRoutes?: PreloadedRoute[];
-  staticRoutes?: PreloadedRoute[];
 };
 
 async function importRouteModule(filePath: string): Promise<RouteModule> {
@@ -64,11 +116,19 @@ async function importRouteModule(filePath: string): Promise<RouteModule> {
 
 export class AstroneerRouter {
   private readonly logger = new Logger('Router');
+  /**
+   * An array of preloaded routes.
+   */
   private routes: PreloadedRouteWithHandlers[] = [];
 
+  /**
+   * The `preloadRoutes` method scans the routes directory and preloads all routes.
+   * @since 0.1.0
+   */
   async preloadRoutes(): Promise<void> {
     const routeFiles: string[] = [];
 
+    // Scan the routes directory for route files
     await scan({
       rootDir: ROUTES_FOLDER,
       include: [/\.(ts|js)$/],
@@ -78,8 +138,10 @@ export class AstroneerRouter {
       },
     });
 
+    // Load the routes
     await this.loadRoutes(normalizeFileNames(routeFiles));
 
+    // Log the mapped routes
     this.routes.forEach((route) => {
       this.logger.log(`Mapped ${route.method.toUpperCase()} ${route.page}`);
     });
@@ -88,9 +150,11 @@ export class AstroneerRouter {
   private async loadRoutes(fileNames: string[]): Promise<void> {
     const promises = fileNames.map(async (fileName) => {
       const routePath = path.resolve(fileName);
+      // Import the route module
       const routeModule: RouteModule = await importRouteModule(routePath);
       const methodsFn = this.extractMethods(routeModule);
       methodsFn.forEach((method) => {
+        // Preload the route
         const route = this.preloadRoute(routePath, method);
         this.routes.push({
           ...route,
@@ -116,6 +180,7 @@ export class AstroneerRouter {
     const safeFilePath = path.normalize(filePath);
     const relativePath = safeFilePath.split(/routes[\\/]/)[1];
 
+    // Normalize the route path
     const page = `/${relativePath
       .replace(/\.ts$/, '')
       .replace(/\.js$/, '')

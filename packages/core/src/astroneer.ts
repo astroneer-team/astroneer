@@ -5,28 +5,51 @@ import { Request } from './request';
 import { Response } from './response';
 import { AstroneerRouter, Route, RouteMiddleware } from './router';
 
-/**
- * The Astroneer.js application that processes incoming requests.
- */
 export class Astroneer {
   private constructor(private router: AstroneerRouter) {}
 
-  static async prepare() {
+  /**
+   * The `prepare` method is a factory method that creates a new instance of
+   * {@link Astroneer} and preloads all routes from the router.
+   *
+   * ```ts
+   * import { Astroneer } from '@astroneer/core';
+   * import { createServer } from 'http';
+   *
+   * export default async function server() {
+   *  const app = await Astroneer.prepare();
+   *  return createServer(async (req, res) => {
+   *   try {
+   *     const parsedUrl = parse(req.url || '', true);
+   *     await app.handle(req, res, parsedUrl);
+   *   } catch (err) {
+   *     console.error(err);
+   *     res.writeHead(500, { 'Content-Type': 'text/plain' });
+   *   }
+   *  })
+   * }
+   * ```
+   * @since 0.1.0
+   */
+  static async prepare(): Promise<Astroneer> {
     const router = new AstroneerRouter();
     await router.preloadRoutes();
     return new Astroneer(router);
   }
 
+  /**
+   * The `handle` method is the main entry point for handling incoming HTTP requests.
+   * It matches the request to a route, runs any middlewares, and executes the handler.
+   */
   async handle(
     req: IncomingMessage,
     res: ServerResponse,
     parsedUrl: UrlWithParsedQuery,
-  ) {
+  ): Promise<void> {
     const route = await this.matchRoute(req, parsedUrl);
 
     if (!route?.handler) {
-      this.sendNotFound(res);
-      return;
+      return this.sendNotFound(res);
     }
 
     const { request, response } = this.prepareRequestAndResponse(
