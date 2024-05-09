@@ -1,11 +1,13 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import picocolors from 'picocolors';
 import { colorRouteMethod } from './color-route-method';
+import { Logger } from './logger';
 
 export function logRequest(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ) {
+  const logger = new Logger('LoggerMiddleware');
   const start = Date.now();
 
   req.on('end', () => {
@@ -15,8 +17,8 @@ export function logRequest(
     const status = res.statusCode;
     const statusColor = status >= 400 ? 'red' : 'green';
 
-    console.log(
-      `${picocolors.gray(new Date().toISOString())} ${picocolors[statusColor](status)} ${url} ${method} ${timestamp}`,
+    logger.debug(
+      `${picocolors[statusColor](status)} ${url} ${method} ${timestamp}`,
     );
   });
 }

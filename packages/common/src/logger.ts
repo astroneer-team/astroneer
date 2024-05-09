@@ -5,7 +5,7 @@ export enum LevelColors {
   info = 'green',
   warn = 'yellow',
   error = 'red',
-  debug = 'gray',
+  debug = 'magenta',
 }
 
 export class Logger {

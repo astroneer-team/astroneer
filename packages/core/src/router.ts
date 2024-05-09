@@ -73,6 +73,7 @@ export class AstroneerRouter {
       rootDir: ROUTES_FOLDER,
       include: [/\.(ts|js)$/],
       onFile(file) {
+        delete require.cache[file];
         routeFiles.push(file);
       },
     });
