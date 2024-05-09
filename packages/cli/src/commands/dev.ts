@@ -27,16 +27,16 @@ const devCmd = new Command('dev')
       console.clear();
       server?.close();
       await build();
-      delete require.cache[require.resolve(SERVER_MODULE_PATH)];
       const newServerModule = await import(SERVER_MODULE_PATH);
 
       if (!isAsyncFunction(newServerModule.default)) {
         console.error(
           picocolors.red(
-            '   ✖  Server module must export default an async function that returns a `http.Server` instance',
+            '   ✖  Server module must export default an async function',
           ),
         );
-        return;
+
+        process.exit(1);
       }
 
       server = await newServerModule.default(
@@ -44,6 +44,15 @@ const devCmd = new Command('dev')
         options.hostname,
         true,
       );
+
+      if (!(server instanceof Server)) {
+        console.error(
+          picocolors.red(
+            '   ✖  The default exports of the `server.ts` must return an instance of `http.Server`. Please refer to https://astroneer.dev/docs/server for more information.',
+          ),
+        );
+        process.exit(1);
+      }
     };
 
     watch(path.join(SOURCE_FOLDER, '**/*.ts'), {

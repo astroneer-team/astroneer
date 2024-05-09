@@ -49,6 +49,13 @@ export type PreloadedRoute = {
   rawSize: number;
 };
 
+export type PreloadedRouteWithHandlers = PreloadedRoute & {
+  handlers: {
+    [key in HttpServerMethods]?: RouteHandler;
+  };
+  middlewares: RouteMiddleware[];
+};
+
 export type RoutesManifest = {
   dynamicRoutes?: PreloadedRoute[];
   staticRoutes?: PreloadedRoute[];
@@ -163,7 +170,6 @@ export class AstroneerRouter {
 
   async getRoutesManifest(): Promise<RoutesManifest> {
     const safeRoutesFile = path.normalize(ROUTES_MANIFEST_FILE);
-
     return await import(safeRoutesFile);
   }
 
@@ -173,7 +179,7 @@ export class AstroneerRouter {
     const routesList = this.concatRoutes(manifest);
 
     if (!routesList) return null;
-
+    console.log(routesList);
     const route = this.findMatchingRoute(routesList, method, safePathname);
 
     if (!route) return null;
