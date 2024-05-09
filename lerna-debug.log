@@ -1,0 +1,6 @@
+51 error TypeError: resolvedPrettier.resolveConfig.sync is not a function
+51 error     at maybeFormatFile (C:\Users\lukea\Documents\GitHub\astroneer\node_modules\lerna\dist\cli.js:5776:53)
+51 error     at gitAdd (C:\Users\lukea\Documents\GitHub\astroneer\node_modules\lerna\dist\cli.js:5799:9)
+51 error     at C:\Users\lukea\Documents\GitHub\astroneer\node_modules\lerna\dist\cli.js:6622:36
+51 error     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+51 error     at async Promise.all (index 0)
