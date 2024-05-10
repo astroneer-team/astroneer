@@ -6,4 +6,6 @@ export enum HttpServerMethods {
   DELETE = 'DELETE',
   OPTIONS = 'OPTIONS',
   HEAD = 'HEAD',
+  CONNECT = 'CONNECT',
+  TRACE = 'TRACE',
 }
