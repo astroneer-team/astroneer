@@ -7,9 +7,9 @@
   Astroneer.js
 </h2>
 <p align="center">
-  <img alt="NPM Version" src="https://img.shields.io/npm/v/%40astroneer%2Fcore?style=for-the-badge&labelColor=000000&color=C5F74F">
-  <img alt="NPM License" src="https://img.shields.io/npm/l/%40astroneer%2Fcore?style=for-the-badge&labelColor=000000&color=C5F74F">
-  <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/%40astroneer%2Fcore?style=for-the-badge&labelColor=000000&color=C5F74F">
+  <img alt="NPM Version" src="https://img.shields.io/npm/v/%40astroneer%2Fcore?style=for-the-badge&labelColor=000000&color=1269F4">
+  <img alt="NPM License" src="https://img.shields.io/npm/l/%40astroneer%2Fcore?style=for-the-badge&labelColor=000000&color=1269F4">
+  <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/%40astroneer%2Fcore?style=for-the-badge&labelColor=000000&color=1269F4">
 </p>
 
 ## Description
