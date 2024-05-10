@@ -1,4 +1,3 @@
-export * from './color-route-method';
 export * from './create-file';
 export * from './dir-exists';
 export * from './log-request';

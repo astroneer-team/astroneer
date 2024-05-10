@@ -1,6 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import picocolors from 'picocolors';
-import { colorRouteMethod } from './color-route-method';
 import { Logger } from './logger';
 
 export function logRequest(
@@ -12,7 +11,7 @@ export function logRequest(
 
   req.on('end', () => {
     const timestamp = picocolors.blue(`(${Date.now() - start}ms)`);
-    const method = colorRouteMethod(req.method ?? '');
+    const method = picocolors.gray(req.method ?? '');
     const url = picocolors.cyan(req.url ?? '');
     const status = res.statusCode;
     const statusColor = status >= 400 ? 'red' : 'green';
