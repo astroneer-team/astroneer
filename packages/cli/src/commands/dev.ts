@@ -1,8 +1,9 @@
 import { DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
+import { ChildProcess } from 'child_process';
 import { watch } from 'chokidar';
 import { Command } from 'commander';
-import { Server } from 'http';
 import path from 'path';
+import treeKill from 'tree-kill';
 import { startServer } from '../helpers/start-server';
 import { build } from './build';
 
@@ -15,7 +16,7 @@ const devCmd = new Command('dev')
     'localhost',
   )
   .action(async (options: { port: string; hostname: string }) => {
-    let server: Server;
+    let cp: ChildProcess;
     const watcher = watch(path.join(SOURCE_FOLDER, '**/*.ts'), {
       ignoreInitial: true,
       ignored: [
@@ -23,11 +24,26 @@ const devCmd = new Command('dev')
         path.resolve(process.cwd(), 'node_modules'),
       ],
     }).on('all', async () => {
-      process.env.NODE_ENV = 'development';
       console.clear();
       await build();
-      if (server) server.close();
-      server = await startServer(Number(options.port), options.hostname);
+
+      const env = {
+        ...process.env,
+        NODE_ENV: 'development',
+        PORT: options.port,
+        HOST: options.hostname,
+      };
+
+      const start = async () => {
+        cp = await startServer(Number(options.port), options.hostname, env);
+      };
+
+      if (!cp?.pid) return start();
+
+      treeKill(cp.pid, 'SIGTERM', async (err) => {
+        if (err) throw err;
+        await start();
+      });
     });
 
     watcher.emit('all');
