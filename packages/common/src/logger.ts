@@ -2,7 +2,7 @@ import picocolors from 'picocolors';
 
 export type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 export enum LevelColors {
-  info = 'green',
+  info = 'blue',
   warn = 'yellow',
   error = 'red',
   debug = 'magenta',

@@ -30,7 +30,7 @@ export async function build() {
     );
 
     logger.log(
-      `${picocolors.green('✔')} ${picocolors.gray(outFile)} ${picocolors.green(`(${Date.now() - start}ms)`)}`,
+      `${picocolors.blue('✔')} ${picocolors.gray(outFile)} ${picocolors.blue(`(${Date.now() - start}ms)`)}`,
     );
   });
 

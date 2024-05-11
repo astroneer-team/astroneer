@@ -208,14 +208,14 @@ const newCmd = new Command('new')
     }
 
     console.log(
-      picocolors.green(`\nYour Astroneer.js project is already set up!`),
+      picocolors.blue(`\nYour Astroneer.js project is already set up!`),
     );
     console.log(
-      picocolors.green(`\nTo get started, run the following commands:\n`),
+      picocolors.blue(`\nTo get started, run the following commands:\n`),
     );
     console.log(picocolors.cyan(`  cd ${name}`));
     console.log(picocolors.cyan(`  astroneer dev\n`));
-    console.log(picocolors.green('Good luck, Astroneer! 🚀'));
+    console.log(picocolors.blue('Good luck, Astroneer! 🚀'));
   });
 
 export default newCmd;

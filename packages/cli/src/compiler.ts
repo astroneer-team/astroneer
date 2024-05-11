@@ -16,6 +16,8 @@ export async function compile(file: string) {
     format: 'cjs',
     platform: 'node',
     outfile,
+    minify: true,
+    minifyWhitespace: true,
   });
 
   return outfile;
