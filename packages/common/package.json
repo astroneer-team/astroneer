@@ -19,5 +19,8 @@
   "repository": {
     "directory": "packages/common",
     "type": "git"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

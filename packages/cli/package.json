@@ -33,5 +33,8 @@
   "repository": {
     "directory": "packages/cli",
     "type": "git"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

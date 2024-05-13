@@ -19,5 +19,8 @@
   },
   "dependencies": {
     "@astroneer/common": "^1.2.1"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
