@@ -18,7 +18,8 @@
       "conventionalCommits": true,
       "conventionalGraduate": true,
       "conventionalPrerelease": true,
-      "exact": true
+      "exact": true,
+      "yes": true
     }
   }
 }
