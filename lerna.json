@@ -17,7 +17,8 @@
     "version": {
       "conventionalCommits": true,
       "exact": true,
-      "yes": true
+      "yes": true,
+      "gitTagVersion": true
     }
   }
 }
