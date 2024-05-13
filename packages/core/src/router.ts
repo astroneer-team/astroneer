@@ -181,6 +181,8 @@ export class AstroneerRouter {
     const safeFilePath = path.normalize(filePath);
     const relativePath = safeFilePath.split(/routes[\\/]/)[1];
 
+    console.log(relativePath);
+
     // Normalize the route path
     const page = `/${relativePath
       .replace(/\.ts$/, '')
@@ -188,7 +190,8 @@ export class AstroneerRouter {
       .replace(/index$/, '')
       .replace(/\/$/, '')
       .replace(/\[([^\]]+)\]/g, ':$1')
-      .replaceAll(/\\/g, '/')}`;
+      .replaceAll(/\\/g, '/')
+      .replace(/\/$/, '')}`;
 
     const params: PreloadedRoute['params'] = {};
 
@@ -205,7 +208,7 @@ export class AstroneerRouter {
       filePath: safeFilePath,
       method,
       namedRegex,
-      page: page.endsWith('/') ? page.slice(0, -1) : page,
+      page,
       regex: regex.source,
       ...(Object.keys(params).length > 0 && { params }),
     };
