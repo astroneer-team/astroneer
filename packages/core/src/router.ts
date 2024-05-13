@@ -205,7 +205,7 @@ export class AstroneerRouter {
       filePath: safeFilePath,
       method,
       namedRegex,
-      page,
+      page: page.endsWith('/') ? page.slice(0, -1) : page,
       regex: regex.source,
       ...(Object.keys(params).length > 0 && { params }),
     };
