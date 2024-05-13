@@ -41,6 +41,7 @@
     "typescript": "^5.4.5"
   },
   "scripts": {
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "build": "lerna run build"
   }
 }
