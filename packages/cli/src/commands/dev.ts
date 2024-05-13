@@ -1,10 +1,12 @@
-import { DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
-import { ChildProcess } from 'child_process';
+import {
+  DIST_FOLDER,
+  SERVER_MODULE_PATH,
+  SOURCE_FOLDER,
+} from '@astroneer/core';
 import { watch } from 'chokidar';
 import { Command } from 'commander';
+import { Server } from 'http';
 import path from 'path';
-import treeKill from 'tree-kill';
-import { startServer } from '../helpers/start-server';
 import { build } from './build';
 
 const devCmd = new Command('dev')
@@ -16,7 +18,7 @@ const devCmd = new Command('dev')
     'localhost',
   )
   .action(async (options: { port: string; hostname: string }) => {
-    let cp: ChildProcess;
+    let server: Server;
     const watcher = watch(path.join(SOURCE_FOLDER, '**/*.ts'), {
       ignoreInitial: true,
       ignored: [
@@ -34,15 +36,18 @@ const devCmd = new Command('dev')
         HOST: options.hostname,
       };
 
+      Object.assign(process.env, env);
+
       const start = async () => {
-        cp = await startServer(Number(options.port), options.hostname, env);
+        server = await import(SERVER_MODULE_PATH).then((m) => m.default());
       };
 
-      if (!cp?.pid) return start();
+      if (!server?.listening) {
+        return await start();
+      }
 
-      treeKill(cp.pid, 'SIGTERM', async (err) => {
-        if (err) throw err;
-        await start();
+      server.close(() => {
+        start();
       });
     });
 

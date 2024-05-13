@@ -1,4 +1,4 @@
-import { Logger } from '@astroneer/common';
+import { createFile, Logger } from '@astroneer/common';
 import { DIST_FOLDER, scan, SOURCE_FOLDER } from '@astroneer/core';
 import { Command } from 'commander';
 import path from 'path';
@@ -35,6 +35,12 @@ export async function build() {
   });
 
   await Promise.all(promises);
+
+  createFile({
+    filePath: path.resolve(DIST_FOLDER, 'main.js'),
+    content: "require('./server').default();",
+    overwrite: true,
+  });
 }
 
 const buildCmd = new Command('build')

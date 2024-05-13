@@ -1,21 +1,10 @@
 import { SERVER_MODULE_PATH } from '@astroneer/core';
-import { exec } from 'child_process';
+import { Server } from 'http';
 
-export async function startServer(
-  port: number,
-  hostname: string,
-  env: Record<string, string> = {},
-) {
-  const cp = exec(
-    `node ${SERVER_MODULE_PATH} --port ${port} --hostname ${hostname}`,
-    {
-      cwd: process.cwd(),
-      env,
-    },
+export async function startServer() {
+  const server: Server = await import(SERVER_MODULE_PATH).then((m) =>
+    m.default(),
   );
 
-  cp.stdout?.pipe(process.stdout);
-  cp.stderr?.pipe(process.stderr);
-
-  return cp;
+  return server;
 }
