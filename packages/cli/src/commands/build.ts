@@ -18,6 +18,7 @@ export async function build() {
   await scan({
     rootDir: SOURCE_FOLDER,
     include: [/\.ts?$/i],
+    exclude: [/\.d\.ts$/i, /\.spec\.(ts|js)$/i],
     onFile(file) {
       tsFiles.push(file);
     },
