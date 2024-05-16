@@ -1,6 +1,6 @@
 import { Logger, normalizeFileNames } from '@astroneer/common';
-import path from 'path';
-import { ROUTES_FOLDER } from './constants';
+import path, { resolve } from 'path';
+import { DIST_FOLDER } from './constants';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { Request } from './request';
 import { Response } from './response';
@@ -130,7 +130,7 @@ export class AstroneerRouter {
 
     // Scan the routes directory for route files
     await scan({
-      rootDir: ROUTES_FOLDER,
+      rootDir: resolve(await DIST_FOLDER(), 'routes'),
       include: [/\.(t|j)s$/],
       exclude: [/\.d\.ts$/, /\.spec\.(t|j)s$/],
       onFile(file) {

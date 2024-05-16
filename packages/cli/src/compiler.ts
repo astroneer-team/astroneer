@@ -8,7 +8,7 @@ export async function compile(file: string) {
     file.replace(/\.(j|t)s?$/, '.js'),
   );
 
-  const outfile = path.resolve(DIST_FOLDER, relativePath);
+  const outfile = path.resolve(await DIST_FOLDER(), relativePath);
 
   await builder.build({
     entryPoints: [file],

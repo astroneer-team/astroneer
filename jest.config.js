@@ -3,7 +3,7 @@ module.exports = {
   verbose: true,
   testEnvironment: 'node',
   detectOpenHandles: true,
-  testRegex: '.*\\.e2e-spec\\.ts$',
+  testRegex: '.*\\.spec\\.ts$',
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },

@@ -1,12 +1,9 @@
-import {
-  DIST_FOLDER,
-  SERVER_MODULE_PATH,
-  SOURCE_FOLDER,
-} from '@astroneer/core';
+import { CONFIG_FILE, DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
 import { watch } from 'chokidar';
 import { Command } from 'commander';
+import { configDotenv } from 'dotenv';
 import { Server } from 'http';
-import path from 'path';
+import path, { resolve } from 'path';
 import { build } from './build';
 
 const devCmd = new Command('dev')
@@ -19,27 +16,32 @@ const devCmd = new Command('dev')
   )
   .action(async (options: { port: string; hostname: string }) => {
     let server: Server;
-    const watcher = watch(path.join(SOURCE_FOLDER, '**/*.ts'), {
+    const dist = await DIST_FOLDER();
+    const watcher = watch([resolve(SOURCE_FOLDER, '**/*.ts'), CONFIG_FILE], {
       ignoreInitial: true,
       ignored: [
-        path.resolve(process.cwd(), DIST_FOLDER),
+        path.resolve(process.cwd(), dist),
         path.resolve(process.cwd(), 'node_modules'),
       ],
     }).on('all', async () => {
-      console.clear();
+      delete require.cache[resolve(CONFIG_FILE)];
+
       await build();
 
-      const env = {
-        ...process.env,
-        NODE_ENV: 'development',
-        PORT: options.port,
-        HOST: options.hostname,
-      };
-
-      Object.assign(process.env, env);
+      configDotenv({
+        processEnv: {
+          NODE_ENV: 'development',
+          PORT: options.port,
+          HOSTNAME: options.hostname,
+        },
+        path: [resolve(process.cwd(), '.env')],
+        override: true,
+      });
 
       const start = async () => {
-        server = await import(SERVER_MODULE_PATH).then((m) => m.default());
+        server = await import(resolve(dist, 'server.js')).then((m) =>
+          m.default(),
+        );
       };
 
       if (!server?.listening) {

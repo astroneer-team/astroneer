@@ -1,8 +1,8 @@
 node_modules
 .nx
 dist
-example
-.astroneer
 /src
 lerna-debug.log
 .vscode
+.astroneer
+astroneer.config.js

@@ -9,9 +9,10 @@ import { printVersion } from '../helpers/print-version';
 
 export async function build() {
   const logger = new Logger();
+  const dist = await DIST_FOLDER();
 
   await printVersion();
-  await rimraf(DIST_FOLDER);
+  await rimraf(dist, {});
 
   const tsFiles: string[] = [];
 
@@ -38,7 +39,7 @@ export async function build() {
   await Promise.all(promises);
 
   createFile({
-    filePath: path.resolve(DIST_FOLDER, 'main.js'),
+    filePath: path.resolve(dist, 'main.js'),
     content: "require('./server').default();",
     overwrite: true,
   });

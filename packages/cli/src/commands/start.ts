@@ -1,7 +1,8 @@
 import { Logger } from '@astroneer/common';
-import { DIST_FOLDER, SERVER_MODULE_PATH } from '@astroneer/core';
+import { DIST_FOLDER } from '@astroneer/core';
 import { Command } from 'commander';
 import { existsSync } from 'fs';
+import { resolve } from 'path';
 
 const startCmd = new Command('start')
   .description('Start Astroneer.js app')
@@ -14,17 +15,17 @@ const startCmd = new Command('start')
   .option('-d, --devmode', 'Enable development mode', false)
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
-      console.clear();
+      const dist = await DIST_FOLDER();
       process.env.NODE_ENV = options.devmode ? 'development' : 'production';
 
-      if (!existsSync(DIST_FOLDER)) {
+      if (!existsSync(dist)) {
         Logger.error(
           'Could not find the .astroneer folder in the current directory. Do you forget to run `astroneer build`?',
         );
         process.exit(1);
       }
 
-      await import(SERVER_MODULE_PATH).then((m) => m.default());
+      await import(resolve(dist, 'server.js')).then((m) => m.default());
     },
   );
 
