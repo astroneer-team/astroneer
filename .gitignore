@@ -5,3 +5,4 @@ example
 .astroneer
 /src
 lerna-debug.log
+.vscode

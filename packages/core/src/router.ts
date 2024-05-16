@@ -181,8 +181,6 @@ export class AstroneerRouter {
     const safeFilePath = path.normalize(filePath);
     const relativePath = safeFilePath.split(/routes[\\/]/)[1];
 
-    console.log(relativePath);
-
     // Normalize the route path
     const page = `/${relativePath
       .replace(/\.ts$/, '')
