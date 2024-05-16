@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.6](https://github.com/lukearch/astroneer/compare/v1.1.2...v1.3.6) (2024-05-16)
+
+
+### Bug Fixes
+
+* **@astroneer/cli:** fix compiler scanner ([df9f8cc](https://github.com/lukearch/astroneer/commit/df9f8ccca7c433ffa9c6cd558c85b8965c431375))
+* **@astroneer/core:** remove unnecessary console.log ([14d2ff5](https://github.com/lukearch/astroneer/commit/14d2ff598fdcb03c0885772b7450638dc1c6208f))
+
+
+
+
+
 ## [1.3.5](https://github.com/lukearch/astroneer/compare/v1.1.2...v1.3.5) (2024-05-16)
 
 
