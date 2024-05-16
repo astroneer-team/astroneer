@@ -22,6 +22,6 @@ export async function loadConfig(): Promise<AstroneerConfig> {
     Logger.error(
       'Unable to load config file. Please read https://astroneer.dev/docs/overview#astroneer-config to see more details.',
     );
-    throw err;
+    process.exit(1);
   }
 }
