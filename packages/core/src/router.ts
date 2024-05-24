@@ -157,7 +157,7 @@ export class AstroneerRouter {
 
     // Scan the routes directory for route files
     await scan({
-      rootDir: resolve(await DIST_FOLDER(), 'routes'),
+      rootDir: resolve(DIST_FOLDER, 'routes'),
       include: [/\.(t|j)s$/],
       exclude: [/\.d\.ts$/, /\.spec\.(t|j)s$/],
       onFile(file) {

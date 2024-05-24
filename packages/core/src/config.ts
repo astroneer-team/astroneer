@@ -12,7 +12,6 @@ type CompilerOptions = {
 };
 
 export interface AstroneerConfig {
-  outDir: string;
   compiler: CompilerOptions;
 }
 

@@ -13,11 +13,10 @@ import { build } from './build';
  */
 export async function devServer(options: { port: string; hostname: string }) {
   let server: Server;
-  const dist = await DIST_FOLDER();
   const watcher = watch([resolve(SOURCE_FOLDER, '**/*.ts'), CONFIG_FILE], {
     ignoreInitial: true,
     ignored: [
-      path.resolve(process.cwd(), dist),
+      path.resolve(process.cwd(), DIST_FOLDER),
       path.resolve(process.cwd(), 'node_modules'),
     ],
   }).on('all', async () => {
@@ -35,8 +34,8 @@ export async function devServer(options: { port: string; hostname: string }) {
     });
 
     const start = async () => {
-      delete require.cache[resolve(dist, 'server.js')];
-      server = await import(resolve(dist, 'server.js')).then((m) =>
+      delete require.cache[resolve(DIST_FOLDER, 'server.js')];
+      server = await import(resolve(DIST_FOLDER, 'server.js')).then((m) =>
         m.default(),
       );
     };

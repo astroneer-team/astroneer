@@ -1,5 +1,5 @@
 import { Logger } from '@astroneer/common';
-import { AstroneerConfig, SOURCE_FOLDER } from '@astroneer/core';
+import { AstroneerConfig, DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
 import * as swc from '@swc/core';
 import builder from 'esbuild';
 import { mkdirSync } from 'fs';
@@ -29,7 +29,7 @@ export async function compileFile(file: string, config: AstroneerConfig) {
     file.replace(/\.(j|t)s?$/, '.js'),
   );
 
-  const outfile = path.resolve(config.outDir, relativePath);
+  const outfile = path.resolve(DIST_FOLDER, relativePath);
   const { compilerOptions } = ts.readConfigFile(
     resolve('tsconfig.json'),
     ts.sys.readFile,

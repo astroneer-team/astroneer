@@ -25,19 +25,18 @@ import { showSpinnerWithPromise } from '../helpers/show-spinner';
  */
 export async function build(): Promise<void> {
   process.env.NODE_ENV = 'development';
-  const dist = await DIST_FOLDER();
   const config = await CONFIG();
   await printVersion();
-  await rimraf(dist);
+  await rimraf(DIST_FOLDER);
   await showSpinnerWithPromise(
     () => scanFiles(config),
     'Building Astroneer.js app',
   );
-  createMainFile(dist);
-  createConfigFile(dist, config);
+  createMainFile(DIST_FOLDER);
+  createConfigFile(DIST_FOLDER, config);
   const router = new AstroneerRouter();
   const routes = await router.preloadRoutes();
-  createRoutesMetadataFile(dist, router.generateRouteMetadata(routes));
+  createRoutesMetadataFile(DIST_FOLDER, router.generateRouteMetadata(routes));
 }
 
 async function scanFiles(config: AstroneerConfig): Promise<void> {

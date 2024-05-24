@@ -19,8 +19,6 @@ const startCmd = new Command('start')
   .option('-d, --devmode', 'Enable development mode', false)
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
-      const dist = await DIST_FOLDER();
-
       process.env.NODE_ENV = options.devmode ? 'development' : 'production';
       process.env.HOST = options.hostname;
 
@@ -29,14 +27,14 @@ const startCmd = new Command('start')
         override: true,
       });
 
-      if (!existsSync(dist)) {
+      if (!existsSync(DIST_FOLDER)) {
         Logger.error(
           'Could not find the output folder in the current directory. Do you forget to run `astroneer build`?',
         );
         process.exit(1);
       }
 
-      await import(resolve(dist, 'server.js')).then((m) => m.default());
+      await import(resolve(DIST_FOLDER, 'server.js')).then((m) => m.default());
     },
   );
 
