@@ -33,6 +33,7 @@
     "simple-git": "^3.24.0",
     "tar": "^7.0.1",
     "tree-kill": "^1.2.2",
+    "tsconfig": "^7.0.0",
     "tslib": "^2.6.2"
   },
   "repository": {
