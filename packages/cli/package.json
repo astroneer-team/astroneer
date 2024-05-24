@@ -1,7 +1,7 @@
 {
   "name": "@astroneer/cli",
   "description": "A CLI for Astroneer.js",
-  "version": "1.3.11",
+  "version": "1.3.12",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@astroneer/common": "1.3.10",
-    "@astroneer/core": "1.3.11",
+    "@astroneer/core": "1.3.12",
     "@isaacs/fs-minipass": "^4.0.1",
     "@octokit/rest": "^20.1.0",
     "@swc/core": "^1.5.7",
