@@ -7,33 +7,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @astroneer/common
 
-
-
-
-
 ## [1.3.6](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.6) (2024-05-16)
 
 **Note:** Version bump only for package @astroneer/common
-
-
-
-
 
 ## [1.3.5](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.5) (2024-05-16)
 
 **Note:** Version bump only for package @astroneer/common
 
-
-
-
-
 ## [1.3.4](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.4) (2024-05-16)
 
 **Note:** Version bump only for package @astroneer/common
-
-
-
-
 
 ## [1.3.3](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.3) (2024-05-13)
 

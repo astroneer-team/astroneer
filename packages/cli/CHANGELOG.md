@@ -5,41 +5,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.3.7-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.6...v1.3.7-alpha.0) (2024-05-24)
 
-
 ### Bug Fixes
 
-* bugfixes ([dd42903](https://github.com/astroneer-team/astroneer/commit/dd429030a5d84a0077cd6201be8ae8421c867d59))
-
-
-
-
+- bugfixes ([dd42903](https://github.com/astroneer-team/astroneer/commit/dd429030a5d84a0077cd6201be8ae8421c867d59))
 
 ## [1.3.6](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.6) (2024-05-16)
 
-
 ### Bug Fixes
 
-* **@astroneer/cli:** fix compiler scanner ([df9f8cc](https://github.com/astroneer-team/astroneer/commit/df9f8ccca7c433ffa9c6cd558c85b8965c431375))
-
-
-
-
+- **@astroneer/cli:** fix compiler scanner ([df9f8cc](https://github.com/astroneer-team/astroneer/commit/df9f8ccca7c433ffa9c6cd558c85b8965c431375))
 
 ## [1.3.5](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.5) (2024-05-16)
 
 **Note:** Version bump only for package @astroneer/cli
 
-
-
-
-
 ## [1.3.4](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.4) (2024-05-16)
 
 **Note:** Version bump only for package @astroneer/cli
-
-
-
-
 
 ## [1.3.3](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.3) (2024-05-13)
 
