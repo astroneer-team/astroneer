@@ -2,6 +2,11 @@ import { IncomingMessage, ServerResponse } from 'http';
 import picocolors from 'picocolors';
 import { Logger } from './logger';
 
+/**
+ * Logs the details of an incoming request.
+ * @param req - The incoming request object.
+ * @param res - The server response object.
+ */
 export function logRequest(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,

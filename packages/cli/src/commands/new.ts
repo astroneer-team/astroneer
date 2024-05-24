@@ -1,16 +1,17 @@
 import { Octokit } from '@octokit/rest';
 import cp from 'child_process';
 import { Command } from 'commander';
-import fs, {
+import {
   cpSync,
   createWriteStream,
   existsSync,
   mkdirSync,
+  promises,
   readdirSync,
   rmSync,
   statSync,
 } from 'fs';
-import path, { resolve } from 'path';
+import path from 'path';
 import picocolors from 'picocolors';
 import prompts from 'prompts';
 import simpleGit from 'simple-git';
@@ -71,16 +72,16 @@ async function copyTemplates(tmp: string, targetDir: string): Promise<void> {
     rmSync(targetDir, { recursive: true });
   }
 
-  cpSync(resolve(tmp), targetDir, {
+  cpSync(path.resolve(tmp), targetDir, {
     recursive: true,
   });
 }
 
 async function downloadTemplates() {
   const octokit = new Octokit();
-  const rootDir = resolve(__dirname, '..');
-  const targetDir = resolve(rootDir, TARGET_DIR_NAME);
-  const tarPath = resolve(rootDir, TAR_FILE_NAME);
+  const rootDir = path.resolve(__dirname, '..');
+  const targetDir = path.resolve(rootDir, TARGET_DIR_NAME);
+  const tarPath = path.resolve(rootDir, TAR_FILE_NAME);
 
   try {
     const stream = await downloadTarball(octokit);
@@ -90,14 +91,14 @@ async function downloadTemplates() {
     rmSync(tmp, { recursive: true });
 
     const templates = readdirSync(targetDir).filter((dir) => {
-      if (statSync(resolve(targetDir, dir)).isDirectory()) {
+      if (statSync(path.resolve(targetDir, dir)).isDirectory()) {
         return true;
       }
     });
 
     return templates.map((template) => ({
       name: template,
-      path: resolve(targetDir, template),
+      path: path.resolve(targetDir, template),
     }));
   } catch (err) {
     console.error(err);
@@ -106,9 +107,9 @@ async function downloadTemplates() {
 }
 
 export async function copyDir(srcDir: string, destDir: string) {
-  await fs.promises.mkdir(destDir, { recursive: true });
+  await promises.mkdir(destDir, { recursive: true });
 
-  const entries = await fs.promises.readdir(srcDir, { withFileTypes: true });
+  const entries = await promises.readdir(srcDir, { withFileTypes: true });
 
   for (const entry of entries) {
     const srcPath = path.join(srcDir, entry.name);
@@ -117,105 +118,115 @@ export async function copyDir(srcDir: string, destDir: string) {
     if (entry.isDirectory()) {
       await copyDir(srcPath, destPath);
     } else {
-      await fs.promises.copyFile(srcPath, destPath);
+      await promises.copyFile(srcPath, destPath);
     }
   }
 }
 
+/**
+ * Starts the server for creating a new Astroneer.js project.
+ *
+ * @param name - The name of the project.
+ * @returns A Promise that resolves when the server is started.
+ */
+async function newProject(name: string) {
+  const spinner = showSpinner('Downloading Astroneer.js templates...');
+  const templates = await downloadTemplates().finally(() => spinner.stop());
+
+  const answers = await prompts(
+    [
+      {
+        type: 'select',
+        name: 'template',
+        message: `Which app template would you like to use?`,
+        choices: templates.map((template) => ({
+          title: template.name,
+          value: template,
+        })),
+      },
+      {
+        type: 'select',
+        name: 'packageManager',
+        message: 'Which package manager would you like to use?',
+        choices: [
+          { title: 'npm', value: 'npm' },
+          { title: 'yarn', value: 'yarn' },
+        ],
+      },
+      {
+        type: 'toggle',
+        name: 'git',
+        message: 'Initialize a git repository?',
+        initial: true,
+        active: 'yes',
+        inactive: 'no',
+      },
+      {
+        type: 'toggle',
+        name: 'install',
+        message: 'Install dependencies?',
+        initial: true,
+        active: 'yes',
+        inactive: 'no',
+      },
+    ],
+    {
+      onCancel: () => {
+        console.log('Operation cancelled');
+        process.exit(1);
+      },
+    },
+  );
+
+  const rootDir = path.resolve(process.cwd(), name);
+  mkdirSync(rootDir, { recursive: true });
+  await copyDir(answers.template.path, rootDir);
+
+  if (answers.git) {
+    const git = simpleGit(rootDir);
+    await git.init();
+    await git.add('.');
+    await git.commit('Initial commit');
+  }
+
+  if (answers.install) {
+    const spinner = showSpinner('Installing dependencies...');
+    const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm';
+
+    await new Promise<void>((resolve, reject) => {
+      const child = cp.exec(`${cmd} install`, {
+        cwd: rootDir,
+      });
+
+      child.on('error', reject);
+      child.on('exit', (code) => {
+        if (code === 0) {
+          path.resolve();
+        } else {
+          reject(new Error(`Failed to install dependencies with code ${code}`));
+        }
+      });
+    }).finally(() => spinner.stop());
+  }
+
+  console.log(
+    picocolors.blue(`\nYour Astroneer.js project is already set up!`),
+  );
+  console.log(
+    picocolors.blue(`\nTo get started, run the following commands:\n`),
+  );
+  console.log(picocolors.cyan(`  cd ${name}`));
+  console.log(picocolors.cyan(`  astroneer dev\n`));
+  console.log(picocolors.blue('Good luck, Astroneer! 🚀'));
+}
+
+/**
+ * Command to create a new Astroneer.js project.
+ */
 const newCmd = new Command('new')
   .description('Create a new Astroneer.js project')
   .argument('<name>', 'Name of the project')
-  .action(async (name) => {
-    const spinner = showSpinner('Downloading Astroneer.js templates...');
-    const templates = await downloadTemplates().finally(() => spinner.stop());
+  .action(newProject);
 
-    const answers = await prompts(
-      [
-        {
-          type: 'select',
-          name: 'template',
-          message: `Which app template would you like to use?`,
-          choices: templates.map((template) => ({
-            title: template.name,
-            value: template,
-          })),
-        },
-        {
-          type: 'select',
-          name: 'packageManager',
-          message: 'Which package manager would you like to use?',
-          choices: [
-            { title: 'npm', value: 'npm' },
-            { title: 'yarn', value: 'yarn' },
-          ],
-        },
-        {
-          type: 'toggle',
-          name: 'git',
-          message: 'Initialize a git repository?',
-          initial: true,
-          active: 'yes',
-          inactive: 'no',
-        },
-        {
-          type: 'toggle',
-          name: 'install',
-          message: 'Install dependencies?',
-          initial: true,
-          active: 'yes',
-          inactive: 'no',
-        },
-      ],
-      {
-        onCancel: () => {
-          console.log('Operation cancelled');
-          process.exit(1);
-        },
-      },
-    );
-
-    const rootDir = resolve(process.cwd(), name);
-    mkdirSync(rootDir, { recursive: true });
-    await copyDir(answers.template.path, rootDir);
-
-    if (answers.git) {
-      const git = simpleGit(rootDir);
-      await git.init();
-      await git.add('.');
-      await git.commit('Initial commit');
-    }
-
-    if (answers.install) {
-      const spinner = showSpinner('Installing dependencies...');
-      const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm';
-
-      await new Promise<void>((resolve, reject) => {
-        const child = cp.exec(`${cmd} install`, {
-          cwd: rootDir,
-        });
-
-        child.on('error', reject);
-        child.on('exit', (code) => {
-          if (code === 0) {
-            resolve();
-          } else {
-            reject(
-              new Error(`Failed to install dependencies with code ${code}`),
-            );
-          }
-        });
-      }).finally(() => spinner.stop());
-    }
-
-    console.log(
-      picocolors.blue(`\nYour Astroneer.js project is already set up!`),
-    );
-    console.log(
-      picocolors.blue(`\nTo get started, run the following commands:\n`),
-    );
-    console.log(picocolors.cyan(`  cd ${name}`));
-    console.log(picocolors.cyan(`  astroneer dev\n`));
-    console.log(picocolors.blue('Good luck, Astroneer! 🚀'));
-  });
-
+export { newProject };
 export default newCmd;

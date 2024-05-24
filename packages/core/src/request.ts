@@ -1,62 +1,70 @@
 import { IncomingMessage } from 'http';
 
+/**
+ * Represents an HTTP request.
+ */
 export class Request {
   /**
    * The primitive request instance.
    */
   private primitiveRequestInstance: IncomingMessage;
 
+  /**
+   * Creates a new Request instance.
+   * @param req - The incoming message object representing the request.
+   * @param params - The parameters of the request.
+   * @param query - The query parameters of the request.
+   */
   constructor(
     req: IncomingMessage,
-    /**
-     * The parameters of the request.
-     */
     readonly params: { [key: string]: string } = {},
-    /**
-     * The query of the request.
-     */
     readonly query: { [key: string]: string } = {},
   ) {
     this.primitiveRequestInstance = req;
   }
 
   /**
-   * The socket of the request.
+   * Gets the socket associated with the request.
+   * @returns The socket associated with the request.
    */
   get socket() {
     return this.primitiveRequestInstance.socket;
   }
 
   /**
-   * The headers of the request.
+   * Gets the headers of the request.
+   * @returns The headers of the request.
    */
   get headers() {
     return this.primitiveRequestInstance.headers;
   }
 
   /**
-   * The method of the request.
+   * Gets the HTTP method of the request.
+   * @returns The HTTP method of the request.
    */
   get method() {
     return this.primitiveRequestInstance.method;
   }
 
   /**
-   * The url of the request.
+   * Gets the URL of the request.
+   * @returns The URL of the request.
    */
   get url() {
     return this.primitiveRequestInstance.url;
   }
 
   /**
-   * The status code of the request.
+   * Gets the status code of the request.
+   * @returns The status code of the request.
    */
   get statusCode() {
     return this.primitiveRequestInstance.statusCode;
   }
 
   /**
-   * The status message of the request.
+   * Gets the status message of the request.
    * @returns The status message of the request.
    */
   async body<T = unknown>(): Promise<T> {

@@ -4,6 +4,9 @@ import { Command } from 'commander';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 
+/**
+ * Command to start Astroneer.js app.
+ */
 const startCmd = new Command('start')
   .description('Start Astroneer.js app')
   .option('-p, --port <port>', 'Port to run the server on', '3000')

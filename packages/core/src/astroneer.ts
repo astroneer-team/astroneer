@@ -6,6 +6,13 @@ import { Request } from './request';
 import { Response } from './response';
 import { AstroneerRouter, Route, RouteMiddleware } from './router';
 
+/**
+ * The `Astroneer` class represents the core functionality of the Astroneer framework.
+ * It provides methods for preparing the framework, handling incoming HTTP requests,
+ * and running middlewares and handlers.
+ *
+ * @since 0.1.0
+ */
 export class Astroneer {
   private constructor(private router: AstroneerRouter) {}
 
@@ -13,6 +20,7 @@ export class Astroneer {
    * The `prepare` method is a factory method that creates a new instance of
    * {@link Astroneer} and preloads all routes from the router.
    *
+   * @example
    * ```ts
    * import { Astroneer } from '@astroneer/core';
    * import { createServer } from 'http';
@@ -30,7 +38,8 @@ export class Astroneer {
    *  })
    * }
    * ```
-   * @since 0.1.0
+   *
+   * @returns A promise that resolves to an instance of {@link Astroneer}.
    */
   static async prepare(): Promise<Astroneer> {
     const router = new AstroneerRouter();
@@ -41,6 +50,10 @@ export class Astroneer {
   /**
    * The `handle` method is the main entry point for handling incoming HTTP requests.
    * It matches the request to a route, runs any middlewares, and executes the handler.
+   *
+   * @param req - The incoming HTTP request.
+   * @param res - The server response object.
+   * @param parsedUrl - The parsed URL object.
    */
   async handle(
     req: IncomingMessage,

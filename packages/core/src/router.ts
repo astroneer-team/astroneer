@@ -114,8 +114,12 @@ async function importRouteModule(filePath: string): Promise<RouteModule> {
   return await import(filePath);
 }
 
+/**
+ * Represents the AstroneerRouter class.
+ */
 export class AstroneerRouter {
   private readonly logger = new Logger();
+
   /**
    * An array of preloaded routes.
    */
@@ -148,6 +152,12 @@ export class AstroneerRouter {
     });
   }
 
+  /**
+   * Loads the routes from the given file names.
+   * @param fileNames - The array of file names to load routes from.
+   * @returns A promise that resolves when all routes are loaded.
+   * @private
+   */
   private async loadRoutes(fileNames: string[]): Promise<void> {
     const promises = fileNames.map(async (fileName) => {
       const routePath = path.resolve(fileName);
@@ -168,12 +178,25 @@ export class AstroneerRouter {
     await Promise.all(promises);
   }
 
+  /**
+   * Extracts the HTTP server methods from the given route module.
+   * @param routeModule - The route module to extract methods from.
+   * @returns An array of HTTP server methods.
+   * @private
+   */
   private extractMethods(routeModule: RouteModule): HttpServerMethods[] {
     return Object.keys(routeModule).filter((key) =>
       Object.values(HttpServerMethods).includes(key as HttpServerMethods),
     ) as HttpServerMethods[];
   }
 
+  /**
+   * Preloads a route based on the file path and HTTP server method.
+   * @param filePath - The file path of the route.
+   * @param method - The HTTP server method.
+   * @returns The preloaded route.
+   * @private
+   */
   private preloadRoute(
     filePath: string,
     method: HttpServerMethods,
@@ -212,6 +235,12 @@ export class AstroneerRouter {
     };
   }
 
+  /**
+   * Matches the given HTTP server method and pathname to a route.
+   * @param method - The HTTP server method.
+   * @param pathname - The pathname to match.
+   * @returns A promise that resolves to the matched route, or null if no match is found.
+   */
   async match(method: string, pathname: string): Promise<Route | null> {
     const safePathname = path.normalize(pathname).replaceAll(/\\/g, '/');
     const route = this.findMatchingRoute(this.routes, method, safePathname);
@@ -222,6 +251,14 @@ export class AstroneerRouter {
     return this.createRoute(method, route, params);
   }
 
+  /**
+   * Finds a matching route from the given routes list based on the HTTP server method and pathname.
+   * @param routesList - The list of routes to search.
+   * @param method - The HTTP server method.
+   * @param pathname - The pathname to match.
+   * @returns The matching route, or undefined if no match is found.
+   * @private
+   */
   private findMatchingRoute(
     routesList: PreloadedRouteWithHandlers[],
     method: string,
@@ -233,6 +270,13 @@ export class AstroneerRouter {
     );
   }
 
+  /**
+   * Extracts the route parameters from the given route and pathname.
+   * @param route - The route to extract parameters from.
+   * @param pathname - The pathname to extract parameters from.
+   * @returns An array of route parameters, or undefined if no parameters are found.
+   * @private
+   */
   private extractParams(
     route: PreloadedRoute,
     pathname: string,
@@ -240,6 +284,14 @@ export class AstroneerRouter {
     return pathname.match(new RegExp(route.regex))?.slice(1);
   }
 
+  /**
+   * Creates a Route object based on the given method, route, and parameters.
+   * @param method - The HTTP server method.
+   * @param route - The preloaded route.
+   * @param params - The route parameters.
+   * @returns A promise that resolves to the created Route object.
+   * @private
+   */
   private async createRoute(
     method: string,
     route: PreloadedRouteWithHandlers,

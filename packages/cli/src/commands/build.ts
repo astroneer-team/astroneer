@@ -7,7 +7,11 @@ import { rimraf } from 'rimraf';
 import { compile } from '../compiler';
 import { printVersion } from '../helpers/print-version';
 
-export async function build() {
+/**
+ * Builds the project by compiling TypeScript files and creating the output files.
+ * @returns {Promise<void>} A promise that resolves when the build process is complete.
+ */
+export async function build(): Promise<void> {
   const logger = new Logger();
   const dist = await DIST_FOLDER();
 
@@ -47,6 +51,6 @@ export async function build() {
 
 const buildCmd = new Command('build')
   .description('Build Astroneer.js app for production')
-  .action(build.bind(null));
+  .action(build);
 
 export default buildCmd;

@@ -1,11 +1,18 @@
 import { IncomingMessage, ServerResponse } from 'http';
 
+/**
+ * Represents a response object that is used to send HTTP responses.
+ */
 export class Response {
   /**
    * The primitive response instance.
    */
   private readonly primitiveResponseInstance: ServerResponse<IncomingMessage>;
 
+  /**
+   * Creates a new Response instance.
+   * @param res The underlying ServerResponse instance.
+   */
   constructor(res: ServerResponse<IncomingMessage>) {
     this.primitiveResponseInstance = res;
   }
@@ -32,6 +39,7 @@ export class Response {
    * Sends a JSON response.
    * @param data The data to send.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   json(data: any) {
     this.primitiveResponseInstance.setHeader(
       'Content-Type',
@@ -44,6 +52,7 @@ export class Response {
    * Sends a response.
    * @param data The data to send.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   send(data: any) {
     this.end(data);
   }
