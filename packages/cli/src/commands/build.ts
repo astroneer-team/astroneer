@@ -41,7 +41,6 @@ export async function build(): Promise<void> {
 
 async function scanFiles(config: AstroneerConfig): Promise<void> {
   const files: string[] = [];
-
   await scan({
     rootDir: SOURCE_FOLDER,
     include: config.compiler.bundle
