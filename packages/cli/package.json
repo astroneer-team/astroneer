@@ -34,7 +34,8 @@
     "tar": "^7.0.1",
     "tree-kill": "^1.2.2",
     "tsconfig": "^7.0.0",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.5"
   },
   "repository": {
     "directory": "packages/cli",
