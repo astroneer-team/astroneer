@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.7-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.6...v1.3.7-alpha.0) (2024-05-24)
+
+
+### Bug Fixes
+
+* **@astroneer/core:** fix config error handler ([ed026cb](https://github.com/astroneer-team/astroneer/commit/ed026cbec1d5f261c0b6c0ae2b7686eabfe06357))
+* bugfixes ([dd42903](https://github.com/astroneer-team/astroneer/commit/dd429030a5d84a0077cd6201be8ae8421c867d59))
+
+
+
+
+
 ## [1.3.6](https://github.com/astroneer-team/astroneer/compare/v1.1.2...v1.3.6) (2024-05-16)
 
 
