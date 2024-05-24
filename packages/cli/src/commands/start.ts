@@ -1,6 +1,7 @@
 import { Logger } from '@astroneer/common';
 import { DIST_FOLDER } from '@astroneer/core';
 import { Command } from 'commander';
+import { configDotenv } from 'dotenv';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 
@@ -13,18 +14,24 @@ const startCmd = new Command('start')
   .option(
     '-h, --hostname <hostname>',
     'Hostname to run the server on',
-    '0.0.0.0',
+    'localhost',
   )
   .option('-d, --devmode', 'Enable development mode', false)
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
       const dist = await DIST_FOLDER();
+
       process.env.NODE_ENV = options.devmode ? 'development' : 'production';
       process.env.HOST = options.hostname;
 
+      configDotenv({
+        path: resolve('.env'),
+        override: true,
+      });
+
       if (!existsSync(dist)) {
         Logger.error(
-          'Could not find the .astroneer folder in the current directory. Do you forget to run `astroneer build`?',
+          'Could not find the output folder in the current directory. Do you forget to run `astroneer build`?',
         );
         process.exit(1);
       }

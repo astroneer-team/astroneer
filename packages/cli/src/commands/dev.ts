@@ -63,7 +63,7 @@ const devCmd = new Command('dev')
   .option(
     '-h, --hostname <hostname>',
     'Hostname to run the server on',
-    '0.0.0.0',
+    'localhost',
   )
   .action(devServer);
 
