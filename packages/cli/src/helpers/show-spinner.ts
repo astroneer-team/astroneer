@@ -8,7 +8,7 @@ import { blue, gray } from 'picocolors';
 export function showSpinner(message: string) {
   const spinner = {
     interval: 100,
-    frames: ['◜', '◠', '◝', '◞', '◡', '◟'],
+    frames: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
   };
 
   let i = 0;

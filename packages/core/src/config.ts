@@ -13,12 +13,23 @@ type CompilerOptions = {
 
 export interface AstroneerConfig {
   compiler: CompilerOptions;
+  logErrors?:
+    | boolean
+    | {
+        env?: ('development' | 'production' | string)[];
+        asDebug?: boolean;
+      };
+  logRequests?:
+    | boolean
+    | {
+        env?: ('development' | 'production' | string)[];
+      };
 }
 
-export function defineConfig({ compiler }: Partial<AstroneerConfig>) {
+export function defineConfig(config: Partial<AstroneerConfig>) {
   const _compiler = {
-    type: compiler?.type ?? 'esbuild',
-    bundle: compiler?.bundle ?? true,
+    type: config.compiler?.type ?? 'esbuild',
+    bundle: config.compiler?.bundle ?? true,
   };
 
   if (_compiler.type === 'swc' && _compiler.bundle) {
@@ -30,6 +41,7 @@ export function defineConfig({ compiler }: Partial<AstroneerConfig>) {
   }
 
   return {
+    ...config,
     outDir: resolve('.astroneer'),
     compiler: _compiler,
   };

@@ -45,11 +45,11 @@ export async function compileFile(file: string, config: AstroneerConfig) {
         format: 'cjs',
         platform: 'node',
         outfile,
-        minify: true,
-        minifyWhitespace: true,
-        minifySyntax: true,
-        minifyIdentifiers: true,
+        sourcemap: true,
+        target: 'node18',
         tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
+        minify: true,
+        keepNames: true,
         external:
           typeof config.compiler.bundle === 'object'
             ? config.compiler.bundle.externalModules

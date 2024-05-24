@@ -1,10 +1,23 @@
+import { Logger, logRequest } from '@astroneer/common';
 import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
+import { loadConfig } from './config';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { HttpError } from './errors';
 import { Request } from './request';
 import { Response } from './response';
-import { AstroneerRouter, Route, RouteMiddleware } from './router';
+import {
+  AstroneerRouter,
+  Route,
+  RouteHandler,
+  RouteMiddleware,
+} from './router';
+
+export type ErrorRouteHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+) => void | Promise<void>;
 
 /**
  * The `Astroneer` class represents the core functionality of the Astroneer framework.
@@ -59,7 +72,25 @@ export class Astroneer {
     req: IncomingMessage,
     res: ServerResponse,
     parsedUrl: UrlWithParsedQuery,
+    customHandlers?: {
+      onError?: ErrorRouteHandler;
+      onNotFound?: RouteHandler;
+    },
   ): Promise<void> {
+    const config = await loadConfig();
+
+    if (config.logRequests) {
+      if (typeof config.logRequests === 'boolean') {
+        logRequest(req, res);
+      } else if (typeof config.logRequests === 'object') {
+        if (config.logRequests.env) {
+          if (config.logRequests.env.includes(process.env.NODE_ENV!)) {
+            logRequest(req, res);
+          }
+        }
+      }
+    }
+
     const route = await this.matchRoute(req, parsedUrl);
 
     if (!route?.handler) {
@@ -77,8 +108,33 @@ export class Astroneer {
       await this.runMiddlewares(route, request, response);
       await this.runHandler(route, request, response);
     } catch (err) {
-      if (err instanceof HttpError) {
-        response.status(err.statusCode).json(err.toJSON());
+      if (config.logErrors) {
+        if (typeof config.logErrors === 'boolean') {
+          Logger.error(err.stack);
+        } else if (typeof config.logErrors === 'object') {
+          const logger = config.logErrors?.asDebug
+            ? Logger.debug
+            : Logger.error;
+
+          if (config.logErrors.env) {
+            if (config.logErrors.env.includes(process.env.NODE_ENV!)) {
+              logger(err.stack);
+            }
+          } else {
+            logger(err.stack);
+          }
+        }
+      }
+
+      if (customHandlers?.onError) {
+        return customHandlers.onError(err, request, response);
+      }
+
+      if (err?.build) {
+        return err.build(response);
+      } else {
+        const error = HttpError.fromError(err);
+        error.build(response);
       }
     }
   }
@@ -115,38 +171,31 @@ export class Astroneer {
 
   private async runMiddlewares(route: Route, req: Request, res: Response) {
     if (route.middlewares?.length) {
-      try {
-        await Promise.all(
-          route.middlewares.map((middleware) =>
-            this.runMiddleware(middleware, req, res),
-          ),
-        );
-      } catch (err) {
-        throw err;
-      }
+      await this.runInQueue(route.middlewares, req, res);
     }
   }
 
-  private runMiddleware(
-    middleware: RouteMiddleware,
-    Request: Request,
-    Response: Response,
+  private runInQueue(
+    middlewares: RouteMiddleware[],
+    req: Request,
+    res: Response,
   ) {
-    return new Promise<void>((resolve, reject) => {
-      try {
-        middleware(Request, Response, resolve);
-      } catch (err) {
-        reject(err);
-      }
+    return new Promise<void>((resolve) => {
+      const queue = middlewares.slice();
+      const next = () => {
+        if (queue.length) {
+          const middleware = queue.shift();
+          middleware?.(req, res, next);
+        } else {
+          resolve();
+        }
+      };
+
+      next();
     });
   }
 
-  private async runHandler(route: Route, Request: Request, Response: Response) {
-    try {
-      await route.handler?.(Request, Response);
-    } catch (err) {
-      console.error('Error running handler', err);
-      throw err;
-    }
+  private async runHandler(route: Route, req: Request, res: Response) {
+    await route.handler?.(req, res);
   }
 }
