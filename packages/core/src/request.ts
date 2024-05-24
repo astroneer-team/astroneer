@@ -1,5 +1,9 @@
 import { IncomingMessage } from 'http';
+import { HttpError } from './errors';
 
+/**
+ * Represents an HTTP request.
+ */
 /**
  * Represents an HTTP request.
  */
@@ -7,6 +11,7 @@ export class Request {
   /**
    * The primitive request instance.
    */
+  private map: Map<string, string> = new Map();
   private primitiveRequestInstance: IncomingMessage;
 
   /**
@@ -81,5 +86,38 @@ export class Request {
         }
       });
     });
+  }
+
+  /**
+   * Appends data to the request.
+   * @param data - The data to append.
+   */
+  append(data: unknown): void {
+    this.map.set('data', JSON.stringify(data));
+  }
+
+  /**
+   * Checks if the request has a specific key.
+   * @param key - The key to check.
+   * @returns `true` if the request has the key, `false` otherwise.
+   */
+  has(key: string): boolean {
+    return this.map.has(key);
+  }
+
+  /**
+   * Gets the value associated with a specific key.
+   * @param key - The key to get the value for.
+   * @returns The value associated with the key.
+   * @throws `HttpError` if the key does not exist.
+   */
+  get<T>(key: string): T {
+    const data = this.map.get(key);
+
+    if (!data) {
+      throw new HttpError(500, 'Attempted to get a key that does not exist');
+    }
+
+    return JSON.parse(data);
   }
 }
