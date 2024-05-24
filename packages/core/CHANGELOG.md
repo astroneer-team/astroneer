@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/astroneer-team/astroneer/compare/v1.3.13...v1.4.0) (2024-05-24)
+
+**Note:** Version bump only for package @astroneer/core
+
+
+
+
+
 ## [1.3.12](https://github.com/astroneer-team/astroneer/compare/v1.3.10...v1.3.12) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
