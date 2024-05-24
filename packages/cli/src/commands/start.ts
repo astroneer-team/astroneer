@@ -13,13 +13,14 @@ const startCmd = new Command('start')
   .option(
     '-h, --hostname <hostname>',
     'Hostname to run the server on',
-    'localhost',
+    '0.0.0.0',
   )
   .option('-d, --devmode', 'Enable development mode', false)
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
       const dist = await DIST_FOLDER();
       process.env.NODE_ENV = options.devmode ? 'development' : 'production';
+      process.env.HOST = options.hostname;
 
       if (!existsSync(dist)) {
         Logger.error(

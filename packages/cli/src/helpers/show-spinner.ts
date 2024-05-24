@@ -1,5 +1,10 @@
 import { blue, gray } from 'picocolors';
 
+/**
+ * Displays a spinner animation with a given message.
+ * @param message - The message to display alongside the spinner animation.
+ * @returns An object with a `stop` function that can be called to stop the spinner animation.
+ */
 export function showSpinner(message: string) {
   const spinner = {
     interval: 100,

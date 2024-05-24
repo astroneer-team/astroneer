@@ -25,17 +25,17 @@ export async function devServer(options: { port: string; hostname: string }) {
 
     await build();
 
+    process.env.NODE_ENV = 'development';
+    process.env.PORT = options.port;
+    process.env.HOST = options.hostname;
+
     configDotenv({
-      processEnv: {
-        NODE_ENV: 'development',
-        PORT: options.port,
-        HOSTNAME: options.hostname,
-      },
-      path: [resolve(process.cwd(), '.env')],
+      path: resolve('.env'),
       override: true,
     });
 
     const start = async () => {
+      delete require.cache[resolve(dist, 'server.js')];
       server = await import(resolve(dist, 'server.js')).then((m) =>
         m.default(),
       );
@@ -63,7 +63,7 @@ const devCmd = new Command('dev')
   .option(
     '-h, --hostname <hostname>',
     'Hostname to run the server on',
-    'localhost',
+    '0.0.0.0',
   )
   .action(devServer);
 

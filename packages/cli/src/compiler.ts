@@ -7,6 +7,11 @@ import path, { resolve } from 'path';
 import picocolors from 'picocolors';
 import ts from 'typescript';
 
+/**
+ * Compiles a file using the specified configuration.
+ * @param file - The file to compile.
+ * @param config - The Astroneer configuration.
+ */
 export function compile(file: string, config: AstroneerConfig) {
   const now = Date.now();
   const relativePath = path.relative(
