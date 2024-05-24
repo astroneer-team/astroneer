@@ -90,10 +90,11 @@ export class Request {
 
   /**
    * Appends data to the request.
+   * @param key - The key to append the data to.
    * @param data - The data to append.
    */
-  append(data: unknown): void {
-    this.map.set('data', JSON.stringify(data));
+  append(key: string, data: unknown): void {
+    this.map.set(key, JSON.stringify(data));
   }
 
   /**
