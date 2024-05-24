@@ -1,24 +1,66 @@
-import { DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
+import { Logger } from '@astroneer/common';
+import { AstroneerConfig, SOURCE_FOLDER } from '@astroneer/core';
+import * as swc from '@swc/core';
 import builder from 'esbuild';
-import path from 'path';
+import { mkdirSync, writeFileSync } from 'fs';
+import path, { resolve } from 'path';
+import picocolors from 'picocolors';
+import ts from 'typescript';
 
-export async function compile(file: string) {
+export function compile(file: string, config: AstroneerConfig) {
+  const now = Date.now();
   const relativePath = path.relative(
     SOURCE_FOLDER,
     file.replace(/\.(j|t)s?$/, '.js'),
   );
 
-  const outfile = path.resolve(await DIST_FOLDER(), relativePath);
+  const outfile = path.resolve(config.outDir, relativePath);
+  const { compilerOptions } = ts.readConfigFile(
+    resolve('tsconfig.json'),
+    ts.sys.readFile,
+  ).config;
 
-  await builder.build({
-    entryPoints: [file],
-    bundle: true,
-    format: 'cjs',
-    platform: 'node',
-    outfile,
-    minify: true,
-    minifyWhitespace: true,
-  });
+  mkdirSync(path.dirname(outfile), { recursive: true });
 
-  return outfile;
+  switch (config.compiler.type) {
+    case 'esbuild':
+      builder.buildSync({
+        entryPoints: [file],
+        bundle: !!config.compiler.bundle,
+        format: 'cjs',
+        platform: 'node',
+        outfile,
+        minify: true,
+        minifyWhitespace: true,
+        minifySyntax: true,
+        minifyIdentifiers: true,
+        tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
+        external:
+          typeof config.compiler.bundle === 'object'
+            ? config.compiler.bundle.externalModules
+            : [],
+      });
+      break;
+    case 'swc':
+      const { code } = swc.transformFileSync(file, {
+        jsc: {
+          target: compilerOptions?.target?.toLowerCase() ?? 'esnext',
+        },
+        module: {
+          type: compilerOptions?.module ?? 'commonjs',
+        },
+      });
+
+      writeFileSync(outfile, code);
+      break;
+    default:
+      Logger.error(`Unsupported compiler type: ${config.compiler.type}`);
+      process.exit(1);
+  }
+
+  Logger.log(
+    `${picocolors.blue('✔')} ${picocolors.gray(relativePath)} ${picocolors.blue(
+      `(${Date.now() - now}ms)`,
+    )}`,
+  );
 }

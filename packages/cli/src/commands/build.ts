@@ -1,47 +1,48 @@
-import { createFile, Logger } from '@astroneer/common';
-import { DIST_FOLDER, scan, SOURCE_FOLDER } from '@astroneer/core';
+import { createFile } from '@astroneer/common';
+import {
+  AstroneerConfig,
+  CONFIG,
+  DIST_FOLDER,
+  scan,
+  SOURCE_FOLDER,
+} from '@astroneer/core';
 import { Command } from 'commander';
 import path from 'path';
-import picocolors from 'picocolors';
 import { rimraf } from 'rimraf';
 import { compile } from '../compiler';
 import { printVersion } from '../helpers/print-version';
+import { showSpinnerWithPromise } from '../helpers/show-spinner';
 
 /**
  * Builds the project by compiling TypeScript files and creating the output files.
  * @returns {Promise<void>} A promise that resolves when the build process is complete.
  */
 export async function build(): Promise<void> {
-  const logger = new Logger();
   const dist = await DIST_FOLDER();
-
+  const config = await CONFIG();
   await printVersion();
-  await rimraf(dist, {});
+  await rimraf(dist);
+  await showSpinnerWithPromise(
+    () => scanFiles(config),
+    'Building Astroneer.js app',
+  );
+  createMainFile(dist);
+}
 
-  const tsFiles: string[] = [];
-
+async function scanFiles(config: AstroneerConfig): Promise<void> {
   await scan({
     rootDir: SOURCE_FOLDER,
-    include: [/\/?server\.ts$/, /\/routes(?:\/[^\/]+)*\/[^\/]+\.ts$/],
+    include: config.compiler.bundle
+      ? [/\/?server\.ts$/, /\/routes(?:\/[^\/]+)*\/[^\/]+\.ts$/]
+      : [/\/*.ts$/],
     exclude: [/\.d\.ts$/i, /\.spec\.(ts|js)$/i],
     onFile(file) {
-      tsFiles.push(file);
+      compile(file, config);
     },
   });
+}
 
-  const promises = tsFiles.map(async (file) => {
-    const start = Date.now();
-    const outFile = await compile(file).then((res) =>
-      path.relative(process.cwd(), res),
-    );
-
-    logger.log(
-      `${picocolors.blue('✔')} ${picocolors.gray(outFile)} ${picocolors.blue(`(${Date.now() - start}ms)`)}`,
-    );
-  });
-
-  await Promise.all(promises);
-
+function createMainFile(dist: string): void {
   createFile({
     filePath: path.resolve(dist, 'main.js'),
     content: "require('./server').default();",

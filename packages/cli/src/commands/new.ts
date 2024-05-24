@@ -18,7 +18,7 @@ import simpleGit from 'simple-git';
 import { pipeline, Readable } from 'stream';
 import { extract, list } from 'tar';
 import { promisify } from 'util';
-import { showSpinner } from '../helpers/show-spinner';
+import { showSpinnerWithPromise } from '../helpers/show-spinner';
 
 const OWNER = 'astroneer-team';
 const REPO = 'astroneer-templates';
@@ -130,8 +130,10 @@ export async function copyDir(srcDir: string, destDir: string) {
  * @returns A Promise that resolves when the server is started.
  */
 async function newProject(name: string) {
-  const spinner = showSpinner('Downloading Astroneer.js templates...');
-  const templates = await downloadTemplates().finally(() => spinner.stop());
+  const templates = await showSpinnerWithPromise(
+    () => downloadTemplates(),
+    'Downloading Astroneer.js templates...',
+  );
 
   const answers = await prompts(
     [
@@ -190,10 +192,9 @@ async function newProject(name: string) {
   }
 
   if (answers.install) {
-    const spinner = showSpinner('Installing dependencies...');
     const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm';
 
-    await new Promise<void>((resolve, reject) => {
+    const installPackages = new Promise<void>((resolve, reject) => {
       const child = cp.exec(`${cmd} install`, {
         cwd: rootDir,
       });
@@ -201,12 +202,17 @@ async function newProject(name: string) {
       child.on('error', reject);
       child.on('exit', (code) => {
         if (code === 0) {
-          path.resolve();
+          resolve();
         } else {
           reject(new Error(`Failed to install dependencies with code ${code}`));
         }
       });
-    }).finally(() => spinner.stop());
+    });
+
+    await showSpinnerWithPromise(
+      () => installPackages,
+      'Installing dependencies...',
+    );
   }
 
   console.log(
