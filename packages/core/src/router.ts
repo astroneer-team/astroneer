@@ -131,7 +131,7 @@ export class AstroneerRouter {
     const staticRoutes: PreloadedRoute[] = [];
     const dynamicRoutes: PreloadedRoute[] = [];
 
-    routes.forEach((route) => {
+    [...routes].forEach((route) => {
       delete route?.middlewares;
       if (route.namedRegex.includes(':')) {
         dynamicRoutes.push(route);

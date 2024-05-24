@@ -1,4 +1,4 @@
-import { isDevMode, Logger } from '@astroneer/common';
+import { Logger } from '@astroneer/common';
 import { resolve } from 'path';
 
 type CompilerType = 'esbuild' | 'swc';
@@ -38,7 +38,11 @@ export function defineConfig({ compiler }: Partial<AstroneerConfig>) {
 export async function loadConfig(): Promise<AstroneerConfig> {
   try {
     const config = await import(
-      resolve(isDevMode() ? 'astroneer.config.js' : '.astroneer/config.json')
+      resolve(
+        process.env.ASTRONEER_CONTEXT === 'start'
+          ? '.astroneer/astroneer.config.json'
+          : 'astroneer.config.js',
+      )
     ).then((m) => m.default);
     return config;
   } catch (err) {

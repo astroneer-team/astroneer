@@ -19,6 +19,7 @@ const startCmd = new Command('start')
   .option('-d, --devmode', 'Enable development mode', false)
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
+      process.env.ASTRONEER_CONTEXT = 'start';
       process.env.NODE_ENV = options.devmode ? 'development' : 'production';
       process.env.HOST = options.hostname;
 

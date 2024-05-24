@@ -44,6 +44,8 @@
   },
   "scripts": {
     "format": "prettier --write .",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "release:patch": "lerna version patch && lerna run build && lerna publish from-package",
+    "astroneer": "node packages/cli/dist/cli.js"
   }
 }

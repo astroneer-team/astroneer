@@ -43,6 +43,7 @@ export class Astroneer {
    */
   static async prepare(): Promise<Astroneer> {
     const router = new AstroneerRouter();
+    await router.preloadRoutes();
     return new Astroneer(router);
   }
 

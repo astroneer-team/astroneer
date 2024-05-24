@@ -1,4 +1,4 @@
-import { createFile } from '@astroneer/common';
+import { createFile, isDevMode, Logger } from '@astroneer/common';
 import {
   AstroneerConfig,
   AstroneerRouter,
@@ -24,7 +24,6 @@ import { showSpinnerWithPromise } from '../helpers/show-spinner';
  * @returns A promise that resolves when the build process is complete.
  */
 export async function build(): Promise<void> {
-  process.env.NODE_ENV = 'development';
   const config = await CONFIG();
   await printVersion();
   await rimraf(DIST_FOLDER);
@@ -34,9 +33,12 @@ export async function build(): Promise<void> {
   );
   createMainFile(DIST_FOLDER);
   createConfigFile(DIST_FOLDER, config);
-  const router = new AstroneerRouter();
-  const routes = await router.preloadRoutes();
-  createRoutesMetadataFile(DIST_FOLDER, router.generateRouteMetadata(routes));
+
+  if (!isDevMode()) {
+    const router = new AstroneerRouter();
+    const routes = await router.preloadRoutes();
+    createRoutesMetadataFile(DIST_FOLDER, router.generateRouteMetadata(routes));
+  }
 }
 
 async function scanFiles(config: AstroneerConfig): Promise<void> {
@@ -65,7 +67,7 @@ function createMainFile(dist: string): void {
 
 function createConfigFile(dist: string, config: AstroneerConfig): void {
   createFile({
-    filePath: path.resolve(dist, 'config.json'),
+    filePath: path.resolve(dist, 'astroneer.config.json'),
     content: JSON.stringify(config, null, 2),
     overwrite: true,
   });
@@ -76,7 +78,7 @@ function createRoutesMetadataFile(
   metadata: ReturnType<typeof AstroneerRouter.prototype.generateRouteMetadata>,
 ): void {
   createFile({
-    filePath: path.resolve(dist, 'routes.json'),
+    filePath: path.resolve(dist, 'routes.manifest.json'),
     content: metadata,
     overwrite: true,
   });
@@ -84,6 +86,13 @@ function createRoutesMetadataFile(
 
 const buildCmd = new Command('build')
   .description('Build Astroneer.js app for production')
-  .action(build);
+  .action(() => {
+    process.env.ASTRONEER_CONTEXT = 'build';
+    process.env.NODE_ENV = 'production';
+    build().catch((err) => {
+      Logger.error(err);
+      process.exit(1);
+    });
+  });
 
 export default buildCmd;

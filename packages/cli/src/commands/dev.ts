@@ -11,7 +11,7 @@ import { build } from './build';
  *
  * @param options - The server options including the port and hostname.
  */
-export async function devServer(options: { port: string; hostname: string }) {
+export async function devServer() {
   let server: Server;
   const watcher = watch([resolve(SOURCE_FOLDER, '**/*.ts'), CONFIG_FILE], {
     ignoreInitial: true,
@@ -21,12 +21,7 @@ export async function devServer(options: { port: string; hostname: string }) {
     ],
   }).on('all', async () => {
     delete require.cache[resolve(CONFIG_FILE)];
-
     await build();
-
-    process.env.NODE_ENV = 'development';
-    process.env.PORT = options.port;
-    process.env.HOST = options.hostname;
 
     configDotenv({
       path: resolve('.env'),
@@ -64,6 +59,12 @@ const devCmd = new Command('dev')
     'Hostname to run the server on',
     'localhost',
   )
-  .action(devServer);
+  .action(async (options: { port: string; hostname: string }) => {
+    process.env.ASTRONEER_CONTEXT = 'dev';
+    process.env.NODE_ENV = 'development';
+    process.env.PORT = options.port;
+    process.env.HOSTNAME = options.hostname;
+    await devServer();
+  });
 
 export default devCmd;
