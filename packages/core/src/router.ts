@@ -97,6 +97,8 @@ export type PreloadedRoute = {
    * The named regular expression for the route.
    */
   namedRegex: string;
+
+  middlewares?: RouteMiddleware[];
 };
 
 export type PreloadedRouteWithHandlers = PreloadedRoute & {
@@ -125,11 +127,32 @@ export class AstroneerRouter {
    */
   private routes: PreloadedRouteWithHandlers[] = [];
 
+  generateRouteMetadata(routes: PreloadedRoute[]): string {
+    const staticRoutes: PreloadedRoute[] = [];
+    const dynamicRoutes: PreloadedRoute[] = [];
+
+    routes.forEach((route) => {
+      delete route?.middlewares;
+      if (route.namedRegex.includes(':')) {
+        dynamicRoutes.push(route);
+      } else {
+        staticRoutes.push(route);
+      }
+    });
+
+    const metadata = {
+      staticRoutes,
+      dynamicRoutes,
+    };
+
+    return JSON.stringify(metadata, null, 2);
+  }
+
   /**
    * The `preloadRoutes` method scans the routes directory and preloads all routes.
    * @since 0.1.0
    */
-  async preloadRoutes(): Promise<void> {
+  async preloadRoutes(): Promise<PreloadedRoute[]> {
     const routeFiles: string[] = [];
 
     // Scan the routes directory for route files
@@ -150,6 +173,8 @@ export class AstroneerRouter {
     this.routes.forEach((route) => {
       this.logger.log(`Mapped ${route.method.toUpperCase()} ${route.page}`);
     });
+
+    return this.routes;
   }
 
   /**

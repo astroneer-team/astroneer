@@ -1,6 +1,5 @@
-import { Logger } from '@astroneer/common';
+import { isDevMode, Logger } from '@astroneer/common';
 import { resolve } from 'path';
-import { CONFIG_FILE } from './constants';
 
 type CompilerType = 'esbuild' | 'swc';
 type CompilerOptions = {
@@ -17,8 +16,7 @@ export interface AstroneerConfig {
   compiler: CompilerOptions;
 }
 
-export function defineConfig({ outDir, compiler }: Partial<AstroneerConfig>) {
-  const _outDir = outDir ?? '.astroneer';
+export function defineConfig({ compiler }: Partial<AstroneerConfig>) {
   const _compiler = {
     type: compiler?.type ?? 'esbuild',
     bundle: compiler?.bundle ?? true,
@@ -33,14 +31,16 @@ export function defineConfig({ outDir, compiler }: Partial<AstroneerConfig>) {
   }
 
   return {
-    outDir: resolve(_outDir),
+    outDir: resolve('.astroneer'),
     compiler: _compiler,
   };
 }
 
 export async function loadConfig(): Promise<AstroneerConfig> {
   try {
-    const config = await import(CONFIG_FILE).then((m) => m.default);
+    const config = await import(
+      resolve(isDevMode() ? 'astroneer.config.js' : '.astroneer/config.json')
+    ).then((m) => m.default);
     return config;
   } catch (err) {
     Logger.error(

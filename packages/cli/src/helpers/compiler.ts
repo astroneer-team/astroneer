@@ -2,7 +2,8 @@ import { Logger } from '@astroneer/common';
 import { AstroneerConfig, SOURCE_FOLDER } from '@astroneer/core';
 import * as swc from '@swc/core';
 import builder from 'esbuild';
-import { mkdirSync, writeFileSync } from 'fs';
+import { mkdirSync } from 'fs';
+import { writeFile } from 'fs/promises';
 import path, { resolve } from 'path';
 import picocolors from 'picocolors';
 import ts from 'typescript';
@@ -12,7 +13,16 @@ import ts from 'typescript';
  * @param file - The file to compile.
  * @param config - The Astroneer configuration.
  */
-export function compile(file: string, config: AstroneerConfig) {
+export async function compile(files: string[], config: AstroneerConfig) {
+  await Promise.all(files.map((file) => compileFile(file, config)));
+}
+
+/**
+ * Compiles a file using the specified configuration.
+ * @param file - The path of the file to compile.
+ * @param config - The Astroneer configuration.
+ */
+export async function compileFile(file: string, config: AstroneerConfig) {
   const now = Date.now();
   const relativePath = path.relative(
     SOURCE_FOLDER,
@@ -29,7 +39,7 @@ export function compile(file: string, config: AstroneerConfig) {
 
   switch (config.compiler.type) {
     case 'esbuild':
-      builder.buildSync({
+      await builder.build({
         entryPoints: [file],
         bundle: !!config.compiler.bundle,
         format: 'cjs',
@@ -56,7 +66,7 @@ export function compile(file: string, config: AstroneerConfig) {
         },
       });
 
-      writeFileSync(outfile, code);
+      await writeFile(outfile, code);
       break;
     default:
       Logger.error(`Unsupported compiler type: ${config.compiler.type}`);
