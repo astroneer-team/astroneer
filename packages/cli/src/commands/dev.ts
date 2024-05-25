@@ -20,7 +20,7 @@ export async function devServer() {
       path.resolve(process.cwd(), DIST_FOLDER),
       path.resolve(process.cwd(), 'node_modules'),
     ],
-  }).on('all', async () => {
+  }).on('change', async () => {
     delete require.cache[resolve(CONFIG_FILE)];
     try {
       await build();
@@ -49,7 +49,7 @@ export async function devServer() {
     } catch (err) {}
   });
 
-  watcher.emit('all');
+  watcher.emit('change');
 }
 
 /**

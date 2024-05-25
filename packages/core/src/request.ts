@@ -1,5 +1,6 @@
 import { IncomingMessage } from 'http';
 import { HttpError } from './errors';
+import { UnprocessableError } from './errors/application/unprocessable-error';
 
 /**
  * Represents an HTTP request.
@@ -11,7 +12,7 @@ export class Request {
   /**
    * The primitive request instance.
    */
-  private map: Map<string, string> = new Map();
+  private map: Map<string | symbol, string> = new Map();
   private primitiveRequestInstance: IncomingMessage;
 
   /**
@@ -73,17 +74,13 @@ export class Request {
    * @returns The status message of the request.
    */
   async body<T = unknown>(): Promise<T> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       let data = '';
       this.primitiveRequestInstance.on('data', (chunk) => {
         data += chunk;
       });
       this.primitiveRequestInstance.on('end', () => {
-        try {
-          resolve(JSON.parse(data));
-        } catch (err) {
-          reject(err);
-        }
+        resolve(data ? JSON.parse(data) : undefined);
       });
     });
   }
@@ -93,7 +90,7 @@ export class Request {
    * @param key - The key to append the data to.
    * @param data - The data to append.
    */
-  append(key: string, data: unknown): void {
+  append(key: string | symbol, data: unknown): void {
     this.map.set(key, JSON.stringify(data));
   }
 
@@ -102,7 +99,7 @@ export class Request {
    * @param key - The key to check.
    * @returns `true` if the request has the key, `false` otherwise.
    */
-  has(key: string): boolean {
+  has(key: string | symbol): boolean {
     return this.map.has(key);
   }
 
@@ -112,11 +109,11 @@ export class Request {
    * @returns The value associated with the key.
    * @throws `HttpError` if the key does not exist.
    */
-  get<T>(key: string): T {
+  get<T>(key: string | symbol): T {
     const data = this.map.get(key);
 
     if (!data) {
-      throw new HttpError(500, 'Attempted to get a key that does not exist');
+      throw new UnprocessableError('Key does not exist');
     }
 
     return JSON.parse(data);

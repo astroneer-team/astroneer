@@ -14,7 +14,7 @@ export function logRequest(
   const logger = new Logger();
   const start = Date.now();
 
-  req.on('end', () => {
+  req.on('close', () => {
     const timestamp = picocolors.blue(`(${Date.now() - start}ms)`);
     const method = picocolors.gray(req.method ?? '');
     const url = picocolors.cyan(req.url ?? '');
