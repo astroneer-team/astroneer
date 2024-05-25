@@ -5,7 +5,6 @@ import { configDotenv } from 'dotenv';
 import { Server } from 'http';
 import path, { resolve } from 'path';
 import { build } from './build';
-import { Logger } from '@astroneer/common';
 
 /**
  * Starts the development server.
