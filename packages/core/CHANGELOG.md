@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.4](https://github.com/astroneer-team/astroneer/compare/v1.4.3...v1.4.4) (2024-05-25)
+
+
+### Features
+
+* Add UnprocessableError class for handling unprocessable requests ([47b0402](https://github.com/astroneer-team/astroneer/commit/47b0402232e7348bc9d8937d7cb20a2d3e40d048))
+
+
+
+
+
 ## [1.4.3](https://github.com/astroneer-team/astroneer/compare/v1.4.2...v1.4.3) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/core
