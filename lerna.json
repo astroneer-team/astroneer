@@ -12,7 +12,6 @@
       "distTag": "latest"
     },
     "version": {
-      "conventionalCommits": true,
       "gitTagVersion": true
     }
   }
