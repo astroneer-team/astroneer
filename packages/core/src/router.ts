@@ -158,8 +158,8 @@ export class AstroneerRouter {
     // Scan the routes directory for route files
     await scan({
       rootDir: resolve(DIST_FOLDER, 'routes'),
-      include: [/\.(t|j)s$/],
-      exclude: [/\.d\.ts$/, /\.spec\.(t|j)s$/],
+      include: [/\/*.(t|j)s$/],
+      exclude: [/\/*.d\.ts$/, /\/*.spec\.(t|j)s$/],
       onFile(file) {
         delete require.cache[file];
         routeFiles.push(file);

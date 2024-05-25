@@ -46,9 +46,9 @@ async function scanFiles(config: AstroneerConfig): Promise<void> {
   await scan({
     rootDir: SOURCE_FOLDER,
     include: config.compiler.bundle
-      ? [/\/?server\.ts$/, /\/routes(?:\/[^\/]+)*\/[^\/]+\.ts$/]
+      ? [/\/?server\.ts$/, /\/routes(?:\/[^\/]+)*\/[^\/]+\/*.ts$/]
       : [/\/*.ts$/],
-    exclude: [/\.d\.ts$/i, /\.spec\.(ts|js)$/i],
+    exclude: [/\/*.d\.ts$/i, /\/*.spec\.(ts|js)$/i],
     onFile(file) {
       files.push(file);
     },
