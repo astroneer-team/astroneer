@@ -1,7 +1,9 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "1.4.9-canary.0",
-  "packages": ["packages/*"],
+  "version": "1.4.10-canary.0",
+  "packages": [
+    "packages/*"
+  ],
   "command": {
     "run": {
       "sort": true,

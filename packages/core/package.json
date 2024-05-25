@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/core",
-  "version": "1.4.9-canary.0",
+  "version": "1.4.10-canary.0",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
