@@ -1,9 +1,7 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "version": "1.4.8",
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "command": {
     "run": {
       "sort": true,
@@ -11,13 +9,10 @@
     },
     "publish": {
       "registry": "https://registry.npmjs.org/",
-      "distTag": "latest",
-      "yes": true
+      "distTag": "latest"
     },
     "version": {
       "conventionalCommits": true,
-      "exact": true,
-      "yes": true,
       "gitTagVersion": true
     }
   }
