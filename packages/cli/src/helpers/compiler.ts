@@ -37,45 +37,55 @@ export async function compileFile(file: string, config: AstroneerConfig) {
 
   mkdirSync(path.dirname(outfile), { recursive: true });
 
-  switch (config.compiler.type) {
-    case 'esbuild':
-      await builder.build({
-        entryPoints: [file],
-        bundle: !!config.compiler.bundle,
-        format: 'cjs',
-        platform: 'node',
-        outfile,
-        sourcemap: true,
-        target: 'node18',
-        tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
-        minify: true,
-        keepNames: true,
-        external:
-          typeof config.compiler.bundle === 'object'
-            ? config.compiler.bundle.externalModules
-            : [],
-      });
-      break;
-    case 'swc':
-      const { code } = swc.transformFileSync(file, {
-        jsc: {
-          target: compilerOptions?.target?.toLowerCase() ?? 'esnext',
-        },
-        module: {
-          type: compilerOptions?.module ?? 'commonjs',
-        },
-      });
+  try {
+    switch (config.compiler.type) {
+      case 'esbuild':
+        await builder.build({
+          entryPoints: [file],
+          bundle: !!config.compiler.bundle,
+          format: 'cjs',
+          platform: 'node',
+          outfile,
+          sourcemap: true,
+          target: 'node18',
+          tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
+          minify: true,
+          keepNames: true,
+          external:
+            typeof config.compiler.bundle === 'object'
+              ? config.compiler.bundle.externalModules
+              : [],
+        });
+        break;
+      case 'swc':
+        const { code } = swc.transformFileSync(file, {
+          jsc: {
+            target: compilerOptions?.target?.toLowerCase() ?? 'esnext',
+          },
+          module: {
+            type: compilerOptions?.module ?? 'commonjs',
+          },
+        });
 
-      await writeFile(outfile, code);
-      break;
-    default:
-      Logger.error(`Unsupported compiler type: ${config.compiler.type}`);
-      process.exit(1);
+        await writeFile(outfile, code);
+        break;
+      default:
+        Logger.error(`Unsupported compiler type: ${config.compiler.type}`);
+        process.exit(1);
+    }
+
+    Logger.log(
+      `${picocolors.blue('✔')} ${picocolors.gray(relativePath.replaceAll(/\\/g, '/'))} ${picocolors.blue(
+        `(${Date.now() - now}ms)`,
+      )}`,
+    );
+  } catch (err) {
+    Logger.error(
+      `${picocolors.red('✖')} ${picocolors.gray(relativePath.replaceAll(/\\/g, '/'))} ${picocolors.red(
+        `(${Date.now() - now}ms)`,
+      )}`,
+    );
+
+    throw err;
   }
-
-  Logger.log(
-    `${picocolors.blue('✔')} ${picocolors.gray(relativePath.replaceAll(/\\/g, '/'))} ${picocolors.blue(
-      `(${Date.now() - now}ms)`,
-    )}`,
-  );
 }

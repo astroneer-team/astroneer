@@ -25,12 +25,14 @@ import { showSpinnerWithPromise } from '../helpers/show-spinner';
  */
 export async function build(): Promise<void> {
   const config = await CONFIG();
+
   await printVersion();
   await rimraf(DIST_FOLDER);
   await showSpinnerWithPromise(
     () => scanFiles(config),
     'Building Astroneer.js app',
   );
+
   createMainFile(DIST_FOLDER);
   createConfigFile(DIST_FOLDER, config);
 
@@ -86,13 +88,14 @@ function createRoutesMetadataFile(
 
 const buildCmd = new Command('build')
   .description('Build Astroneer.js app for production')
-  .action(() => {
+  .action(async () => {
     process.env.ASTRONEER_CONTEXT = 'build';
     process.env.NODE_ENV = 'production';
-    build().catch((err) => {
-      Logger.error(err);
+    try {
+      await build();
+    } catch (err) {
       process.exit(1);
-    });
+    }
   });
 
 export default buildCmd;

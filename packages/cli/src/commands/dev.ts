@@ -5,6 +5,7 @@ import { configDotenv } from 'dotenv';
 import { Server } from 'http';
 import path, { resolve } from 'path';
 import { build } from './build';
+import { Logger } from '@astroneer/common';
 
 /**
  * Starts the development server.
@@ -21,27 +22,31 @@ export async function devServer() {
     ],
   }).on('all', async () => {
     delete require.cache[resolve(CONFIG_FILE)];
-    await build();
+    try {
+      await build();
 
-    configDotenv({
-      path: resolve('.env'),
-      override: true,
-    });
+      configDotenv({
+        path: resolve('.env'),
+        override: true,
+      });
 
-    const start = async () => {
-      delete require.cache[resolve(DIST_FOLDER, 'server.js')];
-      server = await import(resolve(DIST_FOLDER, 'server.js')).then((m) =>
-        m.default(),
-      );
-    };
+      const start = async () => {
+        delete require.cache[resolve(DIST_FOLDER, 'server.js')];
+        server = await import(resolve(DIST_FOLDER, 'server.js')).then((m) =>
+          m.default(),
+        );
+      };
 
-    if (!server?.listening) {
-      return await start();
-    }
+      if (!server?.listening) {
+        return await start().catch((err) => {
+          console.error(err);
+        });
+      }
 
-    server.close(() => {
-      start();
-    });
+      server.close(() => {
+        start();
+      });
+    } catch (err) {}
   });
 
   watcher.emit('all');
