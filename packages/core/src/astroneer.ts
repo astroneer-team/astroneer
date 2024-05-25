@@ -80,19 +80,6 @@ export class Astroneer {
     },
   ): Promise<void> {
     const config = await loadConfig();
-
-    if (config.logRequests) {
-      if (typeof config.logRequests === 'boolean') {
-        logRequest(req, res);
-      } else if (typeof config.logRequests === 'object') {
-        if (config.logRequests.env) {
-          if (config.logRequests.env.includes(process.env.NODE_ENV!)) {
-            logRequest(req, res);
-          }
-        }
-      }
-    }
-
     const route = await this.matchRoute(req, parsedUrl);
 
     if (!route?.handler) {
@@ -109,6 +96,18 @@ export class Astroneer {
     try {
       await this.runMiddlewares(route.middlewares ?? [], request, response);
       await this.runHandler(route.handler, request, response);
+
+      if (config.logRequests) {
+        if (typeof config.logRequests === 'boolean') {
+          logRequest(req, res);
+        } else if (typeof config.logRequests === 'object') {
+          if (config.logRequests.env) {
+            if (config.logRequests.env.includes(process.env.NODE_ENV!)) {
+              logRequest(req, res);
+            }
+          }
+        }
+      }
     } catch (err) {
       if (err.name === UnprocessableError.name) {
         Logger.error(err.message);
