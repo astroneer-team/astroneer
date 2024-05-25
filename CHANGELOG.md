@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.5](https://github.com/lukearch/astroneer/compare/v1.4.4...v1.4.5) (2024-05-25)
+
+**Note:** Version bump only for package @astroneer/source
+
+
+
+
+
 ## [1.4.4](https://github.com/lukearch/astroneer/compare/v1.4.3...v1.4.4) (2024-05-25)
 
 
