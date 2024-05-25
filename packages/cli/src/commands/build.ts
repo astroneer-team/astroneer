@@ -29,12 +29,6 @@ export async function build(): Promise<void> {
   await rimraf(DIST_FOLDER);
   await scanFiles(config), createMainFile(DIST_FOLDER);
   createConfigFile(DIST_FOLDER, config);
-
-  if (!isDevMode()) {
-    const router = new AstroneerRouter();
-    const routes = await router.preloadRoutes();
-    createRoutesMetadataFile(DIST_FOLDER, router.generateRouteMetadata(routes));
-  }
 }
 
 async function scanFiles(config: AstroneerConfig): Promise<void> {
