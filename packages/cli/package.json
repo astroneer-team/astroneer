@@ -1,7 +1,7 @@
 {
   "name": "@astroneer/cli",
   "description": "A CLI for Astroneer.js",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

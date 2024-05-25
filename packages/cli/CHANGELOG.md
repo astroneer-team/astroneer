@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.7](https://github.com/astroneer-team/astroneer/compare/v1.4.6...v1.4.7) (2024-05-25)
+
+
+### Features
+
+* server crashing on compilation error fixed for devservers ([223e549](https://github.com/astroneer-team/astroneer/commit/223e5498c0dbc1a5b21e5e6d40b9a7b060b7a828))
+
+
+
+
+
 ## [1.4.6](https://github.com/astroneer-team/astroneer/compare/v1.4.5...v1.4.6) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/cli
