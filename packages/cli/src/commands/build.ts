@@ -12,7 +12,6 @@ import path from 'path';
 import { rimraf } from 'rimraf';
 import { compile } from '../helpers/compiler';
 import { printVersion } from '../helpers/print-version';
-import { showSpinnerWithPromise } from '../helpers/show-spinner';
 
 /**
  * Builds the project by compiling TypeScript files and creating the output files.
@@ -28,12 +27,7 @@ export async function build(): Promise<void> {
 
   await printVersion();
   await rimraf(DIST_FOLDER);
-  await showSpinnerWithPromise(
-    () => scanFiles(config),
-    'Building Astroneer.js app',
-  );
-
-  createMainFile(DIST_FOLDER);
+  await scanFiles(config), createMainFile(DIST_FOLDER);
   createConfigFile(DIST_FOLDER, config);
 
   if (!isDevMode()) {

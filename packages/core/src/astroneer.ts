@@ -1,4 +1,4 @@
-import { Logger, logRequest } from '@astroneer/common';
+import { Logger, createFile, isDevMode, logRequest } from '@astroneer/common';
 import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
 import { isAsyncFunction } from 'util/types';
@@ -14,6 +14,8 @@ import {
   RouteHandler,
   RouteMiddleware,
 } from './router';
+import path from 'path';
+import { DIST_FOLDER } from './constants';
 
 export type ErrorRouteHandler = (
   err: Error,
@@ -59,6 +61,16 @@ export class Astroneer {
   static async prepare(): Promise<Astroneer> {
     const router = new AstroneerRouter();
     await router.preloadRoutes();
+
+    if (isDevMode()) {
+      const metadata = router.generateRouteMetadata();
+      createFile({
+        filePath: path.resolve(DIST_FOLDER, 'routes.json'),
+        content: JSON.stringify(metadata, null, 2),
+        overwrite: true,
+      });
+    }
+
     return new Astroneer(router);
   }
 

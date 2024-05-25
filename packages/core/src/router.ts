@@ -127,16 +127,24 @@ export class AstroneerRouter {
    */
   private routes: PreloadedRouteWithHandlers[] = [];
 
-  generateRouteMetadata(routes: PreloadedRoute[]): string {
+  generateRouteMetadata(): string {
     const staticRoutes: PreloadedRoute[] = [];
     const dynamicRoutes: PreloadedRoute[] = [];
 
-    [...routes].forEach((route) => {
-      delete route?.middlewares;
-      if (route.namedRegex.includes(':')) {
-        dynamicRoutes.push(route);
+    [...this.routes].forEach((route) => {
+      const _route: PreloadedRoute = {
+        filePath: route.filePath,
+        page: route.page,
+        regex: route.regex,
+        method: route.method,
+        namedRegex: route.namedRegex,
+        params: route.params,
+      };
+
+      if (_route.namedRegex.includes(':')) {
+        dynamicRoutes.push(_route);
       } else {
-        staticRoutes.push(route);
+        staticRoutes.push(_route);
       }
     });
 
