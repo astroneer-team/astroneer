@@ -105,8 +105,8 @@ export class Astroneer {
     );
 
     try {
-      await this.runMiddlewares(route, request, response);
-      await this.runHandler(route, request, response);
+      await this.runMiddlewares(route.middlewares ?? [], request, response);
+      await this.runHandler(route.handler, request, response);
     } catch (err) {
       if (config.logErrors) {
         if (typeof config.logErrors === 'boolean') {
@@ -130,7 +130,7 @@ export class Astroneer {
         return customHandlers.onError(err, request, response);
       }
 
-      if (err?.build) {
+      if (err?.build && typeof err.build === 'function') {
         return err.build(response);
       } else {
         const error = HttpError.fromError(err);
@@ -169,9 +169,13 @@ export class Astroneer {
     return { request, response };
   }
 
-  private async runMiddlewares(route: Route, req: Request, res: Response) {
-    if (route.middlewares?.length) {
-      await this.runInQueue(route.middlewares, req, res);
+  private async runMiddlewares(
+    middlewares: RouteMiddleware[],
+    req: Request,
+    res: Response,
+  ) {
+    if (middlewares.length) {
+      await this.runInQueue(middlewares, req, res);
     }
   }
 
@@ -180,12 +184,16 @@ export class Astroneer {
     req: Request,
     res: Response,
   ) {
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       const queue = middlewares.slice();
       const next = () => {
         if (queue.length) {
           const middleware = queue.shift();
-          middleware?.(req, res, next);
+          try {
+            middleware?.(req, res, next);
+          } catch (err) {
+            reject(err);
+          }
         } else {
           resolve();
         }
@@ -195,7 +203,7 @@ export class Astroneer {
     });
   }
 
-  private async runHandler(route: Route, req: Request, res: Response) {
-    await route.handler?.(req, res);
+  private async runHandler(handler: RouteHandler, req: Request, res: Response) {
+    await handler(req, res);
   }
 }
