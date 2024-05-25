@@ -1,7 +1,7 @@
 {
   "name": "@astroneer/cli",
   "description": "A CLI for Astroneer.js",
-  "version": "1.4.8",
+  "version": "1.4.9-canary.0",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@astroneer/common": "1.4.8",
-    "@astroneer/core": "1.4.8",
+    "@astroneer/core": "^1.4.9-canary.0",
     "@isaacs/fs-minipass": "^4.0.1",
     "@octokit/rest": "^20.1.0",
     "@swc/core": "^1.5.7",
