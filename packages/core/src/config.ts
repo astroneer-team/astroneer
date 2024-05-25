@@ -52,8 +52,8 @@ export async function loadConfig(): Promise<AstroneerConfig> {
     const config = await import(
       resolve(
         process.env.ASTRONEER_CONTEXT === 'start'
-          ? '.astroneer/astroneer.config.json'
-          : 'astroneer.config.js',
+          ? resolve(process.cwd(), '.astroneer', 'astroneer.config.json')
+          : resolve(process.cwd(), 'astroneer.config.js'),
       )
     ).then((m) => m.default);
     return config;
@@ -61,6 +61,8 @@ export async function loadConfig(): Promise<AstroneerConfig> {
     Logger.error(
       'Unable to load config file. Please read https://astroneer.dev/docs/overview#astroneer-config to see more details.',
     );
+
+    console.error(err);
     process.exit(1);
   }
 }

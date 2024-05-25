@@ -74,7 +74,7 @@ export async function compileFile(file: string, config: AstroneerConfig) {
   }
 
   Logger.log(
-    `${picocolors.blue('✔')} ${picocolors.gray(relativePath)} ${picocolors.blue(
+    `${picocolors.blue('✔')} ${picocolors.gray(relativePath.replaceAll(/\\/g, '/'))} ${picocolors.blue(
       `(${Date.now() - now}ms)`,
     )}`,
   );

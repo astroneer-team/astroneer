@@ -59,8 +59,12 @@ export async function scan(options: ScanOptions) {
       if (stat.isDirectory()) {
         await scanDir(filePath);
       } else {
+        const normalizedFilePath = path
+          .normalize(filePath)
+          .replaceAll(/\\/g, '/');
+
         // Call the callback for included files.
-        if (include?.some((re) => re.test(filePath))) {
+        if (include?.some((re) => re.test(normalizedFilePath))) {
           await onFile(filePath);
         }
       }
