@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.8](https://github.com/astroneer-team/astroneer/compare/v1.4.7...v1.4.8) (2024-05-25)
+
+
+### Bug Fixes
+
+* hot-reload trigger and astroneer request updated ([85cde83](https://github.com/astroneer-team/astroneer/commit/85cde8382a18b45ac7efd8e99757187c4633d0be))
+
+
+
+
+
 # [1.4.0](https://github.com/astroneer-team/astroneer/compare/v1.3.13...v1.4.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/common

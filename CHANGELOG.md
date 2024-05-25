@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.8](https://github.com/lukearch/astroneer/compare/v1.4.7...v1.4.8) (2024-05-25)
+
+
+### Bug Fixes
+
+* hot-reload trigger and astroneer request updated ([1f2b881](https://github.com/lukearch/astroneer/commit/1f2b881c56495d56b433c528f05d3e2ff6b78df0))
+* hot-reload trigger and astroneer request updated ([85cde83](https://github.com/lukearch/astroneer/commit/85cde8382a18b45ac7efd8e99757187c4633d0be))
+
+
+
+
+
 ## [1.4.7](https://github.com/lukearch/astroneer/compare/v1.4.6...v1.4.7) (2024-05-25)
 
 
