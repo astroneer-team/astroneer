@@ -1,9 +1,11 @@
 import { Logger, logRequest } from '@astroneer/common';
 import { IncomingMessage, ServerResponse } from 'http';
 import { UrlWithParsedQuery } from 'url';
+import { isAsyncFunction } from 'util/types';
 import { loadConfig } from './config';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { HttpError } from './errors';
+import { UnprocessableError } from './errors/application/unprocessable-error';
 import { Request } from './request';
 import { Response } from './response';
 import {
@@ -108,6 +110,11 @@ export class Astroneer {
       await this.runMiddlewares(route.middlewares ?? [], request, response);
       await this.runHandler(route.handler, request, response);
     } catch (err) {
+      if (err.name === UnprocessableError.name) {
+        Logger.error(err.message);
+        process.exit(1);
+      }
+
       if (config.logErrors) {
         if (typeof config.logErrors === 'boolean') {
           Logger.error(err.stack);
@@ -130,11 +137,8 @@ export class Astroneer {
         return customHandlers.onError(err, request, response);
       }
 
-      if (err?.build && typeof err.build === 'function') {
+      if (err.name === HttpError.name) {
         return err.build(response);
-      } else {
-        const error = HttpError.fromError(err);
-        error.build(response);
       }
     }
   }
@@ -190,7 +194,13 @@ export class Astroneer {
         if (queue.length) {
           const middleware = queue.shift();
           try {
-            middleware?.(req, res, next);
+            if (!middleware) return;
+            if (!isAsyncFunction(middleware)) {
+              throw new UnprocessableError(
+                'Astroneer middlewares must be async functions. Please refer to https://astroneer.dev/docs/middlewares for more information.',
+              );
+            }
+            middleware(req, res, next).catch(reject);
           } catch (err) {
             reject(err);
           }

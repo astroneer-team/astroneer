@@ -51,7 +51,7 @@ export type RouteMiddleware = (
    * The next middleware in the chain.
    */
   next: () => void,
-) => void | Promise<void>;
+) => Promise<void>;
 
 export type AstroneerRouterOptions = {
   /**
