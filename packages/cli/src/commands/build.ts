@@ -1,7 +1,6 @@
-import { createFile, isDevMode, Logger } from '@astroneer/common';
+import { createFile } from '@astroneer/common';
 import {
   AstroneerConfig,
-  AstroneerRouter,
   CONFIG,
   DIST_FOLDER,
   scan,
@@ -24,10 +23,10 @@ import { printVersion } from '../helpers/print-version';
  */
 export async function build(): Promise<void> {
   const config = await CONFIG();
-
   await printVersion();
   await rimraf(DIST_FOLDER);
-  await scanFiles(config), createMainFile(DIST_FOLDER);
+  await scanFiles(config);
+  createMainFile(DIST_FOLDER);
   createConfigFile(DIST_FOLDER, config);
 }
 
@@ -59,17 +58,6 @@ function createConfigFile(dist: string, config: AstroneerConfig): void {
   createFile({
     filePath: path.resolve(dist, 'astroneer.config.json'),
     content: JSON.stringify(config, null, 2),
-    overwrite: true,
-  });
-}
-
-function createRoutesMetadataFile(
-  dist: string,
-  metadata: ReturnType<typeof AstroneerRouter.prototype.generateRouteMetadata>,
-): void {
-  createFile({
-    filePath: path.resolve(dist, 'routes.manifest.json'),
-    content: metadata,
     overwrite: true,
   });
 }

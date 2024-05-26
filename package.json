@@ -26,6 +26,7 @@
     "@types/dotenv": "^8.2.0",
     "@types/eslint": "^8.56.10",
     "@types/jest": "^29.5.12",
+    "@types/module-alias": "^2.0.4",
     "@types/node": "^20.12.7",
     "@types/prompts": "^2.4.9",
     "@types/rimraf": "^4.0.5",

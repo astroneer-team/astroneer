@@ -2,11 +2,10 @@ import { Logger } from '@astroneer/common';
 import { AstroneerConfig, DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
 import * as swc from '@swc/core';
 import builder from 'esbuild';
-import { mkdirSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import { writeFile } from 'fs/promises';
-import path, { resolve } from 'path';
+import path from 'path';
 import picocolors from 'picocolors';
-import ts from 'typescript';
 
 /**
  * Compiles a file using the specified configuration.
@@ -30,11 +29,6 @@ export async function compileFile(file: string, config: AstroneerConfig) {
   );
 
   const outfile = path.resolve(DIST_FOLDER, relativePath);
-  const { compilerOptions } = ts.readConfigFile(
-    resolve('tsconfig.json'),
-    ts.sys.readFile,
-  ).config;
-
   mkdirSync(path.dirname(outfile), { recursive: true });
 
   try {
@@ -58,13 +52,13 @@ export async function compileFile(file: string, config: AstroneerConfig) {
         });
         break;
       case 'swc':
-        const { code } = swc.transformFileSync(file, {
-          jsc: {
-            target: compilerOptions?.target?.toLowerCase() ?? 'esnext',
-          },
-          module: {
-            type: compilerOptions?.module ?? 'commonjs',
-          },
+        if (!existsSync(`${(process.cwd(), '.swcrc')}`)) {
+          throw new Error('SWC configuration file not found.');
+        }
+
+        const { code } = await swc.transformFile(file, {
+          swcrc: true,
+          cwd: process.cwd(),
         });
 
         await writeFile(outfile, code);

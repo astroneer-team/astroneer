@@ -1,3 +1,4 @@
+import { Logger } from '@astroneer/common';
 import { CONFIG_FILE, DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
 import { watch } from 'chokidar';
 import { Command } from 'commander';
@@ -21,6 +22,9 @@ export async function devServer() {
     ],
   }).on('change', async () => {
     delete require.cache[resolve(CONFIG_FILE)];
+    const tsConfigFilePath = path.resolve(process.cwd(), 'tsconfig.json');
+    delete require.cache[tsConfigFilePath];
+
     try {
       await build();
 
@@ -45,7 +49,9 @@ export async function devServer() {
       server.close(() => {
         start();
       });
-    } catch (err) {}
+    } catch (err) {
+      Logger.error(err);
+    }
   });
 
   watcher.emit('change');
