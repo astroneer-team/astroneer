@@ -1,0 +1,27 @@
+{
+  "name": "@astroneer/config",
+  "version": "1.4.13-canary.0",
+  "description": "Astroneer.js configuration package",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "directory": "packages/config",
+    "type": "git"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@astroneer/scanner": "^1.4.13-canary.0"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "types": "tsc --declaration --emitDeclarationOnly --declarationDir dist --esModuleInterop",
+    "compile": "ncc build src/index.ts -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile && npm run types"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

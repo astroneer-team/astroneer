@@ -1,0 +1,27 @@
+{
+  "name": "@astroneer/scanner",
+  "version": "1.4.13-canary.0",
+  "description": "Astroneer.js file scanner package",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "directory": "packages/scanner",
+    "type": "git"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "types": "tsc --declaration --emitDeclarationOnly --declarationDir dist --esModuleInterop",
+    "compile": "ncc build src/index.ts -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile && npm run types"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@astroneer/common": "^1.4.13-canary.0"
+  }
+}
