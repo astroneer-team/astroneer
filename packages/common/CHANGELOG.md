@@ -5,38 +5,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.4.8](https://github.com/astroneer-team/astroneer/compare/v1.4.7...v1.4.8) (2024-05-25)
 
-
 ### Bug Fixes
 
-* hot-reload trigger and astroneer request updated ([85cde83](https://github.com/astroneer-team/astroneer/commit/85cde8382a18b45ac7efd8e99757187c4633d0be))
-
-
-
-
+- hot-reload trigger and astroneer request updated ([85cde83](https://github.com/astroneer-team/astroneer/commit/85cde8382a18b45ac7efd8e99757187c4633d0be))
 
 # [1.4.0](https://github.com/astroneer-team/astroneer/compare/v1.3.13...v1.4.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/common
 
-
-
-
-
 ## [1.3.10](https://github.com/astroneer-team/astroneer/compare/v1.3.10-alpha.0...v1.3.10) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/common
 
-
-
-
-
 ## [1.3.8-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.7-alpha.0...v1.3.8-alpha.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/common
-
-
-
-
 
 ## [1.3.7-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.6...v1.3.7-alpha.0) (2024-05-24)
 

@@ -5,138 +5,72 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.4.8](https://github.com/astroneer-team/astroneer/compare/v1.4.7...v1.4.8) (2024-05-25)
 
-
 ### Bug Fixes
 
-* hot-reload trigger and astroneer request updated ([1f2b881](https://github.com/astroneer-team/astroneer/commit/1f2b881c56495d56b433c528f05d3e2ff6b78df0))
-* hot-reload trigger and astroneer request updated ([85cde83](https://github.com/astroneer-team/astroneer/commit/85cde8382a18b45ac7efd8e99757187c4633d0be))
-
-
-
-
+- hot-reload trigger and astroneer request updated ([1f2b881](https://github.com/astroneer-team/astroneer/commit/1f2b881c56495d56b433c528f05d3e2ff6b78df0))
+- hot-reload trigger and astroneer request updated ([85cde83](https://github.com/astroneer-team/astroneer/commit/85cde8382a18b45ac7efd8e99757187c4633d0be))
 
 ## [1.4.7](https://github.com/astroneer-team/astroneer/compare/v1.4.6...v1.4.7) (2024-05-25)
 
-
 ### Features
 
-* server crashing on compilation error fixed for devservers ([223e549](https://github.com/astroneer-team/astroneer/commit/223e5498c0dbc1a5b21e5e6d40b9a7b060b7a828))
-
-
-
-
+- server crashing on compilation error fixed for devservers ([223e549](https://github.com/astroneer-team/astroneer/commit/223e5498c0dbc1a5b21e5e6d40b9a7b060b7a828))
 
 ## [1.4.6](https://github.com/astroneer-team/astroneer/compare/v1.4.5...v1.4.6) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/cli
 
-
-
-
-
 ## [1.4.5](https://github.com/astroneer-team/astroneer/compare/v1.4.4...v1.4.5) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/cli
-
-
-
-
 
 ## [1.4.4](https://github.com/astroneer-team/astroneer/compare/v1.4.3...v1.4.4) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/cli
 
-
-
-
-
 ## [1.4.3](https://github.com/astroneer-team/astroneer/compare/v1.4.2...v1.4.3) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/cli
-
-
-
-
 
 ## [1.4.2](https://github.com/astroneer-team/astroneer/compare/v1.4.1...v1.4.2) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
 
-
-
-
-
 ## [1.4.1](https://github.com/astroneer-team/astroneer/compare/v1.4.0...v1.4.1) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
-
-
-
-
 
 # [1.4.0](https://github.com/astroneer-team/astroneer/compare/v1.3.13...v1.4.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
 
-
-
-
-
 ## [1.3.13](https://github.com/astroneer-team/astroneer/compare/v1.3.12...v1.3.13) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
-
-
-
-
 
 ## [1.3.12](https://github.com/astroneer-team/astroneer/compare/v1.3.10...v1.3.12) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
 
-
-
-
-
 ## [1.3.11](https://github.com/astroneer-team/astroneer/compare/v1.3.10...v1.3.11) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
-
-
-
-
 
 ## [1.3.10](https://github.com/astroneer-team/astroneer/compare/v1.3.10-alpha.0...v1.3.10) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
 
-
-
-
-
 ## [1.3.10-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.9-alpha.0...v1.3.10-alpha.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
-
-
-
-
 
 ## [1.3.9-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.8-alpha.0...v1.3.9-alpha.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
 
-
-
-
-
 ## [1.3.8-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.7-alpha.0...v1.3.8-alpha.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/cli
-
-
-
-
 
 ## [1.3.7-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.6...v1.3.7-alpha.0) (2024-05-24)
 

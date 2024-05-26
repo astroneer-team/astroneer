@@ -5,121 +5,63 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.4.8](https://github.com/astroneer-team/astroneer/compare/v1.4.7...v1.4.8) (2024-05-25)
 
-
 ### Bug Fixes
 
-* hot-reload trigger and astroneer request updated ([85cde83](https://github.com/astroneer-team/astroneer/commit/85cde8382a18b45ac7efd8e99757187c4633d0be))
-
-
-
-
+- hot-reload trigger and astroneer request updated ([85cde83](https://github.com/astroneer-team/astroneer/commit/85cde8382a18b45ac7efd8e99757187c4633d0be))
 
 ## [1.4.6](https://github.com/astroneer-team/astroneer/compare/v1.4.5...v1.4.6) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/core
 
-
-
-
-
 ## [1.4.5](https://github.com/astroneer-team/astroneer/compare/v1.4.4...v1.4.5) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/core
 
-
-
-
-
 ## [1.4.4](https://github.com/astroneer-team/astroneer/compare/v1.4.3...v1.4.4) (2024-05-25)
-
 
 ### Features
 
-* Add UnprocessableError class for handling unprocessable requests ([47b0402](https://github.com/astroneer-team/astroneer/commit/47b0402232e7348bc9d8937d7cb20a2d3e40d048))
-
-
-
-
+- Add UnprocessableError class for handling unprocessable requests ([47b0402](https://github.com/astroneer-team/astroneer/commit/47b0402232e7348bc9d8937d7cb20a2d3e40d048))
 
 ## [1.4.3](https://github.com/astroneer-team/astroneer/compare/v1.4.2...v1.4.3) (2024-05-25)
 
 **Note:** Version bump only for package @astroneer/core
 
-
-
-
-
 ## [1.4.2](https://github.com/astroneer-team/astroneer/compare/v1.4.1...v1.4.2) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
-
-
-
-
 
 ## [1.4.1](https://github.com/astroneer-team/astroneer/compare/v1.4.0...v1.4.1) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
 
-
-
-
-
 # [1.4.0](https://github.com/astroneer-team/astroneer/compare/v1.3.13...v1.4.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
-
-
-
-
 
 ## [1.3.12](https://github.com/astroneer-team/astroneer/compare/v1.3.10...v1.3.12) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
 
-
-
-
-
 ## [1.3.11](https://github.com/astroneer-team/astroneer/compare/v1.3.10...v1.3.11) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
-
-
-
-
 
 ## [1.3.10](https://github.com/astroneer-team/astroneer/compare/v1.3.10-alpha.0...v1.3.10) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
 
-
-
-
-
 ## [1.3.10-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.9-alpha.0...v1.3.10-alpha.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
-
-
-
-
 
 ## [1.3.9-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.8-alpha.0...v1.3.9-alpha.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
 
-
-
-
-
 ## [1.3.8-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.7-alpha.0...v1.3.8-alpha.0) (2024-05-24)
 
 **Note:** Version bump only for package @astroneer/core
-
-
-
-
 
 ## [1.3.7-alpha.0](https://github.com/astroneer-team/astroneer/compare/v1.3.6...v1.3.7-alpha.0) (2024-05-24)
 
