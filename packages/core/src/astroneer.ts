@@ -1,8 +1,10 @@
 import { Logger, createFile, isDevMode, logRequest } from '@astroneer/common';
 import { IncomingMessage, ServerResponse } from 'http';
+import path from 'path';
 import { UrlWithParsedQuery } from 'url';
 import { isAsyncFunction } from 'util/types';
-import { loadConfig } from './config';
+import { AstroneerConfig, loadConfig } from './config';
+import { DIST_FOLDER } from './constants';
 import { HttpServerMethods } from './enums/http-server-methods';
 import { HttpError } from './errors';
 import { UnprocessableError } from './errors/application/unprocessable-error';
@@ -14,8 +16,6 @@ import {
   RouteHandler,
   RouteMiddleware,
 } from './router';
-import path from 'path';
-import { DIST_FOLDER } from './constants';
 
 export type ErrorRouteHandler = (
   err: Error,
@@ -106,50 +106,66 @@ export class Astroneer {
     );
 
     try {
+      this.logRequestIfNeeded(config, req, res);
       await this.runMiddlewares(route.middlewares ?? [], request, response);
       await this.runHandler(route.handler, request, response);
-
-      if (config.logRequests) {
-        if (typeof config.logRequests === 'boolean') {
-          logRequest(req, res);
-        } else if (typeof config.logRequests === 'object') {
-          if (config.logRequests.env) {
-            if (config.logRequests.env.includes(process.env.NODE_ENV!)) {
-              logRequest(req, res);
-            }
-          }
-        }
-      }
     } catch (err) {
-      if (err.name === UnprocessableError.name) {
-        Logger.error(err.message);
-        process.exit(1);
-      }
+      this.handleError(err, config, request, response, customHandlers);
+    }
+  }
 
-      if (config.logErrors) {
-        if (typeof config.logErrors === 'boolean') {
-          Logger.error(err.stack);
-        } else if (typeof config.logErrors === 'object') {
-          const logger = config.logErrors?.asDebug
-            ? Logger.debug
-            : Logger.error;
+  private logRequestIfNeeded(
+    config: AstroneerConfig,
+    req: IncomingMessage,
+    res: ServerResponse,
+  ) {
+    if (
+      config.logRequests &&
+      (typeof config.logRequests === 'boolean' ||
+        config.logRequests.env?.includes(process.env.NODE_ENV!))
+    ) {
+      logRequest(req, res);
+    }
+  }
 
-          if (config.logErrors.env) {
-            if (config.logErrors.env.includes(process.env.NODE_ENV!)) {
-              logger(err.stack);
-            }
-          } else {
-            logger(err.stack);
-          }
-        }
-      }
+  private handleError(
+    err: Error,
+    config: AstroneerConfig,
+    request: Request,
+    response: Response,
+    customHandlers?: {
+      onError?: ErrorRouteHandler;
+      onNotFound?: RouteHandler;
+    },
+  ) {
+    if (err.name === UnprocessableError.name) {
+      Logger.error(err.message);
+      process.exit(1);
+    }
 
-      if (customHandlers?.onError) {
-        return customHandlers.onError(err, request, response);
-      }
+    this.logErrorIfNeeded(err, config);
 
-      if (err.name === HttpError.name) {
-        return err.build(response);
+    if (customHandlers?.onError) {
+      return customHandlers.onError(err, request, response);
+    }
+
+    if (err instanceof HttpError) {
+      return err.build(response);
+    }
+  }
+
+  private logErrorIfNeeded(err: Error, config: AstroneerConfig) {
+    if (config.logErrors) {
+      const logger =
+        typeof config.logErrors === 'object' && config.logErrors?.asDebug
+          ? Logger.debug
+          : Logger.error;
+
+      if (
+        typeof config.logErrors === 'boolean' ||
+        config.logErrors.env?.includes(process.env.NODE_ENV!)
+      ) {
+        logger(err.stack);
       }
     }
   }
@@ -194,33 +210,33 @@ export class Astroneer {
     }
   }
 
-  private runInQueue(
+  private async runInQueue(
     middlewares: RouteMiddleware[],
     req: Request,
     res: Response,
-  ) {
-    return new Promise<void>((resolve, reject) => {
-      const queue = middlewares.slice();
-      const next = () => {
-        if (queue.length) {
-          const middleware = queue.shift();
-          try {
-            if (!middleware) return;
-            if (!isAsyncFunction(middleware)) {
-              throw new UnprocessableError(
-                'Astroneer middlewares must be async functions. Please refer to https://astroneer.dev/docs/middlewares for more information.',
-              );
-            }
-            middleware(req, res, next).catch(reject);
-          } catch (err) {
-            reject(err);
-          }
-        } else {
-          resolve();
-        }
-      };
+  ): Promise<void> {
+    const queue = [...middlewares];
 
-      next();
+    const next = async () => {
+      if (queue.length) {
+        const middleware = queue.shift();
+
+        if (!isAsyncFunction(middleware)) {
+          throw new UnprocessableError(
+            'Astroneer middlewares must be async functions. Please refer to https://astroneer.dev/docs/middlewares for more information.',
+          );
+        }
+
+        try {
+          await middleware?.(req, res, next);
+        } catch (err) {
+          throw err;
+        }
+      }
+    };
+
+    return new Promise<void>((resolve, reject) => {
+      next().then(resolve).catch(reject);
     });
   }
 

@@ -1,11 +1,12 @@
-import { Logger } from '@astroneer/common';
 import { CONFIG_FILE, DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/core';
 import { watch } from 'chokidar';
 import { Command } from 'commander';
 import { configDotenv } from 'dotenv';
 import { Server } from 'http';
 import path, { resolve } from 'path';
+import { startServer } from '../helpers/start-server';
 import { build } from './build';
+import { Logger } from '@astroneer/common';
 
 /**
  * Starts the development server.
@@ -14,6 +15,7 @@ import { build } from './build';
  */
 export async function devServer() {
   let server: Server;
+
   const watcher = watch([resolve(SOURCE_FOLDER, '**/*.ts'), CONFIG_FILE], {
     ignoreInitial: true,
     ignored: [
@@ -21,11 +23,8 @@ export async function devServer() {
       path.resolve(process.cwd(), 'node_modules'),
     ],
   }).on('change', async () => {
-    delete require.cache[resolve(CONFIG_FILE)];
-    const tsConfigFilePath = path.resolve(process.cwd(), 'tsconfig.json');
-    delete require.cache[tsConfigFilePath];
-
     try {
+      delete require.cache[resolve(CONFIG_FILE)];
       await build();
 
       configDotenv({
@@ -33,24 +32,13 @@ export async function devServer() {
         override: true,
       });
 
-      const start = async () => {
-        delete require.cache[resolve(DIST_FOLDER, 'server.js')];
-        server = await import(resolve(DIST_FOLDER, 'server.js')).then((m) =>
-          m.default(),
-        );
-      };
-
-      if (!server?.listening) {
-        return await start().catch((err) => {
-          console.error(err);
-        });
+      if (server) {
+        server.close();
       }
 
-      server.close(() => {
-        start();
-      });
+      server = await startServer();
     } catch (err) {
-      Logger.error(err);
+      Logger.error(err.message);
     }
   });
 

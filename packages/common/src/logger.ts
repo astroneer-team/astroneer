@@ -18,7 +18,7 @@ export class Logger {
    * Logs an informational message.
    * @param message - The message to be logged.
    */
-  log(message: string) {
+  log(message?: string) {
     this.logMessage('info', message);
   }
 
@@ -26,7 +26,7 @@ export class Logger {
    * Logs an error message.
    * @param message - The message to be logged.
    */
-  error(message: string) {
+  error(message?: string) {
     this.logMessage('error', message);
   }
 
@@ -34,7 +34,7 @@ export class Logger {
    * Logs a warning message.
    * @param message - The message to be logged.
    */
-  warn(message: string) {
+  warn(message?: string) {
     this.logMessage('warn', message);
   }
 
@@ -42,7 +42,7 @@ export class Logger {
    * Logs a debug message.
    * @param message - The message to be logged.
    */
-  debug(message: string) {
+  debug(message?: string) {
     this.logMessage('debug', message);
   }
 
@@ -50,7 +50,7 @@ export class Logger {
    * Logs an informational message using the static instance of the Logger class.
    * @param message - The message to be logged.
    */
-  static log(message: string) {
+  static log(message?: string) {
     Logger.staticInstanceRef.log(message);
   }
 
@@ -58,7 +58,7 @@ export class Logger {
    * Logs an error message using the static instance of the Logger class.
    * @param message - The message to be logged.
    */
-  static error(message: string) {
+  static error(message?: string) {
     Logger.staticInstanceRef.error(message);
   }
 
@@ -66,7 +66,7 @@ export class Logger {
    * Logs a warning message using the static instance of the Logger class.
    * @param message - The message to be logged.
    */
-  static warn(message: string) {
+  static warn(message?: string) {
     Logger.staticInstanceRef.warn(message);
   }
 
@@ -74,11 +74,11 @@ export class Logger {
    * Logs a debug message using the static instance of the Logger class.
    * @param message - The message to be logged.
    */
-  static debug(message: string) {
+  static debug(message?: string) {
     Logger.staticInstanceRef.debug(message);
   }
 
-  private logMessage(level: LogLevel, message: string) {
+  private logMessage(level: LogLevel, message?: string) {
     console.log(
       picocolors.gray(level.toUpperCase()),
       picocolors[LevelColors[level]](message),
