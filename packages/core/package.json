@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/core",
-  "version": "1.4.10-canary.0",
+  "version": "1.4.12-canary.0",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -19,7 +19,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@astroneer/common": "1.4.8"
+    "@astroneer/common": "^1.4.12-canary.0"
   },
   "engines": {
     "node": ">=18"
