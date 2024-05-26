@@ -14,9 +14,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "types": "tsc --declaration --emitDeclarationOnly --declarationDir dist --esModuleInterop",
     "compile": "ncc build src/index.ts -o dist --minify --no-cache --no-source-map-register",
-    "build": "npm run clean && npm run compile && npm run types"
+    "build": "npm run clean && npm run compile"
   },
   "engines": {
     "node": ">=18"

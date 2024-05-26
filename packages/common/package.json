@@ -1,6 +1,7 @@
 {
   "name": "@astroneer/common",
   "version": "1.4.13-canary.0",
+  "description": "Astroneer.js common utilities, definitions and types package",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -9,7 +10,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc"
+    "compile": "ncc build src/index.ts -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile"
   },
   "files": [
     "dist"

@@ -1,6 +1,7 @@
 {
   "name": "@astroneer/core",
   "version": "1.4.13-canary.0",
+  "description": "Astroneer.js core package",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -8,8 +9,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && tsc",
-    "test": "jest --config ./jest.config.js"
+    "clean": "rimraf dist",
+    "compile": "ncc build src/index.ts -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile"
   },
   "files": [
     "dist"
