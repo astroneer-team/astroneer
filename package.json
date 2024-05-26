@@ -45,6 +45,8 @@
     "format": "prettier --write .",
     "build": "lerna run build",
     "release:patch": "lerna version patch && lerna run build && lerna publish from-package",
-    "astroneer": "node packages/cli/dist/cli.js"
+    "astroneer": "node packages/cli/dist/cli.js",
+    "publish:canary": "lerna publish from-package --canary --dist-tag canary",
+    "publish:latest": "lerna publish from-package"
   }
 }
