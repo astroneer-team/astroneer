@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/common",
-  "version": "1.4.12-canary.0",
+  "version": "1.4.13-canary.0",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
