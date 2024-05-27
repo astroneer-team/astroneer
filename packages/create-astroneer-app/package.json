@@ -15,7 +15,6 @@
     "dist"
   ],
   "dependencies": {
-    "@astroneer/cli": "^1.4.19",
     "@octokit/rest": "^20.1.1",
     "commander": "^12.1.0",
     "picocolors": "^1.0.1",
