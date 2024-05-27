@@ -1,5 +1,5 @@
 import { Logger } from '@astroneer/common';
-import { DIST_FOLDER } from '@astroneer/core';
+import { DIST_FOLDER } from '@astroneer/config';
 import { Server } from 'http';
 import path from 'path';
 import { isAsyncFunction } from 'util/types';

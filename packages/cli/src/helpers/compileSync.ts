@@ -5,6 +5,7 @@ import picocolors from 'picocolors';
 import withSWC from './compilers/with-swc';
 import withTSC from './compilers/with-tsc';
 import { typeCheck } from './type-check';
+import withNCC from './compilers/with-ncc';
 
 type CompilationResult = {
   output: string;
@@ -34,18 +35,18 @@ export default function compileSync(files: string[]) {
       }
       results.push(...withTSC(files));
       break;
+    case 'ncc':
+      if (config.compiler.typeCheck) {
+        typeCheck();
+      }
+      results.push(...withNCC(files));
+      break;
   }
-
-  const longestPath = results.reduce(
-    (acc, result) => (result.file.length > acc ? result.file.length : acc),
-    0,
-  );
 
   results.forEach((result) => {
     const relativePath = path.relative(SOURCE_FOLDER, result.file);
-    const padding = ' '.repeat(longestPath - relativePath.length);
     Logger.log(
-      `${picocolors.blue('✔')} ${picocolors.gray(`${relativePath}${padding}`)} ${picocolors.blue(result.time + 'ms')}`,
+      `${picocolors.blue('✔')} ${picocolors.gray(`${relativePath}`)} ${picocolors.blue(`(${result.time}ms)`)}`,
     );
   });
 }

@@ -1,5 +1,5 @@
 import { Logger } from '@astroneer/common';
-import { DIST_FOLDER } from '@astroneer/core';
+import { DIST_FOLDER } from '@astroneer/config';
 import { Command } from 'commander';
 import { configDotenv } from 'dotenv';
 import { existsSync } from 'fs';
@@ -19,7 +19,6 @@ const startCmd = new Command('start')
   .option('-d, --devmode', 'Enable development mode', false)
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
-      process.env.ASTRONEER_CONTEXT = 'start';
       process.env.NODE_ENV = options.devmode ? 'development' : 'production';
       process.env.HOST = options.hostname;
 

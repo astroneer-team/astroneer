@@ -21,7 +21,9 @@
     "type": "git"
   },
   "dependencies": {
-    "@astroneer/common": "^1.4.13-canary.0"
+    "@astroneer/common": "^1.4.13-canary.0",
+    "@astroneer/config": "^1.4.13-canary.0",
+    "@astroneer/scanner": "^1.4.13-canary.0"
   },
   "engines": {
     "node": ">=18"

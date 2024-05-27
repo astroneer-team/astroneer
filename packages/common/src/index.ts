@@ -4,3 +4,5 @@ export * from './is-dev-mode';
 export * from './log-request';
 export * from './logger';
 export * from './normalize-filenames';
+export * from './errors';
+export * from './enums';

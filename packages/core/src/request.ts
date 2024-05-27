@@ -1,6 +1,4 @@
 import { IncomingMessage } from 'http';
-import { HttpError } from './errors';
-import { UnprocessableError } from './errors/application/unprocessable-error';
 
 /**
  * Represents an HTTP request.
@@ -109,11 +107,11 @@ export class Request {
    * @returns The value associated with the key.
    * @throws `HttpError` if the key does not exist.
    */
-  get<T>(key: string | symbol): T {
+  get<T>(key: string | symbol): T | null {
     const data = this.map.get(key);
 
     if (!data) {
-      throw new UnprocessableError('Key does not exist');
+      return null;
     }
 
     return JSON.parse(data);
