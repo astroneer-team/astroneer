@@ -135,17 +135,12 @@ export async function createAstroneerApp(projectName?: string) {
   }
 
   if (answers.install) {
-    const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm';
-
-    const { stop } = showSpinner('Installing dependencies...');
-
+    const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm install';
     const installProcess = spawnSync(cmd, {
       cwd: projectDir,
       stdio: 'inherit',
       shell: true,
     });
-
-    stop();
 
     if (installProcess.status !== 0) {
       console.error(
