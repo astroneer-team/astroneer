@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/scanner",
-  "version": "1.4.18",
+  "version": "1.4.19",
   "description": "Astroneer.js file scanner package",
   "license": "MIT",
   "main": "dist/index.js",
@@ -22,7 +22,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@astroneer/common": "^1.4.18"
+    "@astroneer/common": "^1.4.19"
   },
   "publishConfig": {
     "access": "public"
