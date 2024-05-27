@@ -1,9 +1,15 @@
 export default {
-  extends: ['./configs/base'],
+  env: {
+    es2024: true,
+  },
+  parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 'latest',
+  },
+  plugins: ['astroneer'],
   rules: {
-    '@astroneer/no-arrow-function-route-handlers': 'error',
-    '@astroneer/no-default-route-handlers-export': 'error',
-    '@astroneer/no-lowercase-route-handlers': 'error',
-    '@astroneer/no-sync-route-handlers': 'error',
+    'astroneer/no-default-route-handler-export': 'error',
+    'astroneer/no-sync-route-handlers': 'error',
+    'astroneer/only-export-http-methods': 'error',
   },
 };

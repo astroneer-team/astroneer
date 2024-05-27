@@ -1,22 +1,35 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
 import { isRouteHandler } from '../utils/is-route-handler';
 
+const httpMethods = [
+  'GET',
+  'POST',
+  'PUT',
+  'PATCH',
+  'DELETE',
+  'HEAD',
+  'OPTIONS',
+  'TRACE',
+  'CONNECT',
+];
+
 const createRule = ESLintUtils.RuleCreator(
-  () => 'https://astroneer.dev/docs/meta-rules#no-non-async-route-handlers',
+  () => 'https://astroneer.dev/docs/meta-rules#only-export-http-methods',
 );
 
-const noNonAsyncRouteHandlers = createRule({
+const onlyExportHttpMethods = createRule({
   defaultOptions: [],
-  name: 'no-non-async-route-handlers',
+  name: 'only-export-http-methods',
   meta: {
     type: 'problem',
     docs: {
-      description: 'Route handlers must be asynchronous',
+      description:
+        'Route handlers should only export functions named after HTTP methods',
       requiresTypeChecking: false,
     },
     messages: {
-      noNonAsyncRouteHandlers:
-        'Route handlers must be defined as asynchronous functions',
+      onlyExportHttpMethods:
+        'Route handlers should only export functions named after HTTP methods',
     },
     schema: [],
   },
@@ -33,10 +46,10 @@ const noNonAsyncRouteHandlers = createRule({
       if (node.parent?.type === 'VariableDeclarator') {
         const { id } = node.parent;
         if (id.type === 'Identifier') {
-          if (!node.async) {
+          if (!httpMethods.includes(id.name)) {
             context.report({
               node: id,
-              messageId: 'noNonAsyncRouteHandlers',
+              messageId: 'onlyExportHttpMethods',
             });
           }
         }
@@ -46,10 +59,10 @@ const noNonAsyncRouteHandlers = createRule({
     const whenExportIsFunctionDeclaration = (
       node: TSESTree.FunctionDeclaration,
     ) => {
-      if (!node.async) {
+      if (!httpMethods.includes(node.id?.name || '')) {
         context.report({
           node: node.id || node,
-          messageId: 'noNonAsyncRouteHandlers',
+          messageId: 'onlyExportHttpMethods',
         });
       }
     };
@@ -58,18 +71,19 @@ const noNonAsyncRouteHandlers = createRule({
       ExportNamedDeclaration(node) {
         if (node.declaration?.type === 'FunctionDeclaration') {
           whenExportIsFunctionDeclaration(node.declaration);
-        }
-
-        if (node.declaration?.type === 'VariableDeclaration') {
-          for (const declaration of node.declaration.declarations) {
-            if (declaration.init?.type === 'ArrowFunctionExpression') {
+        } else if (node.declaration?.type === 'VariableDeclaration') {
+          node.declaration.declarations.forEach((declaration) => {
+            if (
+              declaration.init?.type === 'ArrowFunctionExpression' &&
+              declaration.id?.type === 'Identifier'
+            ) {
               whenExportIsArrowFunction(declaration.init);
             }
-          }
+          });
         }
       },
     };
   },
 });
 
-export default noNonAsyncRouteHandlers;
+export default onlyExportHttpMethods;

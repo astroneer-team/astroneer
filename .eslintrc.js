@@ -8,13 +8,10 @@ module.exports = {
     node: true,
     jest: true,
   },
-  plugins: [
-    '@typescript-eslint/eslint-plugin',
-    '@astroneer/eslint-plugin-astroneer',
-  ],
+  plugins: ['@typescript-eslint/eslint-plugin', 'astroneer'],
   extends: [
     'plugin:@typescript-eslint/recommended',
-    'plugin:@astroneer/recommended',
+    'plugin:astroneer/recommended',
     'prettier',
   ],
   overrides: [

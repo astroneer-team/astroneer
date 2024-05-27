@@ -1,54 +1,42 @@
-import { defineRule } from '../utils/define-rule';
+import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
+import path from 'path';
 
-const url =
-  'https://astroneer.dev/docs/meta-rules#no-default-route-handler-export';
-const description = `Route handler must not be exported as default`;
-const message = `${description}. See more at ${url}`;
+const createRule = ESLintUtils.RuleCreator(
+  () => 'https://astroneer.dev/docs/meta-rules#no-default-route-handler-export',
+);
 
-const httpMethods = [
-  'GET',
-  'POST',
-  'PUT',
-  'DELETE',
-  'PATCH',
-  'OPTIONS',
-  'HEAD',
-  'CONNECT',
-  'TRACE',
-];
-
-const whitelist: string[] = [];
-
-export default defineRule({
+const noDefaultRouteHandlerExport = createRule({
+  defaultOptions: [],
+  name: 'no-default-route-handler-export',
   meta: {
-    docs: {
-      description,
-      recommended: true,
-      url,
-    },
     type: 'problem',
+    docs: {
+      description: 'Prevent exporting route handlers as default exports',
+      requiresTypeChecking: false,
+    },
+    fixable: 'code',
+    messages: {
+      noDefaultRouteHandlerExport:
+        'Route handlers should not be exported as default exports',
+    },
     schema: [],
   },
   create(context) {
+    const filePath = context.filename;
+
+    if (!filePath.includes(path.join('src', 'routes'))) {
+      return {};
+    }
+
     return {
-      ExportDefaultDeclaration(node) {
-        if (node.declaration.type === 'ObjectExpression') {
-          const properties = node.declaration.properties;
-          for (const property of properties) {
-            if (property.type === 'Property') {
-              if (property.key.type === 'Identifier') {
-                const key = property.key.name;
-                if (httpMethods.includes(key) && !whitelist.includes(key)) {
-                  context.report({
-                    node: property.key,
-                    message,
-                  });
-                }
-              }
-            }
-          }
-        }
+      ExportDefaultDeclaration(node: TSESTree.ExportDefaultDeclaration) {
+        context.report({
+          node,
+          messageId: 'noDefaultRouteHandlerExport',
+        });
       },
     };
   },
 });
+
+export default noDefaultRouteHandlerExport;

@@ -1,6 +1,7 @@
-import { HttpError } from '@astroneer/core';
+import { RouteMiddleware } from '@astroneer/core';
 
-export default function get() {
-  const teste: any = '';
-  throw new HttpError(404, 'Not Found');
-}
+export const middlewares: RouteMiddleware[] = [];
+
+export async function GET() {}
+
+export const POST = async () => {};
