@@ -12,7 +12,9 @@
     "dist"
   ],
   "dependencies": {
-    "@astroneer/common": "^1.4.13-canary.0"
+    "@astroneer/common": "^1.4.13-canary.0",
+    "@typescript-eslint/eslint-plugin": "^7.10.0",
+    "@typescript-eslint/parser": "^7.10.0"
   },
   "devDependencies": {
     "eslint": "^8.57.0"
@@ -23,5 +25,12 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && swc -d dist src"
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./use-at-your-own-risk": "./dist/rules.js"
   }
 }

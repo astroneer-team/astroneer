@@ -1,9 +1,14 @@
+# project specific
 node_modules
-.nx
-dist
-/src
-lerna-debug.log
-.vscode
-.astroneer
-astroneer.config.js
 .turbo
+
+# packages bundle files
+dist
+
+# astroneer testing dist files
+.astroneer
+./.swcrc
+astroneer.config.*
+
+# IDE settings
+.vscode/

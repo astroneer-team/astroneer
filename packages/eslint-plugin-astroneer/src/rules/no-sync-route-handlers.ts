@@ -18,7 +18,7 @@ const httpMethods = [
 
 const whitelist = ['middlewares'];
 
-export = defineRule({
+export default defineRule({
   meta: {
     docs: {
       description,
