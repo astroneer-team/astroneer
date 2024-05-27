@@ -129,7 +129,7 @@ export async function copyDir(srcDir: string, destDir: string) {
  * @param name - The name of the project.
  * @returns A Promise that resolves when the server is started.
  */
-async function newProject(name: string) {
+export async function newProject(name: string) {
   const templates = await showSpinnerWithPromise(
     () => downloadTemplates(),
     'Downloading Astroneer.js templates...',
@@ -229,10 +229,7 @@ async function newProject(name: string) {
 /**
  * Command to create a new Astroneer.js project.
  */
-const newCmd = new Command('new')
+export const newCmd = new Command('new')
   .description('Create a new Astroneer.js project')
   .argument('<name>', 'Name of the project')
   .action(newProject);
-
-export { newProject };
-export default newCmd;

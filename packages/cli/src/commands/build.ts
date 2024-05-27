@@ -36,10 +36,9 @@ function scanFiles(): void {
   compileSync(files);
 }
 
-const buildCmd = new Command('build')
+export const buildCmd = new Command('build')
   .description('Build Astroneer.js app for production')
   .action(async () => {
-    process.env.ASTRONEER_CONTEXT = 'build';
     process.env.NODE_ENV = 'production';
 
     try {
@@ -49,5 +48,3 @@ const buildCmd = new Command('build')
       process.exit(1);
     }
   });
-
-export default buildCmd;

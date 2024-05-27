@@ -59,7 +59,7 @@ export async function devServer() {
  * Command to start Astroneer.js app in development mode with hot reloading.
  * @command dev
  */
-const devCmd = new Command('dev')
+export const devCmd = new Command('dev')
   .description('Start Astroneer.js app in development mode with hot reloading')
   .option('-p, --port <port>', 'Port to run the server on', '3000')
   .option(
@@ -68,11 +68,8 @@ const devCmd = new Command('dev')
     'localhost',
   )
   .action(async (options: { port: string; hostname: string }) => {
-    process.env.ASTRONEER_CONTEXT = 'dev';
     process.env.NODE_ENV = 'development';
     process.env.PORT = options.port;
     process.env.HOSTNAME = options.hostname;
     await devServer();
   });
-
-export default devCmd;

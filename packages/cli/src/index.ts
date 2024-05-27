@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import buildCmd from './commands/build';
-import devCmd from './commands/dev';
-import newCmd from './commands/new';
-import startCmd from './commands/start';
+import { buildCmd, devCmd, newCmd, startCmd } from './commands';
 
 /**
  * The main function for the Astroneer CLI.
@@ -26,3 +23,5 @@ astroneerCLI().catch((err) => {
   console.error(err);
   process.exit(1);
 });
+
+export * from './commands';
