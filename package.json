@@ -48,7 +48,7 @@
     "build": "lerna run build",
     "release:patch": "lerna version patch && lerna run build && lerna publish from-package",
     "astroneer": "node packages/cli/dist/index.js",
-    "publish:canary": "lerna publish from-package --canary --dist-tag canary",
+    "publish:canary": "lerna run build && lerna publish from-package --canary --dist-tag canary",
     "publish:latest": "lerna run build && lerna publish from-package"
   }
 }
