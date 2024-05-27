@@ -1,7 +1,10 @@
 export default {
+  env: {
+    es2024: true,
+  },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint'],
+  plugins: ['@astroneer'],
 };

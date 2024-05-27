@@ -9,6 +9,7 @@ dist
 .astroneer
 ./.swcrc
 astroneer.config.*
+./src
 
 # IDE settings
 .vscode/
