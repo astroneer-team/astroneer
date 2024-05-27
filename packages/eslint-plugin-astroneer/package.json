@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-astroneer",
-  "version": "1.4.19",
+  "version": "1.4.20",
   "description": "ESLint plugin for Astroneer",
   "main": "dist/index.js",
   "license": "MIT",
