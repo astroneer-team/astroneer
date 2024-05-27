@@ -1,10 +1,10 @@
+import { readFileSync } from 'fs';
+import path from 'path';
 import picocolors from 'picocolors';
 
-/**
- * Prints the version of Astroneer.js.
- * @returns {Promise<void>} A promise that resolves once the version is printed.
- */
-export async function printVersion() {
-  const pkg = await import('../../package.json');
-  console.log(picocolors.blue(`\n♦️  Astroneer.js  ${pkg.version}\n`));
+export function printVersion() {
+  const packageJsonPath = path.resolve(__dirname, '../package.json');
+  const packageJson = readFileSync(packageJsonPath, 'utf-8');
+  const { version } = JSON.parse(packageJson);
+  console.log(picocolors.blue(`>_  Astroneer.js CLI v${version}`));
 }

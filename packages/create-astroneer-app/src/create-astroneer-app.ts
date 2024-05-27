@@ -19,7 +19,7 @@ export async function createAstroneerApp(projectName?: string) {
   const { version } = JSON.parse(packageJson);
   console.log(
     picocolors.blue(
-      `♦️  Astroneer.js CLI v${version} - Create Astroneer.js App\n`,
+      `>_  Astroneer.js CLI v${version} - Create Astroneer.js App\n`,
     ),
   );
 
