@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/core",
-  "version": "1.4.15-canary.0",
+  "version": "1.4.16-canary.0",
   "description": "Astroneer.js core package",
   "license": "MIT",
   "main": "dist/index.js",
@@ -18,9 +18,9 @@
     "type": "git"
   },
   "dependencies": {
-    "@astroneer/common": "^1.4.15-canary.0",
-    "@astroneer/config": "^1.4.15-canary.0",
-    "@astroneer/scanner": "^1.4.15-canary.0"
+    "@astroneer/common": "^1.4.16-canary.0",
+    "@astroneer/config": "^1.4.16-canary.0",
+    "@astroneer/scanner": "^1.4.16-canary.0"
   },
   "engines": {
     "node": ">=18"
