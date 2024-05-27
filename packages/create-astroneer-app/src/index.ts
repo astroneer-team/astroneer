@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Command } from 'commander';
 import { description, name, version } from '../package.json';
 import { createAstroneerApp } from './create-astroneer-app';
