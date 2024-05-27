@@ -19,5 +19,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && swc -d dist src"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
