@@ -2,21 +2,31 @@
   "name": "create-astroneer-app",
   "version": "1.4.18",
   "description": "Astroneer.js project generator",
-  "main": "dist/index.js",
   "license": "MIT",
+  "bin": {
+    "create-astroneer-app": "dist/index.js"
+  },
   "repository": {
-    "directory": "packages/eslint-plugin-astroneer",
+    "directory": "packages/create-astroneer-app",
     "type": "git"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@astroneer/cli": "^1.4.18"
+    "@astroneer/cli": "^1.4.18",
+    "@octokit/rest": "^20.1.1",
+    "commander": "^12.1.0",
+    "picocolors": "^1.0.1",
+    "prompts": "^2.4.2",
+    "simple-git": "^3.24.0",
+    "tar": "^7.1.0",
+    "tslib": "^2.6.2"
   },
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && swc -d dist src"
+    "compile": "ncc build src/index.ts -t -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile"
   },
   "publishConfig": {
     "access": "public"
