@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/core",
-  "version": "1.4.18-canary.0",
+  "version": "1.4.18",
   "description": "Astroneer.js core package",
   "license": "MIT",
   "main": "dist/index.js",
