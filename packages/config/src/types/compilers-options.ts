@@ -1,7 +1,4 @@
-export type CompilerOptions =
-  | SWCCompilerOptions
-  | TSCCompilerOptions
-  | NCCCompilerOptions;
+export type CompilerOptions = SWCCompilerOptions | TSCCompilerOptions;
 
 export type SWCCompilerOptions = {
   type?: 'swc';
@@ -10,10 +7,5 @@ export type SWCCompilerOptions = {
 
 export type TSCCompilerOptions = {
   type?: 'tsc';
-  typeCheck?: boolean;
-};
-
-export type NCCCompilerOptions = {
-  type?: 'ncc';
   typeCheck?: boolean;
 };
