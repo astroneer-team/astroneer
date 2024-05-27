@@ -4,7 +4,7 @@
   "description": "A CLI for Astroneer.js",
   "license": "MIT",
   "bin": {
-    "astroneer": "dist/cli.js"
+    "astroneer": "dist/index.js"
   },
   "scripts": {
     "clean": "rimraf dist",
