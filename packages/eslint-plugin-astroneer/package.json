@@ -12,7 +12,6 @@
     "dist"
   ],
   "dependencies": {
-    "@astroneer/common": "^1.4.13-canary.0",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
     "@typescript-eslint/utils": "^7.10.0"

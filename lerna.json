@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "version": "1.4.13-canary.0",
+  "packages": [
+    "packages/*"
+  ],
+  "command": {
+    "run": {
+      "sort": true,
+      "private": false
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org/"
+    },
+    "version": {
+      "gitTagVersion": true
+    }
+  }
+}

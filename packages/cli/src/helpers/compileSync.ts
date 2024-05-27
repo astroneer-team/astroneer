@@ -5,7 +5,6 @@ import picocolors from 'picocolors';
 import withSWC from './compilers/with-swc';
 import withTSC from './compilers/with-tsc';
 import { typeCheck } from './type-check';
-import withNCC from './compilers/with-ncc';
 
 type CompilationResult = {
   output: string;
@@ -34,12 +33,6 @@ export default function compileSync(files: string[]) {
         typeCheck();
       }
       results.push(...withTSC(files));
-      break;
-    case 'ncc':
-      if (config.compiler.typeCheck) {
-        typeCheck();
-      }
-      results.push(...withNCC(files));
       break;
   }
 
