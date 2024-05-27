@@ -32,5 +32,6 @@
     },
     "./package.json": "./package.json",
     "./use-at-your-own-risk": "./dist/rules.js"
-  }
+  },
+  "gitHead": "1d45898afa2c0f3507cee34b39effaa63d56898d"
 }
