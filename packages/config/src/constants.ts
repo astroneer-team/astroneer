@@ -6,8 +6,8 @@ export const CONFIG_FILE_NAMES = [
 ];
 
 export const CONFIG_FILE_REGEXS = [
-  /\.astroneer\.config\.js$/,
-  /\.astroneer\.config\.json$/,
+  /\/astroneer\.config\.js$/,
+  /\/astroneer\.config\.json$/,
 ];
 
 export const DIST_FOLDER = path.resolve(process.cwd(), '.astroneer');

@@ -1,43 +1,51 @@
 import { Logger } from '@astroneer/common';
-import { AstroneerConfig, SOURCE_FOLDER } from '@astroneer/config';
+import { loadConfig, SOURCE_FOLDER } from '@astroneer/config';
 import path from 'path';
 import picocolors from 'picocolors';
+import withSWC from './compilers/with-swc';
 import withTSC from './compilers/with-tsc';
+import { typeCheck } from './type-check';
+
+type CompilationResult = {
+  output: string;
+  time: number;
+  file: string;
+}[];
 
 /**
  * Compiles a file using the specified configuration.
  * @param file - The file to compile.
  * @param config - The Astroneer configuration.
  */
-export default function compileSync(files: string[], config: AstroneerConfig) {
-  const now = Date.now();
-  const relativePaths = files.map((file) =>
-    path.relative(SOURCE_FOLDER, file.replace(/\.(j|t)s?$/, '.js')),
+export default function compileSync(files: string[]) {
+  const config = loadConfig();
+  const results: CompilationResult = [];
+
+  switch (config.compiler?.type) {
+    case 'swc':
+      if (config.compiler.typeCheck) {
+        typeCheck();
+      }
+      results.push(...withSWC(files));
+      break;
+    case 'tsc':
+      if (config.compiler.typeCheck) {
+        typeCheck();
+      }
+      results.push(...withTSC(files));
+      break;
+  }
+
+  const longestPath = results.reduce(
+    (acc, result) => (result.file.length > acc ? result.file.length : acc),
+    0,
   );
 
-  try {
-    switch (config.compiler?.type) {
-      case 'tsc':
-        withTSC(files);
-        break;
-    }
-
-    relativePaths.forEach((relativePath) => {
-      Logger.log(
-        `${picocolors.blue('✔')} ${picocolors.gray(relativePath.replaceAll(/\\/g, '/'))} ${picocolors.blue(
-          `(${Date.now() - now}ms)`,
-        )}`,
-      );
-    });
-  } catch (err) {
-    relativePaths.forEach((relativePath) => {
-      Logger.error(
-        `${picocolors.red('✖')} ${picocolors.gray(relativePath.replaceAll(/\\/g, '/'))} ${picocolors.red(
-          `(${Date.now() - now}ms)`,
-        )}`,
-      );
-    });
-
-    throw err;
-  }
+  results.forEach((result) => {
+    const relativePath = path.relative(SOURCE_FOLDER, result.file);
+    const padding = ' '.repeat(longestPath - relativePath.length);
+    Logger.log(
+      `${picocolors.blue('✔')} ${picocolors.gray(`${relativePath}${padding}`)} ${picocolors.blue(result.time + 'ms')}`,
+    );
+  });
 }

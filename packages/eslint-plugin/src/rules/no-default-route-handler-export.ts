@@ -14,7 +14,6 @@ const noDefaultRouteHandlerExport = createRule({
       description: 'Prevent exporting route handlers as default exports',
       requiresTypeChecking: false,
     },
-    fixable: 'code',
     messages: {
       noDefaultRouteHandlerExport:
         'Route handlers should not be exported as default exports',

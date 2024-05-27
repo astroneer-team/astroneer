@@ -2,8 +2,9 @@ import * as swc from '@swc/core';
 import fs from 'fs';
 import path from 'path';
 import outputFilePath from '../output-file-path';
+import { dirExists } from '@astroneer/common';
 
-export default function withSWC(file: string) {
+export default function withSWC(files: string[]) {
   const swcrcFileExists = fs.existsSync(path.resolve(process.cwd(), '.swcrc'));
 
   if (!swcrcFileExists) {
@@ -12,13 +13,25 @@ export default function withSWC(file: string) {
     );
   }
 
-  const { code } = swc.transformFileSync(file, {
-    swcrc: true,
-    cwd: process.cwd(),
+  return files.map((file) => {
+    const now = Date.now();
+    const { code } = swc.transformFileSync(file, {
+      swcrc: true,
+      cwd: process.cwd(),
+    });
+
+    const output = outputFilePath(file);
+
+    if (!dirExists(path.dirname(output))) {
+      fs.mkdirSync(path.dirname(output), { recursive: true });
+    }
+
+    fs.writeFileSync(output, code);
+
+    return {
+      file,
+      output,
+      time: Date.now() - now,
+    };
   });
-
-  const output = outputFilePath(file);
-
-  fs.mkdirSync(path.dirname(output), { recursive: true });
-  fs.writeFileSync(output, code);
 }

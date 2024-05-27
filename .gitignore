@@ -6,10 +6,10 @@ node_modules
 dist
 
 # astroneer testing dist files
-.astroneer
-./src
-astroneer.config.js
-./.swcrc
+/.astroneer
+/src
+/astroneer.config.js
+/.swcrc
 
 # IDE settings
 .vscode/

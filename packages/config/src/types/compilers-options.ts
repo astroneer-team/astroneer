@@ -1,15 +1,4 @@
-export type CompilerOptions =
-  | ESbuildCompilerOptions
-  | SWCCompilerOptions
-  | TSCCompilerOptions
-  | WebpackCompilerOptions;
-
-export type ESbuildCompilerOptions = {
-  type?: 'esbuild';
-  bundle?: boolean;
-  external?: string[];
-  typeCheck?: boolean;
-};
+export type CompilerOptions = SWCCompilerOptions | TSCCompilerOptions;
 
 export type SWCCompilerOptions = {
   type?: 'swc';
@@ -19,9 +8,5 @@ export type SWCCompilerOptions = {
 
 export type TSCCompilerOptions = {
   type?: 'tsc';
-};
-
-export type WebpackCompilerOptions = {
-  type?: 'webpack';
-  configPath?: string;
+  typeCheck?: boolean;
 };

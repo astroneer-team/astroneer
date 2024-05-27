@@ -10,6 +10,7 @@ const noNonAsyncRouteHandlers = createRule({
   name: 'no-non-async-route-handlers',
   meta: {
     type: 'problem',
+    fixable: 'code',
     docs: {
       description: 'Route handlers must be asynchronous',
       requiresTypeChecking: false,
@@ -37,6 +38,9 @@ const noNonAsyncRouteHandlers = createRule({
             context.report({
               node: id,
               messageId: 'noNonAsyncRouteHandlers',
+              fix(fixer) {
+                return fixer.insertTextBefore(node, 'async ');
+              },
             });
           }
         }
@@ -50,6 +54,9 @@ const noNonAsyncRouteHandlers = createRule({
         context.report({
           node: node.id || node,
           messageId: 'noNonAsyncRouteHandlers',
+          fix(fixer) {
+            return fixer.insertTextBefore(node, 'async ');
+          },
         });
       }
     };
