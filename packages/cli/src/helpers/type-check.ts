@@ -4,7 +4,12 @@ import picocolors from 'picocolors';
 
 export function typeCheck() {
   const now = new Date();
-  const tscArgs = ['--noEmit', '--project', 'tsconfig.json'];
+  const tscArgs = [
+    '--pretty',
+    '--noEmit',
+    '-p',
+    `${process.cwd()}/tsconfig.json`,
+  ];
   const tscProcess = spawnSync('tsc', tscArgs, {
     stdio: 'inherit',
     shell: true,
