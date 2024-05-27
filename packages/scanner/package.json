@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/scanner",
-  "version": "1.4.13-canary.0",
+  "version": "1.4.14-canary.0",
   "description": "Astroneer.js file scanner package",
   "license": "MIT",
   "main": "dist/index.js",
@@ -21,6 +21,6 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@astroneer/common": "^1.4.13-canary.0"
+    "@astroneer/common": "^1.4.14-canary.0"
   }
 }
