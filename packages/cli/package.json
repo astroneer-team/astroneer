@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/cli",
-  "version": "1.4.16-canary.0",
+  "version": "1.4.17-canary.0",
   "description": "A CLI for Astroneer.js",
   "license": "MIT",
   "bin": {
