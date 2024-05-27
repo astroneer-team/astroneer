@@ -3,6 +3,7 @@
   "version": "1.4.18",
   "description": "Astroneer.js project generator",
   "license": "MIT",
+  "main": "dist/index.js",
   "bin": {
     "create-astroneer-app": "dist/index.js"
   },

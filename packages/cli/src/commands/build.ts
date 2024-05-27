@@ -1,10 +1,9 @@
+import { Logger } from '@astroneer/common';
 import { DIST_FOLDER, SOURCE_FOLDER } from '@astroneer/config';
 import { scanSync } from '@astroneer/scanner';
 import { Command } from 'commander';
 import { rimraf } from 'rimraf';
 import compileSync from '../helpers/compileSync';
-import { printVersion } from '../helpers/print-version';
-import { Logger } from '@astroneer/common';
 
 /**
  * Builds the project by compiling TypeScript files and creating the output files.
@@ -16,7 +15,6 @@ import { Logger } from '@astroneer/common';
  * @returns A promise that resolves when the build process is complete.
  */
 export async function build(): Promise<void> {
-  await printVersion();
   await rimraf(DIST_FOLDER);
   scanFiles();
 }
