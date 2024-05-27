@@ -13,11 +13,7 @@ async function astroneerCLI() {
   const packageJsonPath = path.resolve(__dirname, '../package.json');
   const packageJson = readFileSync(packageJsonPath, 'utf-8');
   const { version, description, name } = JSON.parse(packageJson);
-  console.log(
-    picocolors.blue(
-      `♦️  Astroneer.js CLI v${version} - Create Astroneer.js App\n`,
-    ),
-  );
+  console.log(picocolors.blue(`♦️  Astroneer.js CLI v${version}`));
 
   new Command(name)
     .description(description)
