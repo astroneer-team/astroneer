@@ -1,13 +1,14 @@
-import { Logger, createFile, isDevMode, logRequest } from '@astroneer/common';
+import {
+  HttpError,
+  HttpServerMethods,
+  Logger,
+  createFile,
+  isDevMode,
+} from '@astroneer/common';
+import { AstroneerConfig, DIST_FOLDER, loadConfig } from '@astroneer/config';
 import { IncomingMessage, ServerResponse } from 'http';
 import path from 'path';
 import { UrlWithParsedQuery } from 'url';
-import { isAsyncFunction } from 'util/types';
-import { AstroneerConfig, loadConfig } from './config';
-import { DIST_FOLDER } from './constants';
-import { HttpServerMethods } from './enums/http-server-methods';
-import { HttpError } from './errors';
-import { UnprocessableError } from './errors/application/unprocessable-error';
 import { Request } from './request';
 import { Response } from './response';
 import {
@@ -66,7 +67,7 @@ export class Astroneer {
       const metadata = router.generateRouteMetadata();
       createFile({
         filePath: path.resolve(DIST_FOLDER, 'routes.json'),
-        content: JSON.stringify(metadata, null, 2),
+        content: metadata,
         overwrite: true,
       });
     }
@@ -91,7 +92,7 @@ export class Astroneer {
       onNotFound?: RouteHandler;
     },
   ): Promise<void> {
-    const config = await loadConfig();
+    const config = loadConfig();
     const route = await this.matchRoute(req, parsedUrl);
 
     if (!route?.handler) {
@@ -106,7 +107,6 @@ export class Astroneer {
     );
 
     try {
-      this.logRequestIfNeeded(config, req, res);
       await this.runMiddlewares(route.middlewares ?? [], request, response);
       await this.runHandler(route.handler, request, response);
     } catch (err) {
@@ -114,59 +114,32 @@ export class Astroneer {
     }
   }
 
-  private logRequestIfNeeded(
-    config: AstroneerConfig,
-    req: IncomingMessage,
-    res: ServerResponse,
-  ) {
-    if (
-      config.logRequests &&
-      (typeof config.logRequests === 'boolean' ||
-        config.logRequests.env?.includes(process.env.NODE_ENV!))
-    ) {
-      logRequest(req, res);
-    }
-  }
-
   private handleError(
     err: Error,
     config: AstroneerConfig,
-    request: Request,
-    response: Response,
+    req: Request,
+    res: Response,
     customHandlers?: {
       onError?: ErrorRouteHandler;
       onNotFound?: RouteHandler;
     },
   ) {
-    if (err.name === UnprocessableError.name) {
-      Logger.error(err.message);
-      process.exit(1);
-    }
-
     this.logErrorIfNeeded(err, config);
 
     if (customHandlers?.onError) {
-      return customHandlers.onError(err, request, response);
+      return customHandlers.onError(err, req, res);
     }
 
-    if (err instanceof HttpError) {
-      return err.build(response);
+    if (err.name === HttpError.name) {
+      return res.status((err as HttpError).statusCode).json({
+        message: err.message,
+      });
     }
   }
 
   private logErrorIfNeeded(err: Error, config: AstroneerConfig) {
-    if (config.logErrors) {
-      const logger =
-        typeof config.logErrors === 'object' && config.logErrors?.asDebug
-          ? Logger.debug
-          : Logger.error;
-
-      if (
-        typeof config.logErrors === 'boolean' ||
-        config.logErrors.env?.includes(process.env.NODE_ENV!)
-      ) {
-        logger(err.stack);
-      }
+    if (config.logger?.httpErrors) {
+      Logger.error(err.stack);
     }
   }
 
@@ -220,12 +193,6 @@ export class Astroneer {
     const next = async () => {
       if (queue.length) {
         const middleware = queue.shift();
-
-        if (!isAsyncFunction(middleware)) {
-          throw new UnprocessableError(
-            'Astroneer middlewares must be async functions. Please refer to https://astroneer.dev/docs/middlewares for more information.',
-          );
-        }
 
         try {
           await middleware?.(req, res, next);

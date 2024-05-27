@@ -8,8 +8,12 @@ module.exports = {
     node: true,
     jest: true,
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
-  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
+  plugins: ['@typescript-eslint/eslint-plugin', 'astroneer'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:astroneer/recommended',
+    'prettier',
+  ],
   overrides: [
     {
       files: ['**/*.ts'],

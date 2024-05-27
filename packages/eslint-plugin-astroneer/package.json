@@ -1,0 +1,26 @@
+{
+  "name": "eslint-plugin-astroneer",
+  "version": "1.4.21",
+  "description": "ESLint plugin for Astroneer",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "repository": {
+    "directory": "packages/eslint-plugin-astroneer",
+    "type": "git"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.10.0",
+    "@typescript-eslint/parser": "^7.10.0",
+    "@typescript-eslint/utils": "^7.10.0"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "npm run clean && swc -d dist src"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

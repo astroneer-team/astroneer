@@ -1,0 +1,30 @@
+{
+  "name": "@astroneer/config",
+  "version": "1.4.21",
+  "description": "Astroneer.js configuration package",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "directory": "packages/config",
+    "type": "git"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@astroneer/scanner": "^1.4.21"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "types": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist",
+    "compile": "ncc build src/index.ts -t -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile && npm run types"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

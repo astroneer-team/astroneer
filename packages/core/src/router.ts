@@ -1,10 +1,13 @@
-import { Logger, normalizeFileNames } from '@astroneer/common';
-import path, { resolve } from 'path';
-import { DIST_FOLDER } from './constants';
-import { HttpServerMethods } from './enums/http-server-methods';
+import {
+  HttpServerMethods,
+  Logger,
+  normalizeFileNames,
+} from '@astroneer/common';
+import { ROUTES_FOLDER } from '@astroneer/config';
+import { scanSync } from '@astroneer/scanner';
+import path from 'path';
 import { Request } from './request';
 import { Response } from './response';
-import { scan } from './scanner';
 
 export type Route = {
   /**
@@ -164,10 +167,9 @@ export class AstroneerRouter {
     const routeFiles: string[] = [];
 
     // Scan the routes directory for route files
-    await scan({
-      rootDir: resolve(DIST_FOLDER, 'routes'),
-      include: [/\/*.(t|j)s$/],
-      exclude: [/\/*.d\.ts$/, /\/*.spec\.(t|j)s$/],
+    scanSync({
+      rootDir: ROUTES_FOLDER,
+      searchFor: [/\/*.js$/],
       onFile(file) {
         delete require.cache[file];
         routeFiles.push(file);

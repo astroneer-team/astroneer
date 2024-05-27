@@ -1,36 +1,33 @@
 {
   "name": "@astroneer/cli",
+  "version": "1.4.21",
   "description": "A CLI for Astroneer.js",
-  "version": "1.4.13-canary.0",
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
-    "astroneer": "dist/cli.js"
+    "astroneer": "dist/index.js"
   },
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc"
+    "compile": "ncc build src/index.ts -t -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@astroneer/common": "^1.4.13-canary.0",
-    "@astroneer/core": "^1.4.13-canary.0",
-    "@isaacs/fs-minipass": "^4.0.1",
-    "@octokit/rest": "^20.1.0",
+    "@astroneer/common": "^1.4.21",
+    "@astroneer/config": "^1.4.21",
+    "@astroneer/core": "^1.4.21",
+    "@astroneer/scanner": "^1.4.21",
     "@swc/core": "^1.5.7",
     "chokidar": "^3.6.0",
     "commander": "^12.0.0",
     "dotenv": "^16.4.5",
-    "esbuild": "^0.20.2",
     "picocolors": "^1.0.0",
     "prompts": "^2.4.2",
     "rimraf": "^5.0.5",
-    "simple-git": "^3.24.0",
-    "tar": "^7.0.1",
     "tree-kill": "^1.2.2",
     "tslib": "^2.6.2",
     "typescript": "^5.4.5"
@@ -41,5 +38,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,15 +1,15 @@
 {
   "name": "@astroneer/core",
-  "version": "1.4.13-canary.0",
+  "version": "1.4.21",
+  "description": "Astroneer.js core package",
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && tsc",
-    "test": "jest --config ./jest.config.js"
+    "clean": "rimraf dist",
+    "types": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist",
+    "compile": "ncc build src/index.ts -t -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile && npm run types"
   },
   "files": [
     "dist"
@@ -19,9 +19,14 @@
     "type": "git"
   },
   "dependencies": {
-    "@astroneer/common": "^1.4.13-canary.0"
+    "@astroneer/common": "^1.4.21",
+    "@astroneer/config": "^1.4.21",
+    "@astroneer/scanner": "^1.4.21"
   },
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,5 +1,5 @@
 import { Logger } from '@astroneer/common';
-import { DIST_FOLDER } from '@astroneer/core';
+import { DIST_FOLDER } from '@astroneer/config';
 import { Command } from 'commander';
 import { configDotenv } from 'dotenv';
 import { existsSync } from 'fs';
@@ -8,7 +8,7 @@ import { resolve } from 'path';
 /**
  * Command to start Astroneer.js app.
  */
-const startCmd = new Command('start')
+export const startCmd = new Command('start')
   .description('Start Astroneer.js app')
   .option('-p, --port <port>', 'Port to run the server on', '3000')
   .option(
@@ -19,7 +19,6 @@ const startCmd = new Command('start')
   .option('-d, --devmode', 'Enable development mode', false)
   .action(
     async (options: { port: string; hostname: string; devmode: boolean }) => {
-      process.env.ASTRONEER_CONTEXT = 'start';
       process.env.NODE_ENV = options.devmode ? 'development' : 'production';
       process.env.HOST = options.hostname;
 
@@ -38,5 +37,3 @@ const startCmd = new Command('start')
       await import(resolve(DIST_FOLDER, 'server.js')).then((m) => m.default());
     },
   );
-
-export default startCmd;

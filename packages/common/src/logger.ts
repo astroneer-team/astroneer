@@ -26,8 +26,11 @@ export class Logger {
    * Logs an error message.
    * @param message - The message to be logged.
    */
-  error(message?: string) {
+  error(message?: string, stack?: string) {
     this.logMessage('error', message);
+    if (stack) {
+      console.log(picocolors.gray(stack));
+    }
   }
 
   /**
@@ -58,8 +61,8 @@ export class Logger {
    * Logs an error message using the static instance of the Logger class.
    * @param message - The message to be logged.
    */
-  static error(message?: string) {
-    Logger.staticInstanceRef.error(message);
+  static error(message?: string, stack?: string) {
+    Logger.staticInstanceRef.error(message, stack);
   }
 
   /**
