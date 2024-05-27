@@ -75,7 +75,13 @@ export async function createAstroneerApp(projectName?: string) {
     ],
     {
       onCancel() {
-        throw new Error('Operation cancelled by the user');
+        console.error(
+          picocolors.red(
+            `⚠️  Operation cancelled. Astroneer.js app was not created.`,
+          ),
+        );
+
+        process.exit(1);
       },
     },
   );
@@ -94,7 +100,13 @@ export async function createAstroneerApp(projectName?: string) {
       });
 
       if (!overwrite) {
-        throw new Error(`Directory ${_projectName} already exists.`);
+        console.error(
+          picocolors.red(
+            `⚠️  Operation cancelled. Astroneer.js app was not created.`,
+          ),
+        );
+
+        process.exit(1);
       }
     }
 
@@ -136,10 +148,12 @@ export async function createAstroneerApp(projectName?: string) {
     stop();
 
     if (installProcess.status !== 0) {
-      throw new Error(
-        `An error occurred while installing dependencies. Please install the dependencies manually by running ${picocolors.blue(
-          `\`${cmd}\``,
-        )} in the project directory.`,
+      console.error(
+        picocolors.red(
+          `⚠️  Failed to install dependencies. Please run ${picocolors.blue(
+            `\`${cmd} install\``,
+          )} manually.`,
+        ),
       );
     }
   }
