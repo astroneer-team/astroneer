@@ -3,9 +3,6 @@
   "version": "1.4.14-canary.0",
   "description": "A CLI for Astroneer.js",
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
   "bin": {
     "astroneer": "dist/cli.js"
   },
@@ -44,6 +41,5 @@
   },
   "engines": {
     "node": ">=18"
-  },
-  "gitHead": "1d45898afa2c0f3507cee34b39effaa63d56898d"
+  }
 }

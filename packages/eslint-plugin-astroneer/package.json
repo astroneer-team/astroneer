@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "repository": {
-    "directory": "packages/eslint-plugin",
+    "directory": "packages/eslint-plugin-astroneer",
     "type": "git"
   },
   "files": [
@@ -16,22 +16,8 @@
     "@typescript-eslint/parser": "^7.10.0",
     "@typescript-eslint/utils": "^7.10.0"
   },
-  "devDependencies": {
-    "eslint": "^8.57.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && swc -d dist src"
-  },
-  "exports": {
-    ".": {
-      "default": "./dist/index.js"
-    },
-    "./package.json": "./package.json",
-    "./use-at-your-own-risk": "./dist/rules.js"
-  },
-  "gitHead": "1d45898afa2c0f3507cee34b39effaa63d56898d"
+  }
 }

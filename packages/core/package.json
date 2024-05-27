@@ -3,9 +3,6 @@
   "version": "1.4.14-canary.0",
   "description": "Astroneer.js core package",
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -27,6 +24,5 @@
   },
   "engines": {
     "node": ">=18"
-  },
-  "gitHead": "1d45898afa2c0f3507cee34b39effaa63d56898d"
+  }
 }
