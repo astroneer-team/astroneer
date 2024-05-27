@@ -67,7 +67,7 @@ export class Astroneer {
       const metadata = router.generateRouteMetadata();
       createFile({
         filePath: path.resolve(DIST_FOLDER, 'routes.json'),
-        content: JSON.stringify(metadata, null, 2),
+        content: metadata,
         overwrite: true,
       });
     }
