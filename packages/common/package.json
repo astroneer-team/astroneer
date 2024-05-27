@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/common",
-  "version": "1.4.20",
+  "version": "1.4.21",
   "description": "Astroneer.js common utilities, definitions and types package",
   "license": "MIT",
   "main": "dist/index.js",
