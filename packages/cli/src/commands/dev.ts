@@ -14,8 +14,6 @@ import {
 
 /**
  * Starts the development server.
- *
- * @param options - The server options including the port and hostname.
  */
 export async function devServer() {
   let server: Server;

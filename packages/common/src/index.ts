@@ -6,3 +6,4 @@ export * from './logger';
 export * from './normalize-filenames';
 export * from './errors';
 export * from './enums';
+export * from './show-cli-spinner'

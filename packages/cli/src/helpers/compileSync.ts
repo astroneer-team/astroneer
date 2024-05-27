@@ -14,8 +14,7 @@ type CompilationResult = {
 
 /**
  * Compiles a file using the specified configuration.
- * @param file - The file to compile.
- * @param config - The Astroneer configuration.
+ * @param files
  */
 export default function compileSync(files: string[]) {
   const config = loadConfig();

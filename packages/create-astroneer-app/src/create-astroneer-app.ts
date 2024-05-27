@@ -8,10 +8,9 @@ import {
   changeProjectName,
   copyTemplateFiles,
   downloadTemplates,
-  showSpinner,
-  showSpinnerWithPromise,
 } from './helpers';
 import { deleteTemplatesFolder } from './helpers/delete-templates-folder';
+import { showSpinnerWithPromise } from '@astroneer/common';
 
 export async function createAstroneerApp(projectName?: string) {
   const packageJsonPath = path.resolve(__dirname, '../package.json');
@@ -77,7 +76,7 @@ export async function createAstroneerApp(projectName?: string) {
       onCancel() {
         console.error(
           picocolors.red(
-            `⚠️  Operation cancelled. Astroneer.js app was not created.`,
+            `Operation cancelled. Astroneer.js app was not created.`,
           ),
         );
 
@@ -102,7 +101,7 @@ export async function createAstroneerApp(projectName?: string) {
       if (!overwrite) {
         console.error(
           picocolors.red(
-            `⚠️  Operation cancelled. Astroneer.js app was not created.`,
+            `Operation cancelled. Astroneer.js app was not created.`,
           ),
         );
 
@@ -113,14 +112,10 @@ export async function createAstroneerApp(projectName?: string) {
     mkdirSync(projectDir, { recursive: true });
   }
 
-  const { stop } = showSpinner('Copying template files...');
-
   copyTemplateFiles({
     srcDir: answers.selectedTemplate,
     destDir: projectDir,
   });
-
-  stop();
 
   changeProjectName({
     projectName: _projectName,
@@ -145,7 +140,7 @@ export async function createAstroneerApp(projectName?: string) {
     if (installProcess.status !== 0) {
       console.error(
         picocolors.red(
-          `⚠️  Failed to install dependencies. Please run ${picocolors.blue(
+          `Failed to install dependencies. Please run ${picocolors.blue(
             `\`${cmd} install\``,
           )} manually.`,
         ),

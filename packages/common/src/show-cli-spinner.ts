@@ -1,4 +1,4 @@
-import { blue, gray } from 'picocolors';
+import picocolors from 'picocolors';
 
 /**
  * Displays a spinner animation with a given message.
@@ -15,7 +15,7 @@ export function showSpinner(message: string) {
 
   const interval = setInterval(() => {
     const { frames } = spinner;
-    process.stdout.write(`\r${frames[i]} ${blue(message)} ${gray('...')}`);
+    process.stdout.write(`\r${frames[i]} ${picocolors.blue(message)}`);
     i = (i + 1) % frames.length;
   }, spinner.interval);
 
