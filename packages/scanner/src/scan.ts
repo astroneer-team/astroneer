@@ -1,7 +1,7 @@
+import { dirExists } from '@astroneer/common';
 import fs from 'fs';
 import path from 'path';
 import { ScanOptions, ScanSyncOptions } from './types/scan-options';
-import { dirExists } from '@astroneer/common';
 
 export function scan(options: ScanOptions) {
   const { rootDir, ignore, searchFor, onFile } = options;
@@ -57,7 +57,7 @@ export function scanSync(options: ScanSyncOptions) {
       if (stat.isDirectory() && !options.onlyRootDir) {
         scanDirSync(filePath);
       } else {
-        const normalizedPath = path.normalize(filePath.replaceAll(/\\/g, '/'));
+        const normalizedPath = path.normalize(filePath).replaceAll(/\\/g, '/');
 
         if (searchFor.some((re) => re.test(normalizedPath))) {
           onFile(filePath);
