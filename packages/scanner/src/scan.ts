@@ -24,7 +24,7 @@ export function scan(options: ScanOptions) {
       if (stat.isDirectory() && !options.onlyRootDir) {
         await scanDir(filePath);
       } else {
-        const normalizedPath = path.normalize(filePath.replaceAll(/\\/g, '/'));
+        const normalizedPath = path.normalize(filePath).replaceAll(/\\/g, '/');
 
         if (searchFor.some((re) => re.test(normalizedPath))) {
           await onFile(filePath);
