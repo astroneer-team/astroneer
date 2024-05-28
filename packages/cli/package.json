@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/cli",
-  "version": "1.4.21",
+  "version": "1.4.22",
   "description": "A CLI for Astroneer.js",
   "license": "MIT",
   "main": "dist/index.js",
@@ -17,10 +17,10 @@
     "dist"
   ],
   "dependencies": {
-    "@astroneer/common": "^1.4.21",
-    "@astroneer/config": "^1.4.21",
-    "@astroneer/core": "^1.4.21",
-    "@astroneer/scanner": "^1.4.21",
+    "@astroneer/common": "^1.4.22",
+    "@astroneer/config": "^1.4.22",
+    "@astroneer/core": "^1.4.22",
+    "@astroneer/scanner": "^1.4.22",
     "@swc/core": "^1.5.7",
     "chokidar": "^3.6.0",
     "commander": "^12.0.0",
