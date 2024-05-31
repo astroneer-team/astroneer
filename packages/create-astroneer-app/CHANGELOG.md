@@ -1,5 +1,11 @@
 # create-astroneer-app
 
+## 1.4.25
+
+### Patch Changes
+
+- 1712f25: CLI action updated to works properly
+
 ## 1.4.24
 
 ### Patch Changes
