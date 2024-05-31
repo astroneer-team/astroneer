@@ -1,5 +1,11 @@
 # @astroneer/common
 
+## 1.4.23
+
+### Patch Changes
+
+- 7cbfddf: CLI compatibility update
+
 ## 1.4.22
 
 ### Patch Changes

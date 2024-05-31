@@ -1,5 +1,16 @@
 # @astroneer/cli
 
+## 1.4.23
+
+### Patch Changes
+
+- 7cbfddf: CLI compatibility update
+- Updated dependencies [7cbfddf]
+  - @astroneer/common@1.4.23
+  - @astroneer/config@1.4.23
+  - @astroneer/core@1.4.23
+  - @astroneer/scanner@1.4.23
+
 ## 1.4.22
 
 ### Patch Changes

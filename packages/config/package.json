@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/config",
-  "version": "1.4.22",
+  "version": "1.4.23",
   "description": "Astroneer.js configuration package",
   "license": "MIT",
   "main": "dist/index.js",
@@ -13,7 +13,7 @@
     "dist"
   ],
   "dependencies": {
-    "@astroneer/scanner": "^1.4.22"
+    "@astroneer/scanner": "^1.4.23"
   },
   "scripts": {
     "clean": "rimraf dist",
