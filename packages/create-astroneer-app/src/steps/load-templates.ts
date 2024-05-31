@@ -1,4 +1,4 @@
-import { showSpinnerWithPromise } from 'packages/common/dist';
+import { showSpinnerWithPromise } from '@astroneer/common';
 import { downloadTemplates } from '../helpers';
 
 export async function loadTemplates() {
