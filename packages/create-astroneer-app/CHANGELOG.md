@@ -1,5 +1,11 @@
 # create-astroneer-app
 
+## 1.4.31
+
+### Patch Changes
+
+- 9b1fc02: CLI bugfix update
+
 ## 1.4.30
 
 ### Patch Changes
