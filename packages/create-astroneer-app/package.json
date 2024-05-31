@@ -1,6 +1,6 @@
 {
   "name": "create-astroneer-app",
-  "version": "1.4.29",
+  "version": "1.4.30",
   "description": "Astroneer.js project generator",
   "license": "MIT",
   "main": "dist/index.js",
