@@ -1,94 +1,22 @@
 import { spawnSync } from 'child_process';
-import { existsSync, mkdirSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import path from 'path';
 import picocolors from 'picocolors';
 import prompts from 'prompts';
-import simpleGit from 'simple-git';
-import {
-  changeProjectName,
-  copyTemplateFiles,
-  downloadTemplates,
-} from './helpers';
+import { changeProjectName, copyTemplateFiles } from './helpers';
 import { deleteTemplatesFolder } from './helpers/delete-templates-folder';
-import { showSpinnerWithPromise } from '@astroneer/common';
+import { doQuestions } from './steps/do-questions';
+import { initGitRepository } from './steps/init-git-repository';
+import { loadTemplates } from './steps/load-templates';
+import { printStatus } from './steps/print-status';
 
 export async function createAstroneerApp(projectName?: string) {
-  const packageJsonPath = path.resolve(__dirname, '../package.json');
-  const packageJson = readFileSync(packageJsonPath, 'utf-8');
-  const { version } = JSON.parse(packageJson);
-  console.log(
-    picocolors.blue(
-      `>_  Astroneer.js CLI v${version} - Create Astroneer.js App\n`,
-    ),
-  );
-
-  const templates = await showSpinnerWithPromise(
-    () => downloadTemplates(),
-    'Downloading Astroneer.js templates...',
-  );
-
-  const answers = await prompts(
-    [
-      {
-        type: () => (projectName ? null : 'text'),
-        name: 'projectName',
-        message: `What is the name of the project?`,
-        initial: 'my-astroneer-app',
-        validate: (value) => (value ? true : 'Project name is required'),
-      },
-      {
-        type: 'select',
-        name: 'selectedTemplate',
-        message: `Which ${picocolors.blue('`template`')} would you like to use?`,
-        choices: templates.map((template) => ({
-          title: template.name,
-          value: template.path,
-          description: template.description,
-        })),
-      },
-      {
-        type: 'select',
-        name: 'packageManager',
-        message: `Which ${picocolors.blue('`package manager`')} would you like to use?`,
-        choices: [
-          { title: 'npm', value: 'npm' },
-          { title: 'yarn', value: 'yarn' },
-        ],
-      },
-      {
-        type: 'toggle',
-        name: 'git',
-        message: `Initialize a ${picocolors.blue('`git`')} repository?`,
-        initial: true,
-        active: 'yes',
-        inactive: 'no',
-      },
-      {
-        type: 'toggle',
-        name: 'install',
-        message: `Install ${picocolors.blue('`dependencies`')} after creating the project?`,
-        initial: true,
-        active: 'yes',
-        inactive: 'no',
-      },
-    ],
-    {
-      onCancel() {
-        console.error(
-          picocolors.red(
-            `Operation cancelled. Astroneer.js app was not created.`,
-          ),
-        );
-
-        process.exit(1);
-      },
-    },
-  );
-
+  printStatus();
+  const templates = await loadTemplates();
+  const answers = await doQuestions({ projectName, templates });
   const _projectName = projectName || answers.projectName;
   const useRootDir = projectName === '.' || projectName === './';
   const projectDir = useRootDir ? process.cwd() : path.resolve(_projectName);
-
   if (!useRootDir) {
     if (existsSync(projectDir)) {
       const { overwrite } = await prompts({
@@ -122,13 +50,6 @@ export async function createAstroneerApp(projectName?: string) {
     projectPath: projectDir,
   });
 
-  if (answers.git) {
-    const git = simpleGit(projectDir);
-    await git.init();
-    await git.add('.');
-    await git.commit('Initial commit');
-  }
-
   if (answers.install) {
     const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm install';
     const installProcess = spawnSync(cmd, {
@@ -148,6 +69,8 @@ export async function createAstroneerApp(projectName?: string) {
     }
   }
 
+  if (answers.git) initGitRepository(projectDir);
+
   console.log(
     picocolors.green(
       `\nSuccessfully created Astroneer.js app in ${picocolors.blue(
@@ -158,17 +81,19 @@ export async function createAstroneerApp(projectName?: string) {
 
   const runCommand = answers.packageManager === 'yarn' ? 'yarn' : 'npm run';
 
-  console.log(picocolors.blue(`\nGet started with the following commands:\n`));
-  console.log(picocolors.gray(`  cd ${_projectName}`));
-  console.log(picocolors.gray(`  ${runCommand} dev`));
   console.log(
-    picocolors.blue(
+    picocolors.magenta(`\nGet started with the following commands:\n`),
+  );
+  console.log(picocolors.magenta(`  cd ${_projectName}`));
+  console.log(picocolors.magenta(`  ${runCommand} dev`));
+  console.log(
+    picocolors.magenta(
       `\nFor more information, check out the Astroneer.js documentation at ${picocolors.underline(
         'https://astroneer.dev/docs',
       )}\n`,
     ),
   );
-  console.log(picocolors.green('Good luck, Astroneer! 🚀\n'));
+  console.log(picocolors.magenta('Good luck, Astroneer! 🚀\n'));
 
   deleteTemplatesFolder();
 }
