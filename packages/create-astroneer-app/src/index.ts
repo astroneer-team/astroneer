@@ -8,7 +8,7 @@ function program() {
     .description(description)
     .version(version)
     .argument('[name]', 'Name of the project')
-    .action(createAstroneerApp)
+    .action(async (name) => await createAstroneerApp(name))
     .parse(process.argv);
 }
 
