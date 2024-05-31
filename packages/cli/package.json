@@ -10,8 +10,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "compile": "ncc build src/index.ts -t -o dist --minify --no-cache --no-source-map-register",
-    "build": "npm run clean && npm run compile"
+    "build": "npm run clean && swc -d dist src"
   },
   "files": [
     "dist"
