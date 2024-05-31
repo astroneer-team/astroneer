@@ -1,5 +1,11 @@
 # create-astroneer-app
 
+## 1.4.27
+
+### Patch Changes
+
+- c70ddec: CLI updated
+
 ## 1.4.26
 
 ### Patch Changes
