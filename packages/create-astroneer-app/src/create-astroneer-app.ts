@@ -51,13 +51,8 @@ export async function createAstroneerApp(projectName?: string) {
   });
 
   if (answers.install) {
-    const cmd = answers.packageManager === 'yarn' ? 'yarn add' : 'npm install';
-    const astroneerPackages = [
-      '@astroneer/core',
-      '@astroneer/cli',
-      '@astroneer/common',
-    ];
-    const installProcess = spawnSync(`${cmd} ${astroneerPackages.join(' ')} `, {
+    const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm install';
+    const installProcess = spawnSync(`${cmd}`, {
       cwd: projectDir,
       stdio: 'inherit',
       shell: true,
@@ -78,27 +73,12 @@ export async function createAstroneerApp(projectName?: string) {
 
   console.log(
     picocolors.green(
-      `\nSuccessfully created Astroneer.js app in ${picocolors.blue(
+      `\nSuccessfully created Astroneer.js app in ${picocolors.cyan(
         `\`${_projectName}\``,
       )}`,
     ),
   );
-
-  const runCommand = answers.packageManager === 'yarn' ? 'yarn' : 'npm run';
-
-  console.log(
-    picocolors.magenta(`\nGet started with the following commands:\n`),
-  );
-  console.log(picocolors.magenta(`  cd ${_projectName}`));
-  console.log(picocolors.magenta(`  ${runCommand} dev`));
-  console.log(
-    picocolors.magenta(
-      `\nFor more information, check out the Astroneer.js documentation at ${picocolors.underline(
-        'https://astroneer.dev/docs',
-      )}\n`,
-    ),
-  );
-  console.log(picocolors.magenta('Good luck, Astroneer! 🚀\n'));
+  console.log(picocolors.green('Good luck, Astroneer! 🚀\n'));
 
   deleteTemplatesFolder();
 }
