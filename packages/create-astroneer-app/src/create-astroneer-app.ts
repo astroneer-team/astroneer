@@ -51,8 +51,13 @@ export async function createAstroneerApp(projectName?: string) {
   });
 
   if (answers.install) {
-    const cmd = answers.packageManager === 'yarn' ? 'yarn' : 'npm install';
-    const installProcess = spawnSync(cmd, {
+    const cmd = answers.packageManager === 'yarn' ? 'yarn add' : 'npm install';
+    const astroneerPackages = [
+      '@astroneer/core',
+      '@astroneer/cli',
+      '@astroneer/common',
+    ];
+    const installProcess = spawnSync(`${cmd} ${astroneerPackages.join(' ')} `, {
       cwd: projectDir,
       stdio: 'inherit',
       shell: true,
