@@ -26,7 +26,7 @@ export async function doQuestions({
       {
         type: 'select',
         name: 'selectedTemplate',
-        message: `Which ${picocolors.blue('`template`')} would you like to use?`,
+        message: `Which ${picocolors.blue('template')} would you like to use?`,
         choices: templates.map((template) => ({
           title: template.name,
           value: template.path,
@@ -36,7 +36,7 @@ export async function doQuestions({
       {
         type: 'select',
         name: 'packageManager',
-        message: `Which ${picocolors.blue('`package manager`')} would you like to use?`,
+        message: `Which ${picocolors.blue('package manager')} would you like to use?`,
         choices: [
           { title: 'npm', value: 'npm' },
           { title: 'yarn', value: 'yarn' },
@@ -45,7 +45,7 @@ export async function doQuestions({
       {
         type: 'toggle',
         name: 'git',
-        message: `Initialize a ${picocolors.blue('`git`')} repository?`,
+        message: `Initialize a ${picocolors.blue('git')} repository?`,
         initial: true,
         active: 'yes',
         inactive: 'no',
@@ -53,7 +53,7 @@ export async function doQuestions({
       {
         type: 'toggle',
         name: 'install',
-        message: `Install ${picocolors.blue('`dependencies`')} after creating the project?`,
+        message: `Install ${picocolors.blue('dependencies')} after creating the project?`,
         initial: true,
         active: 'yes',
         inactive: 'no',

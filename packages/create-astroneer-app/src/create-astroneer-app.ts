@@ -62,7 +62,7 @@ export async function createAstroneerApp(projectName?: string) {
       console.error(
         picocolors.red(
           `Failed to install dependencies. Please run ${picocolors.blue(
-            `\`${cmd} install\``,
+            `${cmd}`,
           )} manually.`,
         ),
       );
@@ -72,13 +72,11 @@ export async function createAstroneerApp(projectName?: string) {
   if (answers.git) initGitRepository(projectDir);
 
   console.log(
-    picocolors.green(
-      `\nSuccessfully created Astroneer.js app in ${picocolors.cyan(
-        `\`${_projectName}\``,
-      )}`,
+    picocolors.blue(
+      `\nSuccessfully created Astroneer.js app in ${_projectName}`,
     ),
   );
-  console.log(picocolors.green('Good luck, Astroneer! 🚀\n'));
+  console.log(picocolors.blue('Good luck, Astroneer! 🚀\n'));
 
   deleteTemplatesFolder();
 }
