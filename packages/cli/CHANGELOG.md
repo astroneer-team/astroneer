@@ -1,5 +1,19 @@
 # @astroneer/cli
 
+## 2.0.0
+
+### Major Changes
+
+- e18f160: bump version to 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [e18f160]
+  - @astroneer/common@2.0.0
+  - @astroneer/config@2.0.0
+  - @astroneer/core@2.0.0
+  - @astroneer/scanner@2.0.0
+
 ## 1.4.23
 
 ### Patch Changes
