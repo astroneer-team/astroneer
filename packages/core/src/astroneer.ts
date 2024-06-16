@@ -131,9 +131,9 @@ export class Astroneer {
     }
 
     if (err.name === HttpError.name) {
-      return res.status((err as HttpError).statusCode).json({
-        message: err.message,
-      });
+      return res
+        .status((err as HttpError).statusCode)
+        .json((err as HttpError).json());
     }
   }
 

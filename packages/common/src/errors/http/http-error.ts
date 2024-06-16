@@ -12,6 +12,14 @@ export class HttpError extends Error {
     Object.setPrototypeOf(this, HttpError.prototype);
   }
 
+  public json() {
+    return {
+      statusCode: this.statusCode,
+      message: this.message,
+      data: this.data,
+    };
+  }
+
   static badRequest(message: string, data?: unknown) {
     return new HttpError(400, message, data);
   }
