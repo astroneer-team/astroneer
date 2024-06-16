@@ -1,5 +1,18 @@
 # @astroneer/core
 
+## 2.1.0
+
+### Minor Changes
+
+- 641ec43: new server.ts format and CLI dev/start command update
+
+### Patch Changes
+
+- Updated dependencies [641ec43]
+  - @astroneer/common@2.1.0
+  - @astroneer/config@2.1.0
+  - @astroneer/scanner@2.1.0
+
 ## 2.0.0
 
 ### Major Changes
