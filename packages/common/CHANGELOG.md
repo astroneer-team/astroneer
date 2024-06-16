@@ -1,5 +1,11 @@
 # @astroneer/common
 
+## 2.1.1
+
+### Patch Changes
+
+- 7b53c27: http-error update
+
 ## 2.1.0
 
 ### Minor Changes

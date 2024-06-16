@@ -1,6 +1,6 @@
 {
   "name": "create-astroneer-app",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Astroneer.js project generator",
   "license": "MIT",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
     "dist"
   ],
   "dependencies": {
-    "@astroneer/common": "^2.1.0",
+    "@astroneer/common": "^2.1.1",
     "@isaacs/fs-minipass": "^4.0.1",
     "@octokit/rest": "^20.1.1",
     "commander": "^12.1.0",

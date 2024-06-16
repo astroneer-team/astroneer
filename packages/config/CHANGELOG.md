@@ -1,5 +1,13 @@
 # @astroneer/config
 
+## 2.1.1
+
+### Patch Changes
+
+- 7b53c27: http-error update
+- Updated dependencies [7b53c27]
+  - @astroneer/scanner@2.1.1
+
 ## 2.1.0
 
 ### Minor Changes

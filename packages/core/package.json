@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/core",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Astroneer.js core package",
   "license": "MIT",
   "main": "dist/index.js",
@@ -19,9 +19,9 @@
     "type": "git"
   },
   "dependencies": {
-    "@astroneer/common": "^2.1.0",
-    "@astroneer/config": "^2.1.0",
-    "@astroneer/scanner": "^2.1.0"
+    "@astroneer/common": "^2.1.1",
+    "@astroneer/config": "^2.1.1",
+    "@astroneer/scanner": "^2.1.1"
   },
   "engines": {
     "node": ">=18"
