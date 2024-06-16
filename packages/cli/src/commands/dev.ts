@@ -1,3 +1,9 @@
+import { Logger } from '@astroneer/common';
+import {
+  CONFIG_FILE_NAMES,
+  DIST_FOLDER,
+  SOURCE_FOLDER,
+} from '@astroneer/config';
 import { watch } from 'chokidar';
 import { Command } from 'commander';
 import { configDotenv } from 'dotenv';
@@ -5,12 +11,6 @@ import { Server } from 'http';
 import path, { resolve } from 'path';
 import { startServer } from '../helpers/start-server';
 import { build } from './build';
-import { Logger } from '@astroneer/common';
-import {
-  CONFIG_FILE_NAMES,
-  DIST_FOLDER,
-  SOURCE_FOLDER,
-} from '@astroneer/config';
 
 /**
  * Starts the development server.
@@ -42,6 +42,7 @@ export async function devServer() {
 
       if (server) {
         server.close();
+        console.log();
       }
 
       server = await startServer();

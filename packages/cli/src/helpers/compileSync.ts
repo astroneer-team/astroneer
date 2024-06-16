@@ -1,7 +1,4 @@
-import { Logger } from '@astroneer/common';
-import { loadConfig, SOURCE_FOLDER } from '@astroneer/config';
-import path from 'path';
-import picocolors from 'picocolors';
+import { loadConfig } from '@astroneer/config';
 import withSWC from './compilers/with-swc';
 import withTSC from './compilers/with-tsc';
 import { typeCheck } from './type-check';
@@ -34,11 +31,4 @@ export default function compileSync(files: string[]) {
       results.push(...withTSC(files));
       break;
   }
-
-  results.forEach((result) => {
-    const relativePath = path.relative(SOURCE_FOLDER, result.file);
-    Logger.log(
-      `${picocolors.blue('✔')} ${picocolors.gray(`${relativePath}`)} ${picocolors.blue(`(${result.time}ms)`)}`,
-    );
-  });
 }
