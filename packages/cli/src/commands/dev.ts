@@ -7,16 +7,16 @@ import {
 import { watch } from 'chokidar';
 import { Command } from 'commander';
 import { configDotenv } from 'dotenv';
-import { Server } from 'http';
 import path, { resolve } from 'path';
-import { startServer } from '../helpers/start-server';
+import treeKill from 'tree-kill';
+import { ServerProcess, startServer } from '../helpers/start-server';
 import { build } from './build';
 
 /**
  * Starts the development server.
  */
 export async function devServer() {
-  let server: Server;
+  let server: ServerProcess;
 
   const watcher = watch(
     [resolve(SOURCE_FOLDER, '**/*.ts'), ...CONFIG_FILE_NAMES],
@@ -41,11 +41,18 @@ export async function devServer() {
       });
 
       if (server) {
-        server.close();
-        console.log();
-      }
+        treeKill(server.pid as number, 'SIGTERM', async (err) => {
+          if (err) {
+            Logger.error(err.message);
+          } else {
+            server = await startServer();
+          }
+        });
 
-      server = await startServer();
+        console.log();
+      } else {
+        server = await startServer();
+      }
     } catch (err) {
       Logger.error(err.message);
     }

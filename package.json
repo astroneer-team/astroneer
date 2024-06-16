@@ -48,7 +48,7 @@
     "format": "prettier --write .",
     "build": "lerna run build",
     "release:patch": "lerna version patch && lerna run build && lerna publish from-package",
-    "astroneer": "node packages/cli/dist/index.js",
+    "astroneer": "turbo build && node packages/cli/dist/index.js",
     "publish:canary": "lerna run build && lerna publish from-package --canary --dist-tag canary",
     "publish:latest": "lerna run build && lerna publish from-package",
     "create-astroneer-app": "node packages/create-astroneer-app/dist/index.js"

@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { configDotenv } from 'dotenv';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
+import { startServer } from '../helpers/start-server';
 
 /**
  * Command to start Astroneer.js app.
@@ -34,6 +35,6 @@ export const startCmd = new Command('start')
         process.exit(1);
       }
 
-      await import(resolve(DIST_FOLDER, 'server.js')).then((m) => m.default());
+      await startServer();
     },
   );
