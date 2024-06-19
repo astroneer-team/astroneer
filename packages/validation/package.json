@@ -1,6 +1,6 @@
 {
   "name": "@astroneer/validation",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Astroneer.js validation utilities",
   "license": "MIT",
   "main": "dist/index.js",
@@ -15,8 +15,8 @@
     "dist"
   ],
   "dependencies": {
-    "@astroneer/common": "^2.1.1",
-    "@astroneer/core": "^2.1.1",
+    "@astroneer/common": "^2.1.2",
+    "@astroneer/core": "^2.1.2",
     "picocolors": "^1.0.0",
     "zod": "^3.23.8"
   },

@@ -1,5 +1,11 @@
 # eslint-plugin-astroneer
 
+## 2.1.2
+
+### Patch Changes
+
+- 18c7003: add new body validation utility for astroneer
+
 ## 2.1.1
 
 ### Patch Changes
