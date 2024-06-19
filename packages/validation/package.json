@@ -1,0 +1,33 @@
+{
+  "name": "@astroneer/validation",
+  "version": "2.1.1",
+  "description": "Astroneer.js validation utilities",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "types": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist",
+    "compile": "ncc build src/index.ts -t -o dist --minify --no-cache --no-source-map-register",
+    "build": "npm run clean && npm run compile && npm run types"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@astroneer/common": "^2.1.1",
+    "@astroneer/core": "^2.1.1",
+    "picocolors": "^1.0.0",
+    "zod": "^3.23.8"
+  },
+  "repository": {
+    "directory": "packages/validation",
+    "type": "git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
