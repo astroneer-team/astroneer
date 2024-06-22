@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "@astroneer/common": "^2.1.2",
+    "@astroneer/config": "^2.1.2",
     "@astroneer/core": "^2.1.2",
     "picocolors": "^1.0.0",
     "zod": "^3.23.8"
