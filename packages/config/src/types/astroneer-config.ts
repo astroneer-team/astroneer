@@ -5,4 +5,11 @@ export type AstroneerConfig = {
   logger?: {
     httpErrors?: boolean;
   };
+  validation?: {
+    request?: {
+      body?: {
+        defaultErrorMessage?: string;
+      };
+    };
+  };
 };
