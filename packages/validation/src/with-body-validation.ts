@@ -1,13 +1,15 @@
 import { HttpError } from '@astroneer/common';
-import { RouteHandler } from '@astroneer/core';
 import { ZodSchema } from 'zod';
 import { parseZodValidationError } from './helpers/parse-zod-validation-error';
+import { loadConfig } from '@astroneer/config';
+import { RouteHandler } from '@astroneer/core';
 
 export function withBodyValidation(
   schema: ZodSchema,
   handler: RouteHandler,
 ): RouteHandler {
   return async (req, res) => {
+    const config = loadConfig();
     const body = await req.body();
 
     if (!body) {
@@ -19,12 +21,13 @@ export function withBodyValidation(
     if (!validated.success) {
       throw new HttpError(
         400,
-        'Failed to validate request body',
+        config.validation?.request?.body?.defaultErrorMessage ??
+          'Failed to validate request body',
         parseZodValidationError(validated.error),
       );
     }
 
     req.body = () => new Promise((resolve) => resolve(validated.data));
-    return await handler(req, res);
+    return handler(req, res);
   };
 }
