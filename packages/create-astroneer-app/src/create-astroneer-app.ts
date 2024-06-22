@@ -69,7 +69,7 @@ export async function createAstroneerApp(projectName?: string) {
     }
   }
 
-  if (answers.git) initGitRepository(projectDir);
+  if (answers.git) await initGitRepository(projectDir);
 
   console.log(
     picocolors.blue(
