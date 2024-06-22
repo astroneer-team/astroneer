@@ -24,41 +24,9 @@ export type ErrorRouteHandler = (
   res: Response,
 ) => void | Promise<void>;
 
-/**
- * The `Astroneer` class represents the core functionality of the Astroneer framework.
- * It provides methods for preparing the framework, handling incoming HTTP requests,
- * and running middlewares and handlers.
- *
- * @since 0.1.0
- */
 export class Astroneer {
   private constructor(private router: AstroneerRouter) {}
 
-  /**
-   * The `prepare` method is a factory method that creates a new instance of
-   * {@link Astroneer} and preloads all routes from the router.
-   *
-   * @example
-   * ```ts
-   * import { Astroneer } from '@astroneer/core';
-   * import { createServer } from 'http';
-   *
-   * export default async function server() {
-   *  const app = await Astroneer.prepare();
-   *  return createServer(async (req, res) => {
-   *   try {
-   *     const parsedUrl = parse(req.url || '', true);
-   *     await app.handle(req, res, parsedUrl);
-   *   } catch (err) {
-   *     console.error(err);
-   *     res.writeHead(500, { 'Content-Type': 'text/plain' });
-   *   }
-   *  })
-   * }
-   * ```
-   *
-   * @returns A promise that resolves to an instance of {@link Astroneer}.
-   */
   static async prepare(): Promise<Astroneer> {
     const router = new AstroneerRouter();
     await router.preloadRoutes();
@@ -75,14 +43,6 @@ export class Astroneer {
     return new Astroneer(router);
   }
 
-  /**
-   * The `handle` method is the main entry point for handling incoming HTTP requests.
-   * It matches the request to a route, runs any middlewares, and executes the handler.
-   *
-   * @param req - The incoming HTTP request.
-   * @param res - The server response object.
-   * @param parsedUrl - The parsed URL object.
-   */
   async handle(
     req: IncomingMessage,
     res: ServerResponse,
